@@ -35,6 +35,9 @@ public:
   String getSSID();
   void setPASS(String input);
   String getPASS();
+
+  void setTimeFormat(uint16_t newFormat);
+  uint16_t getTimeFormat();
   
 private:
   // data
@@ -45,7 +48,8 @@ private:
   uint16_t PIN;
   String wifiSSID;
   String wifiPASS;
-
+  uint16_t timeFormat;
+  
   uint16_t hourIn;
   uint16_t minIn;
   uint16_t ampmIn; //0:not set 1:AM 2:PM
