@@ -105,7 +105,7 @@ char oldTimeString[MaxString] = { 0 };
 // the interrupt service routine affects this
 volatile bool isButtonPressed = false;
 
-volatile uint16_t PINin = 0; 
+String PINin = ""; 
 volatile uint16_t hourIn = 0;
 volatile uint16_t minIn = 0;
 volatile uint16_t ampmIn = 0; //0:not set 1:AM 2:PM
@@ -793,31 +793,177 @@ switch(clkMenu.getLevel())
 
 // Child SAFETY or Change PIN -------------- ↓ --------------
 //PINin is a temp value
-  case 40: case 50: //count == 0 geting pin , count ==1 safety, count ==2 change PIN, count ==3 error menu
+  case 40: case 50: //count == 0 geting pin , count == 2 safety, count == 1 change PIN, count == 3 error menu
      oled.setTextSize(1);
      //Loop adding digits until '*' is pressed
      
     switch(customKey)
     {
     case '1':
-        if (clkMenu.getCount() == 0 )
+      if (clkMenu.getCount() < 2 ) //both required inputing a pin
         { 
-    PINin = PINin * 10 + 1;  
-    //Prints the PINin
-    oled.setCursor(menu4X,menu4Y);
-    oled.setTextColor(clkMenu.getColor());
-    oled.print(PINin);
-    }
-    else if (clkMenu.getCount() == 1 )
-    { 
-    oled.print(PINin);
-    }
-    else if (clkMenu.getCount() == 2 )
-    oled.print(PINin);
+        PINin += '1';  
+        //Prints the PINin
+        oled.setCursor(menu4X,menu4Y);
+        oled.setTextColor(clkMenu.getColor());
+        oled.print(PINin);
+        }
+        else if (clkMenu.getCount() == 1 )
+        { 
+        //Safety On
+        oled.print(PINin);
+        }
     break; //case '1'
+
+    case '2':
+      if (clkMenu.getCount() < 2 ) //both required inputing a pin
+        { 
+        PINin += '2';  
+        //Prints the PINin
+        oled.setCursor(menu4X,menu4Y);
+        oled.setTextColor(clkMenu.getColor());
+        oled.print(PINin);
+        }
+        else if (clkMenu.getCount() == 1 )
+        { 
+        //Safety Off
+        oled.print(PINin);
+        }
+    break; //case '2'
+
+    case '3':
+      if (clkMenu.getCount() < 2 ) //both required inputing a pin
+        { 
+        PINin += '3';  
+        //Prints the PINin
+        oled.setCursor(menu4X,menu4Y);
+        oled.setTextColor(clkMenu.getColor());
+        oled.print(PINin);
+        }
+    break; //case '3'
+
+    case '4':
+      if (clkMenu.getCount() < 2 ) //both required inputing a pin
+        { 
+        PINin += '4';  
+        //Prints the PINin
+        oled.setCursor(menu4X,menu4Y);
+        oled.setTextColor(clkMenu.getColor());
+        oled.print(PINin);
+        }
+    break; //case '4'
+
+    case '5':
+      if (clkMenu.getCount() < 2 ) //both required inputing a pin
+        { 
+        PINin += '5';  
+        //Prints the PINin
+        oled.setCursor(menu4X,menu4Y);
+        oled.setTextColor(clkMenu.getColor());
+        oled.print(PINin);
+        }
+    break; //case '5'
+
+    case '6':
+      if (clkMenu.getCount() < 2 ) //both required inputing a pin
+        { 
+        PINin += '6';  
+        //Prints the PINin
+        oled.setCursor(menu4X,menu4Y);
+        oled.setTextColor(clkMenu.getColor());
+        oled.print(PINin);
+        }
+    break; //case '6'
+
+    case '7':
+      if (clkMenu.getCount() < 2 ) //both required inputing a pin
+        { 
+        PINin += '7';  
+        //Prints the PINin
+        oled.setCursor(menu4X,menu4Y);
+        oled.setTextColor(clkMenu.getColor());
+        oled.print(PINin);
+        }
+    break; //case '7'
+
+    case '8':
+      if (clkMenu.getCount() < 2 ) //both required inputing a pin
+        { 
+        PINin += '8';  
+        //Prints the PINin
+        oled.setCursor(menu4X,menu4Y);
+        oled.setTextColor(clkMenu.getColor());
+        oled.print(PINin);
+        }
+    break; //case '8'
+
+    case '9':
+      if (clkMenu.getCount() < 2 ) //both required inputing a pin
+        { 
+        PINin += '9';  
+        //Prints the PINin
+        oled.setCursor(menu4X,menu4Y);
+        oled.setTextColor(clkMenu.getColor());
+        oled.print(PINin);
+        }
+    break; //case '9'
+
+    case '0':
+      if (clkMenu.getCount() < 2 ) //both required inputing a pin
+        { 
+        PINin += '0';  
+        //Prints the PINin
+        oled.setCursor(menu4X,menu4Y);
+        oled.setTextColor(clkMenu.getColor());
+        oled.print(PINin);
+        }
+    break; //case '0'
+
+    case '*':
+      if (clkMenu.getCount() == 0 || PINin == clkMenu.getPIN()) 
+        { 
+        if(clkMenu.getLevel() == 40)
+          {
+          clkMenu.setCount(2); 
+
+          //clear screen
+          oled.setTextColor(OLED_Backround_Color);
+          oled.setCursor(menu2X,menu2Y);
+          oled.print("Enter your PIN\nfollowed by *\n");oled.print(PINin);
+  
+          //print next menu
+          oled.setTextColor(clkMenu.getColor());
+          oled.setCursor(menu2X,menu2Y);
+          oled.print("Child Safety is\ncurrently:");
+          if (clkMenu.getChildSafety()){oled.print("ON\n1:Keep ON\n2:Turn OFF");} 
+          else {oled.print("OFF\n1:Turn ON\n2:Keep OFF");}
+
+          }//goes to child safety submenu
+        
+        else                         
+          {
+          clkMenu.incCount(); //change pin submenu
+  
+          //clear screen
+          oled.setTextColor(OLED_Backround_Color);
+          oled.setCursor(menu1Xtab,menu1Y);
+          oled.print("Change PIN\nEnter your PIN\nfollowed by *\n");oled.print(PINin);
+          //print next menu
+          oled.setTextColor(clkMenu.getColor());
+  
+          PINin = ""; //resets PINin to allow input of new PINin
+            }//goes to change pin submenu
+        }
+      else if (clkMenu.getCount() == 0 || PINin != clkMenu.getPIN()){clkMenu.setCount(3);}//error submenu
+      else if (clkMenu.getCount() == 1){clkMenu.setPIN(PINin);} //Finished inputing new PIN
+         
+    break; //case '*'
+    
     
    // Return to Prev Menu
     case '#':
+    // UPDATE FOR THE SUB MENU TEXT OPTIONS
+    
     //clears screen
       oled.setTextColor(OLED_Backround_Color);
       oled.setCursor(menu1Xtab,menu1Y);
@@ -1102,7 +1248,7 @@ char alphabet[] = {'a','b','c' ,'d','e','f' ,'g','h','i',   // 0
   break; //case 70 colors
 // Pills Replaced
   case 80:
-     oled.setTextSize(1);
+   oled.setTextSize(1);
 // Reset the pill status
    if(customKey == '1')
    {
@@ -1135,8 +1281,9 @@ char alphabet[] = {'a','b','c' ,'d','e','f' ,'g','h','i',   // 0
       
       clkMenu.setLevel(1); customKey = 'z';
    }
-
-  break;//case 80 pills replaced      
+  break;//case 80 pills replaced
+  default: 
+  customKey = 'z';     
   }//END of switch(clkMenu.getLevel())
 }//END OF KEPAD MENU FUNC
 

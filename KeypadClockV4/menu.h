@@ -25,8 +25,8 @@ public:
 
   void setVisability(bool state);
 
-  void setPIN(uint16_t newPIN);
-  uint16_t getPIN();
+  void setPIN(String newPIN);
+  String getPIN();
 
   void setColor(uint16_t newColor);
   uint16_t getColor();
@@ -38,6 +38,9 @@ public:
 
   void setTimeFormat(uint16_t newFormat);
   uint16_t getTimeFormat();
+
+  void setChildSafety(bool newState);
+  bool getChildSafety();
   
 private:
   // data
@@ -46,10 +49,11 @@ private:
                       // 24 hour time menu    15:Time, 25:Pill Alarm, 35:Alarm
   bool clkON; //when true display time, when false disable to allow for menus
   uint16_t menuColor;
-  uint16_t PIN;
+  String PIN; //stringg to allow leading zeros in the pin
   String wifiSSID;
   String wifiPASS;
   uint16_t timeFormat;
+  bool childSafety;
   
   uint16_t hourIn;
   uint16_t minIn;

@@ -17,6 +17,7 @@ Menu::Menu()
   menuColor = 0x07E0; //green
   wifiSSID = "";
   wifiPASS = "";
+  PIN = "147";
   timeFormat = 12;
   
   hourIn = 0;
@@ -46,8 +47,8 @@ void Menu::setClkON(bool state){clkON = state;}
 void Menu::setVisability(bool state){isDisplayVisible = state;}
 
 // PIN
-void Menu::setPIN(uint16_t newPIN){PIN = newPIN;}
-uint16_t Menu::getPIN(){return PIN;}
+void Menu::setPIN(String newPIN){PIN = newPIN;}
+String Menu::getPIN(){return PIN;}
 
 // COLOR
 void Menu::setColor(uint16_t newColor){menuColor = newColor;}
@@ -62,3 +63,7 @@ String Menu::getPASS(){return wifiPASS;}
 //Time  Format
 void Menu::setTimeFormat(uint16_t newFormat){timeFormat = newFormat;} //only pass 12 or 24 in
 uint16_t Menu::getTimeFormat(){return timeFormat;}
+
+//Child Safety
+void Menu::setChildSafety(bool newState){childSafety = newState;}
+bool Menu::getChildSafety(){return childSafety;}
