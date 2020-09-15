@@ -17,6 +17,7 @@ Menu::Menu()
   menuColor = 0x07E0; //green
   wifiSSID = "";
   wifiPASS = "";
+  timeFormat = 12;
   
   hourIn = 0;
   minIn = 0;
