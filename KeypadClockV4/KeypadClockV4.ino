@@ -94,6 +94,8 @@ char alphabet[] = {'a','b','c' ,'d','e','f' ,'g','h','i',
 Adafruit_SSD1331 oled = Adafruit_SSD1331(OLED_pin_cs_ss,OLED_pin_dc_rs,OLED_pin_sda_mosi,OLED_pin_scl_sck,OLED_pin_res_rst);
 //declare the menu
 Menu clkMenu;
+//declare the clock
+
 uint16_t OLED_Text_Color = clkMenu.getColor();
 
 // assume the display is off until configured in setup()
@@ -1370,8 +1372,12 @@ void loop() {
 
     //keypad
     keypadMenu();
+
+    //Kirsten call your clock function here, you should initilize the rtc at the top near the OLED and menu, line 98
+
+    //call the alarm function here,
     
-    //clock
+    //clock old
     // unconditional display, regardless of whether display is visible
     displayUpTime();
 
