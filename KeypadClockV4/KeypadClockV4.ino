@@ -243,6 +243,7 @@ switch(clkMenu.getLevel())
      oled.setTextColor(clkMenu.getColor());
      oled.setCursor(menu1Xtab, menu1Y);
      oled.print("Child Safety\nEnter your PIN\nfollowed by *");
+     PINin = "";
      clkMenu.setLevel(40);
      customKey = 'z'; //This prevents the 1st input for the sub menu from being a 4  
      break; //case '4'
@@ -257,6 +258,7 @@ switch(clkMenu.getLevel())
      oled.setTextColor(clkMenu.getColor());
      oled.setCursor(menu1Xtab, menu1Y);
      oled.print("Change PIN\nEnter your PIN\nfollowed by *");
+     PINin = "";
      clkMenu.setLevel(50);
      customKey = 'z'; //This prevents the 1st input for the sub menu from being a 5  
      break; //case '5'
@@ -797,7 +799,7 @@ switch(clkMenu.getLevel())
 //PINin is a temp value
   case 40: case 50: //count == 0 geting pin , count == 2 safety, count == 1 change PIN, count == 3 error menu
      oled.setTextSize(1);
-     //Loop adding digits until '*' is pressed
+
      
     switch(customKey)
     {
@@ -810,10 +812,30 @@ switch(clkMenu.getLevel())
         oled.setTextColor(clkMenu.getColor());
         oled.print(PINin);
         }
-        else if (clkMenu.getCount() == 1 )
+        else if (clkMenu.getCount() == 2 )
         { 
-        //Safety On
-        oled.print(PINin);
+        //clear screan, exit menu
+        oled.setTextColor(OLED_Backround_Color);
+        oled.setCursor(menu1Xtab,menu1Y);
+        oled.print("Child Safety\nChild Safety is\ncurrently:");
+        if (clkMenu.getChildSafety()){oled.print("ON\n1:Keep ON\n2:Turn OFF");} 
+        else {oled.print("OFF\n1:Turn ON\n2:Keep OFF");}
+        clkMenu.setLevel(0);clkMenu.setClkON(true);
+        //safety on
+        clkMenu.setChildSafety(true);
+        }
+      else
+        {
+        //clear screen
+        oled.setTextColor(OLED_Backround_Color);
+        oled.setCursor(menu2X,menu2Y);
+        oled.print("Wrong PIN\n1:Retry Input\n2:Exit");
+        //print retry
+        oled.setTextColor(clkMenu.getColor());
+        oled.setCursor(menu2X,menu2Y);
+        oled.print("Enter your PIN\nfollowed by *\n");
+        clkMenu.setCount(0);
+        PINin = "";
         }
     break; //case '1'
 
@@ -826,10 +848,27 @@ switch(clkMenu.getLevel())
         oled.setTextColor(clkMenu.getColor());
         oled.print(PINin);
         }
-        else if (clkMenu.getCount() == 1 )
+      else if (clkMenu.getCount() == 2 )
         { 
+        //clear screen, exit menu
+        oled.setTextColor(OLED_Backround_Color);
+        oled.setCursor(menu1Xtab,menu1Y);
+        oled.print("Child Safety\nChild Safety is\ncurrently:");
+        if (clkMenu.getChildSafety()){oled.print("ON\n1:Keep ON\n2:Turn OFF");} 
+        else {oled.print("OFF\n1:Turn ON\n2:Keep OFF");}
+        clkMenu.setLevel(0);clkMenu.setClkON(true);
         //Safety Off
-        oled.print(PINin);
+        clkMenu.setChildSafety(false);
+        }
+      else
+        {
+        //clear screen
+        oled.setTextColor(OLED_Backround_Color);
+        oled.setCursor(menu1Xtab,menu1Y);
+        (clkMenu.getLevel() == 40) ? oled.print("Child Safety\n") : oled.print("Change PIN\n");
+        oled.print("Wrong PIN\n1:Retry Input\n2:Exit");
+        //exit
+        clkMenu.setLevel(0);clkMenu.setClkON(true);
         }
     break; //case '2'
 
@@ -922,7 +961,7 @@ switch(clkMenu.getLevel())
     break; //case '0'
 
     case '*':
-      if (clkMenu.getCount() == 0 || PINin == clkMenu.getPIN()) 
+      if (clkMenu.getCount() == 0 && PINin == clkMenu.getPIN()) 
         { 
         if(clkMenu.getLevel() == 40)
           {
@@ -939,7 +978,7 @@ switch(clkMenu.getLevel())
           oled.print("Child Safety is\ncurrently:");
           if (clkMenu.getChildSafety()){oled.print("ON\n1:Keep ON\n2:Turn OFF");} 
           else {oled.print("OFF\n1:Turn ON\n2:Keep OFF");}
-
+          PINin = "";
           }//goes to child safety submenu
         
         else                         
@@ -948,16 +987,38 @@ switch(clkMenu.getLevel())
   
           //clear screen
           oled.setTextColor(OLED_Backround_Color);
-          oled.setCursor(menu1Xtab,menu1Y);
-          oled.print("Change PIN\nEnter your PIN\nfollowed by *\n");oled.print(PINin);
+          oled.setCursor(menu2X,menu2Y);
+          oled.print("Enter your PIN\n\n");oled.print(PINin);
           //print next menu
           oled.setTextColor(clkMenu.getColor());
+          oled.setCursor(menu2X,menu2Y);
+          oled.print("Enter a new PIN");
   
           PINin = ""; //resets PINin to allow input of new PINin
             }//goes to change pin submenu
         }
-      else if (clkMenu.getCount() == 0 || PINin != clkMenu.getPIN()){clkMenu.setCount(3);}//error submenu
-      else if (clkMenu.getCount() == 1){clkMenu.setPIN(PINin);} //Finished inputing new PIN
+      else if (clkMenu.getCount() == 0 && PINin != clkMenu.getPIN())
+        {
+        clkMenu.setCount(3);
+        //clear screen
+        oled.setTextColor(OLED_Backround_Color);
+        oled.setCursor(menu2X,menu2Y);
+        oled.print("Enter your PIN\nfollowed by *\n");oled.print(PINin);
+        //print Error message
+        oled.setTextColor(clkMenu.getColor());
+        oled.setCursor(menu2X,menu2Y);
+        oled.print("Wrong PIN\n1:Retry Input\n2:Exit");
+        
+        }//error submenu
+      else if (clkMenu.getCount() == 1)
+        {
+        clkMenu.setPIN(PINin);
+        //clear screan
+        oled.setTextColor(OLED_Backround_Color);
+        oled.setCursor(menu1Xtab,menu1Y);
+        oled.print("Change Pin\nEnter a new PIN\nfollowed by a *\n");oled.print(PINin);
+        clkMenu.setLevel(0);clkMenu.setClkON(true);
+        } //Finished inputing new PIN
          
     break; //case '*'
     
@@ -983,14 +1044,6 @@ switch(clkMenu.getLevel())
     customKey = 'z';
     
    } // switch(customKey)
-   
-     //Compare input number to clkMenu.getPIN(); if equal go into sub menu for safety/PIN change if wrong go into error menu(ask to re-enter pin or go back to clock
-
-     //Safety Toggle Menu
-
-     //Change PIN Menu
-
-     //Wrong PIN Menu
    
   break;//menuLevel 40 50
 // Child SAFETY or Change PIN -------------- ↑ --------------
