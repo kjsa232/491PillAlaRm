@@ -5,6 +5,10 @@
 #include <Keypad.h>
 #include "clock.h" //contains clock::
 #include "menu.h" //contains Menu::
+//RTC CLOCK
+#include "RTClib.h"
+#include <Wire.h>
+#include "ds3231.h"
 //#include "constants.h"
 
 
@@ -74,6 +78,20 @@ const uint8_t min1Y = 17;  //menu clock input
 const uint8_t min2X = 24;  //menu clock input
 const uint8_t min2Y = 17;  //menu clock input
 
+//rtc clock times
+uint8_t hourOld = 0;
+uint8_t minOld = 0;
+uint8_t secOld = 0;
+
+// rtc clock location
+const uint8_t RTChour1X = 1;  //menu clock input
+const uint8_t RTChour1Y = 12; //menu clock input
+const uint8_t RTChour2X = 22;  //menu clock input
+const uint8_t RTChour2Y = 12; //menu clock input
+const uint8_t RTCmin1X = 58;  //menu clock input
+const uint8_t RTCmin1Y = 12;  //menu clock input
+const uint8_t RTCmin2X = 76;  //menu clock input
+const uint8_t RTCmin2Y = 12;  //menu clock input
 
 String inputString1 = ""; //temp storage
 String inputString2 =""; //temp storage
@@ -1399,14 +1417,58 @@ void displayUpTime() {
 }
 
 
+void rtcTime()
+{
+
+     DateTime now = rtc.now();
+     oled.fillScreen(OLED_Backround_Color);
+     oled.setCursor(24,18);
+
+
+      if(hourOld != now.hour())
+      {
+        if(now.hour() < 10) { oled.setCursor(RTChour2X,RTChour2Y);
+          //  oled.print('0');
+      }
+      else {oled.setCursor(hour1X, hour1Y);}
+    //  if(now.hour() == 0) {
+     //   oled.print('0', '0');
+     // }
+      oled.print(now.hour(), DEC);
+      oled.print(':');
+      Serial.print(now.hour(), DEC);
+      Serial.print(':');
+
+      }
+
+      if(minOld != now.minute())
+      {
+        if(now.minute() < 10){
+          oled.setCursor(min2X, min2Y);
+         // oled.print('0');
+          }
+        else {oled.setCursor(min1X, min1Y);}
+        oled.print(now.minute(), DEC);
+        Serial.print(now.minute(), DEC);
+
+      }
+    Serial.println();
+    oled.println();
+
+}
+
 void setup() {
 
     //clock OLD
-
+    /*
     #if (SerialDebugging)
     Serial.begin(115200); while (!Serial); Serial.println();
     #endif
+    */
 
+    //rtcTime
+    rtc.begin();
+    rtc.adjust(DateTime(__DATE__, __TIME__));
 
     // settling time
     delay(250);
@@ -1436,8 +1498,10 @@ void loop() {
 
     //clock old
     // unconditional display, regardless of whether display is visible
-    displayUpTime();
+    //displayUpTime();
 
+    //RTC CLOCK TIME
+    rtcTime();
 
     // no need to be in too much of a hurry
     delay(100);
