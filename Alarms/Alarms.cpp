@@ -57,6 +57,9 @@ uint8_t pillAlarm()
     pillAlarmState = 4;
     //allow fallthrough
     case 4:
+    // I WILL NEED TO ADD THE SNOOZE FROM THE ALARM CODE
+
+
     //check if the cup has been removed
     //snooze when removed
     // if it is removed, set [pillAlarmState = 5;]

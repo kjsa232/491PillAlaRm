@@ -106,8 +106,7 @@ char alphabet[] = {'a','b','c' ,'d','e','f' ,'g','h','i',
                    '9','!','@' ,'#','$','%' ,'^','&','*',
                    '(',')','-' ,'_','=','+' ,',','?','.',
                    '<','>','\'','"','\\','/','|',':',';',
-                   '"','[',']' ,'{','}' ,'`','~',' ',' ',
-                   'Ä','Ï','Ö','Ü','ß' ,'ä','ï' ,'ö','ü'}; // these german char do not work so they are being ignored
+                   '"','[',']' ,'{','}' ,'`','~',' ',' ',};
 
 // declare the display
 Adafruit_SSD1331 oled = Adafruit_SSD1331(OLED_pin_cs_ss,OLED_pin_dc_rs,OLED_pin_sda_mosi,OLED_pin_scl_sck,OLED_pin_res_rst);
@@ -1084,8 +1083,7 @@ char alphabet[] = {'a','b','c' ,'d','e','f' ,'g','h','i',   // 0
                    '9','!','@' ,'#','$','%' ,'^','&','*',   // 7
                    '(',')','-' ,'_','=','+' ,',','?','.',   // 8
                    '<','>','\'','"','\\','/','|',':',';',   // 9
-                   '"','[',']' ,'{','}' ,'`','~',' ',' ',   // 10
-                   'Ä','Ï','Ö','Ü','ß' ,'ä','ï' ,'ö','ü'};  // 11 // these german char do not work so they are being ignored
+                   '"','[',']' ,'{','}' ,'`','~',' ',' ',}  // 10
       */
 //print first 9
 
@@ -1362,147 +1360,82 @@ char alphabet[] = {'a','b','c' ,'d','e','f' ,'g','h','i',   // 0
   }//END of switch(clkMenu.getLevel())
 }//END OF KEPAD MENU FUNC
 
-void displayUpTime() {
-
-    oled.setTextSize(3);
-
-    // calculate seconds, truncated to the nearest whole second
-    unsigned long upSeconds = millis() / 1000;
-    // calculate days, truncated to nearest whole day
-    unsigned long days = upSeconds / 86400;
-    // the remaining hhmmss are
-    upSeconds = upSeconds % 86400;
-    // calculate hours, truncated to the nearest whole hour
-    unsigned long hours = upSeconds / 3600;
-    // the remaining mmss are
-    upSeconds = upSeconds % 3600;
-    // calculate minutes, truncated to the nearest whole minute
-    unsigned long minutes = upSeconds / 60;
-    // the remaining ss are
-    upSeconds = upSeconds % 60;
-    // allocate a buffer
-    char newTimeString[MaxString] = { 0 };
-    // construct the string representation
-    sprintf(
-        newTimeString,
-        "%02lu:%02lu:%02lu",
-        hours, minutes, upSeconds
-    );
-
-    // has the time string changed since the last oled update?   && Is clock Display on
-    if ((strcmp(newTimeString,oldTimeString) != 0) && (clkMenu.getClkON())) {
-
-        // yes! home the cursor
-        oled.setCursor(4,12);
-        // change the text color to the background color
-        oled.setTextColor(OLED_Backround_Color);
-        // redraw the old value to erase
-        oled.print(oldTimeString);
-        // home the cursor
-        oled.setCursor(4,12);
-        // change the text color to foreground color
-        oled.setTextColor(OLED_Text_Color);
-        // draw the new time value
-        oled.print(newTimeString);
-        // and remember the new value
-        strcpy(oldTimeString,newTimeString);
-    }
-
-// ALARM TEST
-    unsigned long alarm = 5;
-    if(upSeconds == alarm)
-      {OLED_Text_Color = OLED_Color_Red;}
-    else if((upSeconds == alarm + 5)&&(OLED_Text_Color = OLED_Color_Red))
-      {OLED_Text_Color = clkMenu.getColor();}
-}
-
 
 void rtcTime()
 {
+   DateTime now = rtc.now();
+   oled.fillScreen(OLED_Backround_Color);
+   oled.setCursor(24,18);
 
-     DateTime now = rtc.now();
-     oled.fillScreen(OLED_Backround_Color);
-     oled.setCursor(24,18);
+   if(hourOld != now.hour())
+   {
+     if(now.hour() < 10)
+     {
+     oled.setCursor(RTChour2X,RTChour2Y);
+     //  oled.print('0');
+     }
+     else {oled.setCursor(hour1X, hour1Y);}
+     //  if(now.hour() == 0) { oled.print('0', '0'); }
+     oled.print(now.hour(), DEC);
+     oled.print(':');
+     Serial.print(now.hour(), DEC);
+     Serial.print(':');
+     }
 
-
-      if(hourOld != now.hour())
-      {
-        if(now.hour() < 10) { oled.setCursor(RTChour2X,RTChour2Y);
-          //  oled.print('0');
-      }
-      else {oled.setCursor(hour1X, hour1Y);}
-    //  if(now.hour() == 0) {
-     //   oled.print('0', '0');
-     // }
-      oled.print(now.hour(), DEC);
-      oled.print(':');
-      Serial.print(now.hour(), DEC);
-      Serial.print(':');
-
-      }
-
-      if(minOld != now.minute())
-      {
-        if(now.minute() < 10){
-          oled.setCursor(min2X, min2Y);
-         // oled.print('0');
-          }
-        else {oled.setCursor(min1X, min1Y);}
-        oled.print(now.minute(), DEC);
-        Serial.print(now.minute(), DEC);
-
-      }
-    Serial.println();
-    oled.println();
-
+     if(minOld != now.minute())
+     {
+       if(now.minute() < 10)
+       {
+       oled.setCursor(min2X, min2Y);
+       // oled.print('0');
+       }
+       else {oled.setCursor(min1X, min1Y);}
+       oled.print(now.minute(), DEC);
+       Serial.print(now.minute(), DEC);
+     }
+     Serial.println();
+     oled.println();
 }
 
-void setup() {
 
-    //clock OLD
-    /*
-    #if (SerialDebugging)
-    Serial.begin(115200); while (!Serial); Serial.println();
-    #endif
-    */
+void setup()
+{
+//rtcTime
+rtc.begin();
+rtc.adjust(DateTime(__DATE__, __TIME__));
 
-    //rtcTime
-    rtc.begin();
-    rtc.adjust(DateTime(__DATE__, __TIME__));
+// settling time
+delay(250);
 
-    // settling time
-    delay(250);
+// ignore any power-on-reboot garbage
+isButtonPressed = false;
 
-    // ignore any power-on-reboot garbage
-    isButtonPressed = false;
+// initialise the SSD1331
+oled.begin();
+oled.setFont();
+oled.fillScreen(OLED_Backround_Color);
+oled.setTextColor(clkMenu.getColor());
+oled.setTextSize(3);
 
-    // initialise the SSD1331
-    oled.begin();
-    oled.setFont();
-    oled.fillScreen(OLED_Backround_Color);
-    oled.setTextColor(clkMenu.getColor());
-    oled.setTextSize(3);
-
-    // the display is now on
-    isDisplayVisible = true;
+// the display is now on
+isDisplayVisible = true;
 }
 
-void loop() {
 
-    //keypad
-    keypadMenu();
+void loop()
+{
+//keypad
+keypadMenu();
 
-    //Kirsten call your clock function here, you should initilize the rtc at the top near the OLED and menu, line 98
+//RTC CLOCK TIME
+rtcTime();
 
-    //call the alarm function here,
+//CALL THE PILL ALARM FUNCTION
+//  if(Pill_Alarm_Trigger_Time || pillAlarmTripped == 1){pillAlarmTripped = pillAlarm(); }
 
-    //clock old
-    // unconditional display, regardless of whether display is visible
-    //displayUpTime();
+//call the alarm function here
+//  if(Alarm_Trigger_Time || alarmTripped == 1 || Snooze_Alarm_Trigger_Time){alarmTripped = alarm(); }
 
-    //RTC CLOCK TIME
-    rtcTime();
-
-    // no need to be in too much of a hurry
-    delay(100);
+// no need to be in too much of a hurry, shorten if too much latency
+delay(100);
 }
