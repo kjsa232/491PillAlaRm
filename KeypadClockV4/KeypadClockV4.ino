@@ -27,8 +27,8 @@ Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS)
 #define SerialDebugging true
 
 // The SSD1331 is connected like this (plus VCC plus GND)
-const uint8_t OLED_pin_scl_sck = 12;  //12 old
-const uint8_t OLED_pin_sda_mosi = 11; //11 old
+const uint8_t OLED_pin_scl_sck = 12;
+const uint8_t OLED_pin_sda_mosi = 11;
 const uint8_t OLED_pin_cs_ss = 10;
 const uint8_t OLED_pin_res_rst = 9;
 const uint8_t OLED_pin_dc_rs = 8;
