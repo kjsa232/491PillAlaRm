@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "pill-alarm-be539",
+  "private_key_id": "a8ca48b021371d3d9fec646eedd32736be1969ca",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCldBsY1e8f0QHg\nUBxRThEnM5CG15TicLtwCkBWHb5PZ3cr/mgpN0HW/SGR2uIGtWWR6m1RfXbmzqn4\ndm+W+2pTTC1rgtUwFXcjhMiu5+W/hvwSABCkbXaaMziXvnk8pMaM8+eNcAd99Wvo\nej5q+9xGpo/ImVAvbmuLx3yppCzHpIZobkOeDCoMHs7aYbYHnJuO/JNPh7JJiErh\nSsfqcT0DWU5GRBZPS3NZs80lqX4kV5DCDq/RdIWbSscC/tLViRrQfoUyGeBScuhI\naXMy1DUh5/e3OWt+ObF+8DDLJFwXnsWSXCNDR38WqyC/y3URrNf2JF2RCXik68oZ\nsZ7BbqWpAgMBAAECggEAE8e0sZxp8RjQq5uINyQpItGkVqqRTx0BG5zuIh1+MgoB\nkk3g8AR+J5Ctob1URk8LbI1lMlfYjjFo2p52Ksu14215BKBokk4Opz1prJdmvSYL\nHq/JTY8Uncy/2ExaPCjK3/EM3rjk/GcJ1oo+yhWAOSYSjH3fuzvtOZHI0pMhE2Dj\nvpZ0gn4wHFdWIYpPiDwgh6G4cmM0AkvmhtqD53YdKifh262CLY2qMDUC+TBWPAcX\n57vZVjGNUhgSPibIOHN3kMDMeQ9EghE3Z/XWXxwQ8MYLhWbXs1bTvGxS0G6iIERu\nazKPVV7gZhWh/22po5ttxgbEBwf3BBm/eaQGDO8YrQKBgQDViQxQWePEz/hQ+mmq\naqXnn/SYD7RXpRbzlO4q5znUU7t4+HeC7/d+pdFc5cvDIq1OIwle1V1gZHVKZAYT\nX+nzzUs+EHrQBFg9cdH7Ab5ZeYGfZ+0+2qaeE3ETUSlGokeobEBAhKwgmjEDt2Qq\n+tl+/39MAlxs5vZhu9ibrHVI8wKBgQDGWz4rTb26ZgYQUsVEi8FzvMVCPwUrN1j4\n2JjGHfnMVSQW/iktn7NfQaZpHrmDlGSRqjxm+Q4tCOoPc0DQeZXfWfhkYQzDm8du\nc3vZZfhaFA+Nry7+RM2PR0q7KzB8xscyEoFafyW3yQfqWoYp/pyr8LaUfP/nxBOM\nAEk5a4W98wKBgQCFLJDyd+1WrMHYdyR5dUP9HkRkpb66vqp+xc54EXd+la4hNw0K\nK3D2mqHlRyf6jmD5j15jt7whxuVjvNgRM0tskwevMIX3wA3sXFUyL5cwpFgUO7O5\n9JHfmo52FrMga0s3njPAST40oxWYlMKzD3mf++a/V+Wewbi9oXLpO/h1wwKBgQCl\nhT47pIPOJ5SnymoS6QxlKADzZuNJTMZR4Wya5iis+d9D0JNMHxfvRTk4PwtPYWUK\nqKP+yZWqvuWSPvq2/L6zwsAkA1hDYpro8DVJFG5JvLO955GvXHqsNTGHPmMXvEg8\n4HRQsAkpc/fG+AM8x9q1IAk7n5NsM5KcISD5aWARQQKBgCkp6nhYf0qExXd+1+Bq\nx+kz+VZ/61/snlRT+KqAG1U3Y7Q2lrPnO+SM73ca3fH+fS6UhbKyYZ3B0jKcCmGQ\nXggCoKluvi7tCP66coodyWC6v9Su4SjG29ZsjI1DS1yc09SfmF7c6SbHcxQMYr+Z\ngFEasR2nLp9+TaWmxmFUENFL\n-----END PRIVATE KEY-----\n",
+  "client_email": "pill-alarm-be539@appspot.gserviceaccount.com",
+  "client_id": "105150762983709333429",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/pill-alarm-be539%40appspot.gserviceaccount.com"
+}
