@@ -1492,7 +1492,7 @@ void setup()
 {
 //rtcTime
 rtc.begin();
-//rtc.adjust(DateTime(__DATE__, __TIME__));
+rtc.adjust(DateTime(__DATE__, __TIME__));
 // settling time for the rtc
 delay(1250);
 oled.fillScreen(OLED_Backround_Color);
@@ -1509,6 +1509,7 @@ oled.setTextSize(3);
 
 // the display is now on
 isDisplayVisible = true;
+rtcTime(1);
 }
 
 
