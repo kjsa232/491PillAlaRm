@@ -84,7 +84,7 @@ uint8_t minOld = 0;
 uint8_t secOld = 0;
 
 // rtc clock location
-const uint8_t RTChour1X = 1;  //menu clock input
+const uint8_t RTChour1X = 4;  //menu clock input
 const uint8_t RTChour1Y = 12; //menu clock input
 const uint8_t RTChour2X = 22;  //menu clock input
 const uint8_t RTChour2Y = 12; //menu clock input
@@ -114,6 +114,7 @@ Adafruit_SSD1331 oled = Adafruit_SSD1331(OLED_pin_cs_ss,OLED_pin_dc_rs,OLED_pin_
 Menu clkMenu;
 //declare the clock
 RTC_DS3231 rtc;
+DateTime now;
 
 uint16_t OLED_Text_Color = clkMenu.getColor();
 
@@ -351,7 +352,9 @@ switch(clkMenu.getLevel())
      oled.print("1:Time\n2:Pill Alarm\n3:Alarm\n4:Child Safety\n5:Change PIN\n6:WiFi\n7:Colors\n8:Pills Replaced");
 
      clkMenu.setLevel(0);
-   clkMenu.setClkON(true);
+     clkMenu.setClkON(true);
+     rtcTime(1);
+
      customKey = 'z'; //This prevents the 1st input for the sub menu from being a 1
      break; //case '#'
    default:
@@ -1361,51 +1364,138 @@ char alphabet[] = {'a','b','c' ,'d','e','f' ,'g','h','i',   // 0
 }//END OF KEPAD MENU FUNC
 
 
-void rtcTime()
+void rtcTime(uint8_t in)
 {
-   DateTime now = rtc.now();
-   oled.fillScreen(OLED_Backround_Color);
-   oled.setCursor(24,18);
-
-   if(hourOld != now.hour())
+   oled.setTextSize(3);
+   oled.setTextColor(clkMenu.getColor());
+   now = rtc.now();
+   if(in == 1)
    {
-     if(now.hour() < 10)
-     {
-     oled.setCursor(RTChour2X,RTChour2Y);
-     //  oled.print('0');
-     }
-     else {oled.setCursor(hour1X, hour1Y);}
-     //  if(now.hour() == 0) { oled.print('0', '0'); }
-     oled.print(now.hour(), DEC);
-     oled.print(':');
-     Serial.print(now.hour(), DEC);
-     Serial.print(':');
-     }
+    oled.setCursor(RTChour1X,RTChour1Y);
+    if(now.hour() < 10){oled.print('0');}
+    oled.print(now.hour());
+    oled.setCursor(40,12); 
+    oled.print(':');
+    oled.setCursor(RTCmin1X,RTCmin1Y);
+    if(now.minute() < 10){oled.print('0');}
+    oled.print(now.minute());
+   }
 
-     if(minOld != now.minute())
+   if(clkMenu.getClkON()) // This will skip this code when in a menu
+   {
+     oled.setCursor(40,12); oled.print(':'); // This is the :, HH:MM, it doesn't need to be printed elsewhere     
+
+// CHECK AND UPDATE THE HOUR  
+     if(hourOld != now.hour())
      {
-       if(now.minute() < 10)
+       oled.setTextColor(OLED_Backround_Color); //Set Clear hourOld
+       if(clkMenu.getTimeFormat() == 24)
        {
-       oled.setCursor(min2X, min2Y);
-       // oled.print('0');
-       }
-       else {oled.setCursor(min1X, min1Y);}
-       oled.print(now.minute(), DEC);
-       Serial.print(now.minute(), DEC);
-     }
-     Serial.println();
-     oled.println();
-}
+        //CLEAR hourOld 24
+        if(hourOld < 9)         {oled.setCursor(RTChour2X,RTChour2Y);oled.print(hourOld);}
+        else if(hourOld == 10)  {oled.setCursor(RTChour1X,RTChour1Y);oled.print(hourOld);}
+        else if(hourOld < 19)   {oled.setCursor(RTChour2X,RTChour2Y);oled.print((hourOld - 10));}
+        else if(hourOld == 19)  {oled.setCursor(RTChour1X,RTChour1Y);oled.print(hourOld);}
+        else if (hourOld < 22)  {oled.setCursor(RTChour2X,RTChour2Y);oled.print((hourOld - 20));}
+        else /* hourOld == 23*/ {oled.setCursor(RTChour1X,RTChour1Y);oled.print(hourOld);}
+
+        oled.setTextColor(clkMenu.getColor());
+        //PRINT now.hour(), DEC 24
+        if(hourOld < 9)         {oled.setCursor(RTChour2X,RTChour2Y);oled.print(now.hour(), DEC);}
+        else if(hourOld == 10)  {oled.setCursor(RTChour1X,RTChour1Y);oled.print(now.hour(), DEC);}
+        else if(hourOld < 19)   {oled.setCursor(RTChour2X,RTChour2Y);oled.print((now.hour() - 10), DEC);}
+        else if(hourOld == 19)  {oled.setCursor(RTChour1X,RTChour1Y);oled.print(now.hour(), DEC);}
+        else if (hourOld < 22)  {oled.setCursor(RTChour2X,RTChour2Y);oled.print((now.hour() - 20), DEC);}
+        else /* hourOld == 23*/ {oled.setCursor(RTChour1X,RTChour1Y);oled.print('0');oled.print(now.hour(), DEC);}
+        
+       }//end 24 hour
+       
+       else //12 hour format
+       {
+        //CLEAR hourOld 12
+        //1-8 am and pm
+        if((hourOld > 0) && (hourOld < 9))        {oled.setCursor(RTChour2X,RTChour2Y);oled.print(hourOld);}
+        else if((hourOld > 12) && (hourOld < 21)) {oled.setCursor(RTChour2X,RTChour2Y);oled.print(hourOld - 22);}
+        //midnight and noon
+        else if((hourOld == 0)||(hourOld == 12) ) {oled.setCursor(RTChour1X,RTChour1Y);oled.print("12");}
+        //10 and 11 am and pm
+        else if((hourOld >= 9)&&(hourOld <= 11))  {oled.setCursor(RTChour2X,RTChour2Y);oled.print((hourOld - 10));}
+        else /* hourOld == 21 or 22 or 23 */      {oled.setCursor(RTChour2X,RTChour2Y);oled.print((hourOld - 22));}
+
+        //Remove the AM/PM indicator
+        //remove AM if hourOld == 11
+
+        //remove PM if hourOld == 23
+
+        oled.setTextColor(clkMenu.getColor());
+        //PRINT now.hour(), DEC 12
+        //1-8 am and pm OLD
+        if((hourOld > 0) && (hourOld < 9)) {oled.setCursor(RTChour2X,RTChour2Y); oled.print(now.hour(), DEC);}
+        else if((hourOld > 12) && (hourOld < 21)) {oled.setCursor(RTChour2X,RTChour2Y);oled.print((now.hour() - 22), DEC);}
+        //midnight and noon OLD
+        else if((hourOld == 0)||(hourOld == 12))  {oled.setCursor(RTChour1X,RTChour1Y);oled.print("01");}
+        //9,10,11 am and pm OLD
+        else if((hourOld >= 9)&&(hourOld <= 11))  {oled.setCursor(RTChour2X,RTChour2Y);oled.print((now.hour() - 10), DEC);}
+        else /* hourOld == 21 or 22 or 23 */      {oled.setCursor(RTChour2X,RTChour2Y);oled.print((now.hour() - 22), DEC);}
+        
+       }//end 12 hour
+       
+       //update hourOld
+       if(hourOld < 23){hourOld += 1;} else{hourOld -= 23;}
+     }//END UPDATE HOUR
+      
+// CHECK AND UPDATE MINUTES
+       oled.setCursor(RTCmin1X,RTCmin1Y);
+       if(minOld != now.minute())
+       {
+        //CLEAR minOld
+        oled.setTextColor(OLED_Backround_Color);
+
+        if(minOld < 9)         {oled.setCursor(RTCmin2X,RTCmin2Y);oled.print(minOld);}
+        else if(minOld == 10)  {oled.setCursor(RTCmin1X,RTCmin1Y);oled.print(minOld);}
+        else if(minOld < 19)   {oled.setCursor(RTCmin2X,RTCmin2Y);oled.print((minOld - 10));}
+        else if(minOld == 19)  {oled.setCursor(RTCmin1X,RTCmin1Y);oled.print(minOld);}
+        else if(minOld < 29)   {oled.setCursor(RTCmin2X,RTCmin2Y);oled.print((minOld - 20));}
+        else if(minOld == 29)  {oled.setCursor(RTCmin1X,RTCmin1Y);oled.print(minOld);}
+        else if(minOld < 39)   {oled.setCursor(RTCmin2X,RTCmin2Y);oled.print((minOld - 30));}
+        else if(minOld == 39)  {oled.setCursor(RTCmin1X,RTCmin1Y);oled.print(minOld);}
+        else if(minOld < 49)   {oled.setCursor(RTCmin2X,RTCmin2Y);oled.print((minOld - 40));}
+        else if(minOld == 49)  {oled.setCursor(RTCmin1X,RTCmin1Y);oled.print(minOld);}
+        else if(minOld < 59)   {oled.setCursor(RTCmin2X,RTCmin2Y);oled.print((minOld - 50));}
+        else/* minOld == 59 */ {oled.setCursor(RTCmin1X,RTCmin1Y);oled.print(minOld);}
+
+        //print (now.minute(), DEC);
+        oled.setTextColor(clkMenu.getColor());
+        
+        if(minOld < 9)         {oled.setCursor(RTCmin2X,RTCmin2Y);oled.print(now.minute(), DEC);}
+        else if(minOld == 10)  {oled.setCursor(RTCmin1X,RTCmin1Y);oled.print(now.minute(), DEC);}
+        else if(minOld < 19)   {oled.setCursor(RTCmin2X,RTCmin2Y);oled.print((now.minute() - 10), DEC);}
+        else if(minOld == 19)  {oled.setCursor(RTCmin1X,RTCmin1Y);oled.print(now.minute(), DEC);}
+        else if(minOld < 29)   {oled.setCursor(RTCmin2X,RTCmin2Y);oled.print((now.minute() - 20), DEC);}
+        else if(minOld == 29)  {oled.setCursor(RTCmin1X,RTCmin1Y);oled.print(now.minute(), DEC);}
+        else if(minOld < 39)   {oled.setCursor(RTCmin2X,RTCmin2Y);oled.print((now.minute() - 30), DEC);}
+        else if(minOld == 39)  {oled.setCursor(RTCmin1X,RTCmin1Y);oled.print(now.minute(), DEC);}
+        else if(minOld < 49)   {oled.setCursor(RTCmin2X,RTCmin2Y);oled.print((now.minute() - 40), DEC);}
+        else if(minOld == 49)  {oled.setCursor(RTCmin1X,RTCmin1Y);oled.print(now.minute(), DEC);}
+        else if(minOld < 59)   {oled.setCursor(RTCmin2X,RTCmin2Y);oled.print((now.minute() - 50), DEC);}
+        else/* minOld == 59 */ {oled.setCursor(RTCmin1X,RTCmin1Y);oled.print(now.minute(), DEC);}
+
+         //update minOld
+         if(minOld < 59){minOld += 1;} else{minOld -= 59;}
+       }//END UPDATE MIN
+   }//END Checks if Display Clock is ON
+
+}//RTC TIME
 
 
 void setup()
 {
 //rtcTime
 rtc.begin();
-rtc.adjust(DateTime(__DATE__, __TIME__));
-
-// settling time
-delay(250);
+//rtc.adjust(DateTime(__DATE__, __TIME__));
+// settling time for the rtc
+delay(1250);
+oled.fillScreen(OLED_Backround_Color);
 
 // ignore any power-on-reboot garbage
 isButtonPressed = false;
@@ -1428,7 +1518,7 @@ void loop()
 keypadMenu();
 
 //RTC CLOCK TIME
-rtcTime();
+rtcTime(0);
 
 //CALL THE PILL ALARM FUNCTION
 //  if(Pill_Alarm_Trigger_Time || pillAlarmTripped == 1){pillAlarmTripped = pillAlarm(); }

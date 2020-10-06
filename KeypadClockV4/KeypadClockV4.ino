@@ -96,7 +96,7 @@ Adafruit_SSD1331 oled = Adafruit_SSD1331(OLED_pin_cs_ss,OLED_pin_dc_rs,OLED_pin_
 //declare the menu
 Menu clkMenu;
 //declare the clock
-RTC_DS3231 rtc;
+
 
 uint16_t OLED_Text_Color = clkMenu.getColor();
 
