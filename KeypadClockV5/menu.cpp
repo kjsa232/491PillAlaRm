@@ -18,7 +18,7 @@ Menu::Menu()
   wifiSSID = "";
   wifiPASS = "";
   PIN = "147";
-  timeFormat = 12;
+  timeFormat = 24;
   
   hourIn = 0;
   minIn = 0;

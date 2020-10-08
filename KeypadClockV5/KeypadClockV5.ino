@@ -79,9 +79,9 @@ const uint8_t min2X = 24;  //menu clock input
 const uint8_t min2Y = 17;  //menu clock input
 
 //rtc clock times
-uint8_t hourOld = 0;
-uint8_t minOld = 0;
-uint8_t secOld = 0;
+uint8_t hourOld;
+uint8_t minOld;
+//uint8_t secOld;
 
 // rtc clock location
 const uint8_t RTChour1X = 4;  //menu clock input
@@ -1379,8 +1379,10 @@ void rtcTime(uint8_t in)
     oled.setCursor(RTCmin1X,RTCmin1Y);
     if(now.minute() < 10){oled.print('0');}
     oled.print(now.minute());
+    
    }
-
+   else //update
+   {
    if(clkMenu.getClkON()) // This will skip this code when in a menu
    {
      oled.setCursor(40,12); oled.print(':'); // This is the :, HH:MM, it doesn't need to be printed elsewhere     
@@ -1410,7 +1412,7 @@ void rtcTime(uint8_t in)
         
        }//end 24 hour
        
-       else //12 hour format
+       else if(clkMenu.getTimeFormat() == 12) //12 hour format
        {
         //CLEAR hourOld 12
         //1-8 am and pm
@@ -1430,7 +1432,7 @@ void rtcTime(uint8_t in)
         oled.setTextColor(clkMenu.getColor());
         //PRINT now.hour(), DEC 12
         //1-8 am and pm OLD
-        if((hourOld > 0) && (hourOld < 9)) {oled.setCursor(RTChour2X,RTChour2Y); oled.print(now.hour(), DEC);}
+        if((hourOld > 0) && (hourOld < 9))        {oled.setCursor(RTChour2X,RTChour2Y); oled.print(now.hour(), DEC);}
         else if((hourOld > 12) && (hourOld < 21)) {oled.setCursor(RTChour2X,RTChour2Y);oled.print((now.hour() - 22), DEC);}
         //midnight and noon OLD
         else if((hourOld == 0)||(hourOld == 12))  {oled.setCursor(RTChour1X,RTChour1Y);oled.print("01");}
@@ -1484,7 +1486,7 @@ void rtcTime(uint8_t in)
          if(minOld < 59){minOld += 1;} else{minOld -= 59;}
        }//END UPDATE MIN
    }//END Checks if Display Clock is ON
-
+   }//update
 }//RTC TIME
 
 
@@ -1492,10 +1494,10 @@ void setup()
 {
 //rtcTime
 rtc.begin();
-rtc.adjust(DateTime(__DATE__, __TIME__));
+rtc.adjust(DateTime(F(__DATE__),F( __TIME__)));
 // settling time for the rtc
-delay(1250);
-oled.fillScreen(OLED_Backround_Color);
+delay(750);
+//oled.fillScreen(OLED_Backround_Color);
 
 // ignore any power-on-reboot garbage
 isButtonPressed = false;
@@ -1509,7 +1511,14 @@ oled.setTextSize(3);
 
 // the display is now on
 isDisplayVisible = true;
+
+//WORKING
+RTC_DS3231 rtc;
+DateTime now = rtc.now();
+hourOld = now.hour();
+minOld = now.minute();
 rtcTime(1);
+//delay(250);
 }
 
 
@@ -1528,5 +1537,5 @@ rtcTime(0);
 //  if(Alarm_Trigger_Time || alarmTripped == 1 || Snooze_Alarm_Trigger_Time){alarmTripped = alarm(); }
 
 // no need to be in too much of a hurry, shorten if too much latency
-delay(100);
+//delay(100);
 }
