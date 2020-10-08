@@ -162,7 +162,7 @@ void rtcTime(uint8_t in)
    {
    if(clkMenu.getClkON()) // This will skip this code when in a menu
    {
-     oled.setCursor(40,12); oled.print(':'); // This is the :, HH:MM, it doesn't need to be printed elsewhere     
+    //oled.setCursor(40,12); oled.print(':'); // This is the :, HH:MM, it doesn't need to be printed elsewhere     
 
 // CHECK AND UPDATE THE HOUR  
      if(hourOld != now.hour())
