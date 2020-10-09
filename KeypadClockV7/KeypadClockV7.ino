@@ -1395,19 +1395,19 @@ void rtcTime(uint8_t in)
        {
         //CLEAR hourOld 24
         if(hourOld < 9)         {oled.setCursor(RTChour2X,RTChour2Y);oled.print(hourOld);}
-        else if(hourOld == 10)  {oled.setCursor(RTChour1X,RTChour1Y);oled.print(hourOld);}
+        else if(hourOld == 9)   {oled.setCursor(RTChour1X,RTChour1Y);oled.print('0');oled.print(hourOld);}
         else if(hourOld < 19)   {oled.setCursor(RTChour2X,RTChour2Y);oled.print((hourOld - 10));}
         else if(hourOld == 19)  {oled.setCursor(RTChour1X,RTChour1Y);oled.print(hourOld);}
-        else if (hourOld < 22)  {oled.setCursor(RTChour2X,RTChour2Y);oled.print((hourOld - 20));}
+        else if (hourOld < 23)  {oled.setCursor(RTChour2X,RTChour2Y);oled.print((hourOld - 20));}
         else /* hourOld == 23*/ {oled.setCursor(RTChour1X,RTChour1Y);oled.print(hourOld);}
 
         oled.setTextColor(clkMenu.getColor());
         //PRINT now.hour(), DEC 24
         if(hourOld < 9)         {oled.setCursor(RTChour2X,RTChour2Y);oled.print(now.hour(), DEC);}
-        else if(hourOld == 10)  {oled.setCursor(RTChour1X,RTChour1Y);oled.print(now.hour(), DEC);}
+        else if(hourOld == 9)   {oled.setCursor(RTChour1X,RTChour1Y);oled.print(now.hour(), DEC);}
         else if(hourOld < 19)   {oled.setCursor(RTChour2X,RTChour2Y);oled.print((now.hour() - 10), DEC);}
         else if(hourOld == 19)  {oled.setCursor(RTChour1X,RTChour1Y);oled.print(now.hour(), DEC);}
-        else if (hourOld < 22)  {oled.setCursor(RTChour2X,RTChour2Y);oled.print((now.hour() - 20), DEC);}
+        else if (hourOld < 23)  {oled.setCursor(RTChour2X,RTChour2Y);oled.print((now.hour() - 20), DEC);}
         else /* hourOld == 23*/ {oled.setCursor(RTChour1X,RTChour1Y);oled.print('0');oled.print(now.hour(), DEC);}
         
        }//end 24 hour
@@ -1443,7 +1443,7 @@ void rtcTime(uint8_t in)
        }//end 12 hour
        
        //update hourOld
-       if(hourOld < 23){hourOld += 1;} else{hourOld -= 23;}
+       if(hourOld < 23){hourOld += 1;} else{hourOld = 0;}
      }//END UPDATE HOUR
       
 // CHECK AND UPDATE MINUTES
@@ -1454,7 +1454,7 @@ void rtcTime(uint8_t in)
         oled.setTextColor(OLED_Backround_Color);
 
         if(minOld < 9)         {oled.setCursor(RTCmin2X,RTCmin2Y);oled.print(minOld);}
-        else if(minOld == 10)  {oled.setCursor(RTCmin1X,RTCmin1Y);oled.print(minOld);}
+        else if(minOld == 9)   {oled.setCursor(RTCmin1X,RTCmin1Y);oled.print('0');oled.print(minOld);}
         else if(minOld < 19)   {oled.setCursor(RTCmin2X,RTCmin2Y);oled.print((minOld - 10));}
         else if(minOld == 19)  {oled.setCursor(RTCmin1X,RTCmin1Y);oled.print(minOld);}
         else if(minOld < 29)   {oled.setCursor(RTCmin2X,RTCmin2Y);oled.print((minOld - 20));}
@@ -1470,7 +1470,7 @@ void rtcTime(uint8_t in)
         oled.setTextColor(clkMenu.getColor());
         
         if(minOld < 9)         {oled.setCursor(RTCmin2X,RTCmin2Y);oled.print(now.minute(), DEC);}
-        else if(minOld == 10)  {oled.setCursor(RTCmin1X,RTCmin1Y);oled.print(now.minute(), DEC);}
+        else if(minOld == 9)   {oled.setCursor(RTCmin1X,RTCmin1Y);oled.print(now.minute(), DEC);}
         else if(minOld < 19)   {oled.setCursor(RTCmin2X,RTCmin2Y);oled.print((now.minute() - 10), DEC);}
         else if(minOld == 19)  {oled.setCursor(RTCmin1X,RTCmin1Y);oled.print(now.minute(), DEC);}
         else if(minOld < 29)   {oled.setCursor(RTCmin2X,RTCmin2Y);oled.print((now.minute() - 20), DEC);}
@@ -1480,10 +1480,10 @@ void rtcTime(uint8_t in)
         else if(minOld < 49)   {oled.setCursor(RTCmin2X,RTCmin2Y);oled.print((now.minute() - 40), DEC);}
         else if(minOld == 49)  {oled.setCursor(RTCmin1X,RTCmin1Y);oled.print(now.minute(), DEC);}
         else if(minOld < 59)   {oled.setCursor(RTCmin2X,RTCmin2Y);oled.print((now.minute() - 50), DEC);}
-        else/* minOld == 59 */ {oled.setCursor(RTCmin1X,RTCmin1Y);oled.print(now.minute(), DEC);}
+        else/* minOld == 59 */ {oled.setCursor(RTCmin1X,RTCmin1Y);oled.print('0');oled.print(now.minute(), DEC);}
 
          //update minOld
-         if(minOld < 59){minOld += 1;} else{minOld -= 59;}
+         if(minOld < 59){minOld += 1;} else{minOld = 0;}
        }//END UPDATE MIN
    }//END Checks if Display Clock is ON
    }//update
