@@ -1372,8 +1372,26 @@ void rtcTime(uint8_t in)
    if(in == 1)
    {
     oled.setCursor(RTChour1X,RTChour1Y);
-    if(now.hour() < 10){oled.print('0');}
-    oled.print(now.hour());
+    if(clkMenu.getTimeFormat() == 24)
+      {
+      if(now.hour() < 10){oled.print('0');}
+      oled.print(now.hour());
+      }
+    else //12 hour format
+      {
+      //1-9 am 
+      if((now.hour() > 0) && (now.hour() < 10))       { oled.setCursor(RTChour1X,RTChour1Y); oled.print('0'); oled.print(now.hour(), DEC);}
+      //1-9 pm
+      else if((now.hour() > 12) && (now.hour() < 22)) { oled.setCursor(RTChour1X,RTChour1Y); oled.print('0'); oled.print(now.hour() - 12, DEC);}
+      //10am-Noon
+      else if((now.hour() > 9) && (now.hour() < 13))  {oled.setCursor(RTChour1X,RTChour1Y);oled.print((now.hour()), DEC);}
+      //10pm-midnight
+      else if((now.hour() > 21) && (now.hour() < 25)) {oled.setCursor(RTChour1X,RTChour1Y);oled.print((now.hour()), DEC);}
+      //AM PM
+      //if((now.hour() >= 0) && (now.hour() < 12)){  } //AM
+      //else                                      {  } //PM
+      }
+    
     oled.setCursor(40,12); 
     oled.print(':');
     oled.setCursor(RTCmin1X,RTCmin1Y);
@@ -1417,12 +1435,14 @@ void rtcTime(uint8_t in)
         //CLEAR hourOld 12
         //1-8 am and pm
         if((hourOld > 0) && (hourOld < 9))        {oled.setCursor(RTChour2X,RTChour2Y);oled.print(hourOld);}
-        else if((hourOld > 12) && (hourOld < 21)) {oled.setCursor(RTChour2X,RTChour2Y);oled.print(hourOld - 22);}
+        else if((hourOld > 12) && (hourOld < 21)) {oled.setCursor(RTChour2X,RTChour2Y);oled.print(hourOld - 12);}
         //midnight and noon
         else if((hourOld == 0)||(hourOld == 12) ) {oled.setCursor(RTChour1X,RTChour1Y);oled.print("12");}
+        //9am and 9pm
+        else if((hourOld == 9)||(hourOld == 21) ) {oled.setCursor(RTChour1X,RTChour1Y);oled.print("09");}
         //10 and 11 am and pm
-        else if((hourOld >= 9)&&(hourOld <= 11))  {oled.setCursor(RTChour2X,RTChour2Y);oled.print((hourOld - 10));}
-        else /* hourOld == 21 or 22 or 23 */      {oled.setCursor(RTChour2X,RTChour2Y);oled.print((hourOld - 22));}
+        else if((hourOld > 9) && (hourOld < 12))  {oled.setCursor(RTChour2X,RTChour2Y);oled.print((hourOld - 10));}
+        else /* hourOld == 22 or 23 */            {oled.setCursor(RTChour2X,RTChour2Y);oled.print((hourOld - 22));}
 
         //Remove the AM/PM indicator
         //remove AM if hourOld == 11
@@ -1431,14 +1451,21 @@ void rtcTime(uint8_t in)
 
         oled.setTextColor(clkMenu.getColor());
         //PRINT now.hour(), DEC 12
-        //1-8 am and pm OLD
-        if((hourOld > 0) && (hourOld < 9))        {oled.setCursor(RTChour2X,RTChour2Y); oled.print(now.hour(), DEC);}
-        else if((hourOld > 12) && (hourOld < 21)) {oled.setCursor(RTChour2X,RTChour2Y);oled.print((now.hour() - 22), DEC);}
-        //midnight and noon OLD
-        else if((hourOld == 0)||(hourOld == 12))  {oled.setCursor(RTChour1X,RTChour1Y);oled.print("01");}
-        //9,10,11 am and pm OLD
-        else if((hourOld >= 9)&&(hourOld <= 11))  {oled.setCursor(RTChour2X,RTChour2Y);oled.print((now.hour() - 10), DEC);}
-        else /* hourOld == 21 or 22 or 23 */      {oled.setCursor(RTChour2X,RTChour2Y);oled.print((now.hour() - 22), DEC);}
+        //1-8 am and pm
+        if((hourOld > 0) && (hourOld < 9))        {oled.setCursor(RTChour2X,RTChour2Y);oled.print(now.hour());}
+        else if((hourOld > 12) && (hourOld < 21)) {oled.setCursor(RTChour2X,RTChour2Y);oled.print(now.hour() - 12);}
+        //midnight and noon
+        else if((hourOld == 0)||(hourOld == 12) ) {oled.setCursor(RTChour1X,RTChour1Y);oled.print("01");}
+        //9am and 9pm
+        else if((hourOld == 9)||(hourOld == 21) ) {oled.setCursor(RTChour1X,RTChour1Y);oled.print("10");}
+        //10 and 11 am and pm
+        else if((hourOld > 9) && (hourOld < 12))  {oled.setCursor(RTChour2X,RTChour2Y);oled.print((now.hour() - 10));}
+        else /* hourOld == 22 or 23 */            {oled.setCursor(RTChour2X,RTChour2Y);oled.print((now.hour() - 22));}
+
+        //ADD the AM/PM indicator
+        //Add AM if hourOld == 0
+
+        //Add PM if hourOld == 12
         
        }//end 12 hour
        
