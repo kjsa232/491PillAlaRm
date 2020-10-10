@@ -86,8 +86,8 @@ uint8_t pillAlarm()
 
 // check if the trigger time for the pill alarm is the current time
 // These commands will be implemented in final
-  //clkMenu.getPillAlarmHH();
-  //clkMenu.getPillAlarmMM();
+  //clkMenu.getPillHH();
+  //clkMenu.getPillMM();
   if(Pill_Alarm_Trigger_Time || pillAlarmTripped == 1){pillAlarmTripped = pillAlarm(); }
 
 
