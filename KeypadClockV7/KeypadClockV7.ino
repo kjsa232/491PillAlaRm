@@ -92,6 +92,8 @@ const uint8_t RTCmin1X = 58;  //menu clock input
 const uint8_t RTCmin1Y = 12;  //menu clock input
 const uint8_t RTCmin2X = 76;  //menu clock input
 const uint8_t RTCmin2Y = 12;  //menu clock input
+const uint8_t RTCampmX = 15;
+const uint8_t RTCampmY = 35; 
 
 String inputString1 = ""; //temp storage
 String inputString2 =""; //temp storage
@@ -211,19 +213,20 @@ switch(clkMenu.getLevel())
     oled.setTextSize(1);
   switch(customKey)
   {
-   //SET TIME
-   case '1':
-   //clear screen text
-   oled.setTextColor(OLED_Backround_Color);
-   oled.setCursor(menu1X,menu1Y);
-   oled.print("1:Time\n2:Pill Alarm\n3:Alarm\n4:Child Safety\n5:Change PIN\n6:WiFi\n7:Colors\n8:Pills Replaced");
-
-   oled.setTextColor(clkMenu.getColor());
-   oled.setCursor(menu1Xtab, menu1Y);
-   oled.print("Time\nEnter the time\nXX:XX");
-   clkMenu.setLevel(10);
-   customKey = 'z'; //This prevents the 1st input for the sub menu from being a 1
-   break; // case '1'
+     //SET TIME
+     case '1':
+     //clear screen text
+     oled.setTextColor(OLED_Backround_Color);
+     oled.setCursor(menu1X,menu1Y);
+     oled.print("1:Time\n2:Pill Alarm\n3:Alarm\n4:Child Safety\n5:Change PIN\n6:WiFi\n7:Colors\n8:Pills Replaced");
+  
+     oled.setTextColor(clkMenu.getColor());
+     oled.setCursor(menu1Xtab, menu1Y);
+     oled.print("Time\nEnter the time\nXX:XX");
+     if(clkMenu.getTimeFormat() == 12){clkMenu.setLevel(10);} //12hr
+     else /* == 24 */                 {clkMenu.setLevel(15);} //24hr
+     customKey = 'z'; //This prevents the 1st input for the sub menu from being a 1
+     break; // case '1'
 
      //SET PILL ALARM
      case '2':
@@ -235,7 +238,8 @@ switch(clkMenu.getLevel())
      oled.setTextColor(clkMenu.getColor());
      oled.setCursor(menu1Xtab, menu1Y);
      oled.print("Pill Alarm\nEnter the time\nXX:XX");
-     clkMenu.setLevel(20);
+     if(clkMenu.getTimeFormat() == 12){clkMenu.setLevel(20);} //12hr
+     else /* == 24 */                 {clkMenu.setLevel(25);} //24hr
      customKey = 'z'; //This prevents the 1st input for the sub menu from being a 2
      break;//case '2'
 
@@ -249,7 +253,8 @@ switch(clkMenu.getLevel())
      oled.setTextColor(clkMenu.getColor());
      oled.setCursor(menu1Xtab, menu1Y);
      oled.print("Alarm\nEnter the time\nXX:XX");
-     clkMenu.setLevel(30);
+     if(clkMenu.getTimeFormat() == 12){clkMenu.setLevel(30);} //12hr
+     else /* == 24 */                 {clkMenu.setLevel(35);} //24hr
      customKey = 'z'; //This prevents the 1st input for the sub menu from being a 3
      break; //case '3'
 
@@ -351,7 +356,7 @@ switch(clkMenu.getLevel())
      oled.setCursor(menu1X, menu1Y);
      oled.print("1:Time\n2:Pill Alarm\n3:Alarm\n4:Child Safety\n5:Change PIN\n6:WiFi\n7:Colors\n8:Pills Replaced");
 
-     clkMenu.setLevel(0);
+     clkMenu.setLevel(0); rtcTime(1);
      clkMenu.setClkON(true);
      rtcTime(1);
 
@@ -364,7 +369,7 @@ switch(clkMenu.getLevel())
     break; //menuLevel 1
 // SUB MENU LOOP ---- ↑ -------------------------
 
-// TIME/Pill Alarm/Alarm MENU LOOP  ---------- ↓ ---------------
+// TIME/Pill Alarm/Alarm MENU LOOP 12 hour ---------- ↓ ---------------
   // uses hourIn and minIn for temp storage, volatile uint16_t count is used counter var
   case 10: case 20: case 30:
      oled.setTextSize(1);
@@ -409,7 +414,7 @@ switch(clkMenu.getLevel())
               oled.setCursor(min2X,min2Y);oled.print(minIn);}
       oled.setCursor(menu4X, menu4Y);
       oled.print("1:AM\n2:PM");
-      clkMenu.setLevel(0);
+      clkMenu.setLevel(0); rtcTime(1);
 
    //Turns clock back on
    clkMenu.setClkON(true);
@@ -746,7 +751,7 @@ switch(clkMenu.getLevel())
           oled.setTextColor(clkMenu.getColor());
           oled.print("0");
           }
-        else if (clkMenu.getCount() == 1 )
+        else if ((clkMenu.getCount() == 1) && (hourIn != 0) )
           {
           hourIn = hourIn*10 + 0; clkMenu.incCount();
           //CLEARS the second X
@@ -815,7 +820,462 @@ switch(clkMenu.getLevel())
     customKey = 'z';
    }//switch(customKey)
   break;//menuLevel 10 20 30
-// TIME/Pill Alarm/Alarm MENU LOOP  ---------- ↑ ---------------
+// TIME/Pill Alarm/Alarm MENU LOOP  12 hour---------- ↑ ---------------
+
+
+
+// TIME/Pill Alarm/Alarm MENU LOOP 24 Hour  ---------- ↓ ---------------
+  // uses hourIn and minIn for temp storage, volatile uint16_t count is used counter var
+  case 15: case 25: case 35:
+     oled.setTextSize(1);
+   
+   if(clkMenu.getCount() == 4) // UPDATES THE (TIME or PILL ALARM or ALARM) WITH THE INPUT then leaves menu
+      {
+      //ADD CODE
+
+      //IF TIME
+      if(clkMenu.getLevel() == 15)
+      {
+        //This will set the time
+      }
+      //IF PILL ALARM
+      else if(clkMenu.getLevel() == 25)
+      {
+        //this will set the Pill alarm
+      }
+      //IF ALARM
+      else if(clkMenu.getLevel() == 35)
+      {
+        // this will set the alarm
+      }
+
+      //clears screen
+      oled.setTextColor(OLED_Backround_Color);
+      oled.setCursor(menu1Xtab,menu1Y);
+      if(clkMenu.getLevel() == 15){oled.print("Time\nEnter the time\n  :");}
+      else if(clkMenu.getLevel() == 25){oled.print("Pill Alarm\nEnter the time\n  :");}
+      else if(clkMenu.getLevel() == 35){oled.print("Alarm\nEnter the time\n  :");}
+      if(hourIn < 10){oled.setCursor(hour1X,hour1Y);oled.print("0");
+                      oled.setCursor(hour2X,hour2Y);oled.print(hourIn);}
+      else           {oled.setCursor(hour1X,hour1Y);oled.print(hourIn);}
+      if(minIn > 9)  {oled.setCursor(min1X,min1Y);oled.print(minIn);}
+      else           {oled.setCursor(min1X,min1Y);oled.print("0");
+                      oled.setCursor(min2X,min2Y);oled.print(minIn);}
+      clkMenu.setLevel(0); rtcTime(1);
+   //Turns clock back on
+   clkMenu.setClkON(true);
+      } //end of menu
+      switch(customKey)
+      {
+      case '1':
+        if (clkMenu.getCount() == 0 )
+          {
+          hourIn = 1; clkMenu.incCount();
+          //CLEARS the first X
+          oled.setCursor(hour1X,hour1Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the first hour digit
+          oled.setCursor(hour1X,hour1Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("1");
+          }
+        else if (clkMenu.getCount() == 1 )
+          {
+          hourIn = hourIn*10 + 1; clkMenu.incCount();
+          //CLEARS the second X
+          oled.setCursor(hour2X,hour2Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the second hour digit
+          oled.setCursor(hour2X,hour2Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("1");
+          }
+        else if (clkMenu.getCount() == 2 )
+          {
+          minIn = 1; clkMenu.incCount();
+          //CLEARS the third X
+          oled.setCursor(min1X,min1Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the first min digit
+          oled.setCursor(min1X,min1Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("1");
+          }
+        else if (clkMenu.getCount() == 3 )
+          {
+          minIn = minIn*10 + 1; clkMenu.incCount();
+          //CLEARS the fourth X
+          oled.setCursor(min2X,min2Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the second min digit
+          oled.setCursor(min2X,min2Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("1");
+          }
+      break;//case '1'
+
+      case '2':
+      if (clkMenu.getCount() == 0 )
+          {
+          hourIn = 2; clkMenu.incCount();
+          //CLEARS the first X
+          oled.setCursor(hour1X,hour1Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the first hour digit
+          oled.setCursor(hour1X,hour1Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("2");
+          }
+        else if (clkMenu.getCount() == 1 )
+          {
+          hourIn = hourIn*10 + 2; clkMenu.incCount();
+          //CLEARS the second X
+          oled.setCursor(hour2X,hour2Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the second hour digit
+          oled.setCursor(hour2X,hour2Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("2");
+          }
+        else if (clkMenu.getCount() == 2 )
+          {
+          minIn = 2; clkMenu.incCount();
+          //CLEARS the third X
+          oled.setCursor(min1X,min1Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the first min digit
+          oled.setCursor(min1X,min1Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("2");
+          }
+        else if (clkMenu.getCount() == 3 )
+          {
+          minIn = minIn*10 + 2; clkMenu.incCount();
+          //CLEARS the fourth X
+          oled.setCursor(min2X,min2Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the second min digit
+          oled.setCursor(min2X,min2Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("2");
+          }
+      break;//case '2'
+
+      case '3':
+        if (clkMenu.getCount() == 1 )
+          {
+          hourIn = hourIn*10 + 3; clkMenu.incCount();
+          //CLEARS the second X
+          oled.setCursor(hour2X,hour2Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the second hour digit
+          oled.setCursor(hour2X,hour2Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("3");
+          }
+        else if (clkMenu.getCount() == 2 )
+          {
+          minIn = 3; clkMenu.incCount();
+          //CLEARS the third X
+          oled.setCursor(min1X,min1Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the first min digit
+          oled.setCursor(min1X,min1Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("3");
+          }
+        else if (clkMenu.getCount() == 3 )
+          {
+          minIn = minIn*10 + 3; clkMenu.incCount();
+          //CLEARS the fourth X
+          oled.setCursor(min2X,min2Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the second min digit
+          oled.setCursor(min2X,min2Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("3");
+          }
+      break;//case '3'
+
+      case '4':
+        if (clkMenu.getCount() == 1 && hourIn < 2 )
+          {
+          hourIn = 4; clkMenu.incCount();
+          //CLEARS the second X
+          oled.setCursor(hour2X,hour2Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the second hour digit
+          oled.setCursor(hour2X,hour2Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("4");
+          }
+        else if (clkMenu.getCount() == 2 )
+          {
+          minIn = 4; clkMenu.incCount();
+          //CLEARS the third X
+          oled.setCursor(min1X,min1Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the first min digit
+          oled.setCursor(min1X,min1Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("4");
+          }
+        else if (clkMenu.getCount() == 3 )
+          {
+          minIn = minIn*10 + 4; clkMenu.incCount();
+          //CLEARS the fourth X
+          oled.setCursor(min2X,min2Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the second min digit
+          oled.setCursor(min2X,min2Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("4");
+          }
+      break;//case '4'
+
+      case '5':
+       if (clkMenu.getCount() == 1 && hourIn < 2 )
+          {
+          hourIn = 5; clkMenu.incCount();
+          //CLEARS the second X
+          oled.setCursor(hour2X,hour2Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the second hour digit
+          oled.setCursor(hour2X,hour2Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("5");
+          }
+        else if (clkMenu.getCount() == 2 )
+          {
+          minIn = 5; clkMenu.incCount();
+          //CLEARS the third X
+          oled.setCursor(min1X,min1Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the first min digit
+          oled.setCursor(min1X,min1Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("5");
+          }
+        else if (clkMenu.getCount() == 3 )
+          {
+          minIn = minIn*10 + 5; clkMenu.incCount();
+          //CLEARS the fourth X
+          oled.setCursor(min2X,min2Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the second digit
+          oled.setCursor(min2X,min2Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("5");
+          }
+      break;//case '5'
+
+      case '6':
+       if (clkMenu.getCount() == 1 && hourIn < 2 )
+          {
+          hourIn = 6; clkMenu.incCount();
+          //CLEARS the second X
+          oled.setCursor(hour2X,hour2Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the second hour digit
+          oled.setCursor(hour2X,hour2Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("6");
+          }
+        else if (clkMenu.getCount() == 3 )
+          {
+          minIn = minIn*10 + 6; clkMenu.incCount();
+          //CLEARS the fourth X
+          oled.setCursor(min2X,min2Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the second min digit
+          oled.setCursor(min2X,min2Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("6");
+          }
+      break;//case '6'
+
+      case '7':
+       if (clkMenu.getCount() == 1 && hourIn < 2 )
+          {
+          hourIn = 7; clkMenu.incCount();
+          //CLEARS the second X
+          oled.setCursor(hour2X,hour2Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the second hour digit
+          oled.setCursor(hour2X,hour2Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("7");
+          }
+        else if (clkMenu.getCount() == 3 )
+          {
+          minIn = minIn*10 + 7; clkMenu.incCount();
+          //CLEARS the fourth X
+          oled.setCursor(min2X,min2Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the second min digit
+          oled.setCursor(min2X,min2Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("7");
+          }
+      break;//case '7'
+
+      case '8':
+       if (clkMenu.getCount() == 1 && hourIn < 2 )
+          {
+          hourIn = 8; clkMenu.incCount();
+          //CLEARS the second X
+          oled.setCursor(hour2X,hour2Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the second hour digit
+          oled.setCursor(hour2X,hour2Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("8");
+          }
+        else if (clkMenu.getCount() == 3 )
+          {
+          minIn = minIn*10 + 8; clkMenu.incCount();
+          //CLEARS the fourth X
+          oled.setCursor(min2X,min2Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the second min digit
+          oled.setCursor(min2X,min2Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("8");
+          }
+      break;//case '8'
+
+      case '9':
+       if (clkMenu.getCount() == 1 && hourIn < 2 )
+          {
+          hourIn = 9; clkMenu.incCount();
+          //CLEARS the second X
+          oled.setCursor(hour2X,hour2Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the second hour digit
+          oled.setCursor(hour2X,hour2Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("9");
+          }
+        else if (clkMenu.getCount() == 3 )
+          {
+          minIn = minIn*10 + 9; clkMenu.incCount();
+          //CLEARS the fourth X
+          oled.setCursor(min2X,min2Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the second min digit
+          oled.setCursor(min2X,min2Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("9");
+          }
+      break;//case '9'
+
+      case '0':
+        if (clkMenu.getCount() == 0 )
+          {
+          hourIn = 0; clkMenu.incCount();
+          //CLEARS the first X
+          oled.setCursor(hour1X,hour1Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the first hour digit
+          oled.setCursor(hour1X,hour1Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("0");
+          }
+        else if (clkMenu.getCount() == 1 )
+          {
+          hourIn = hourIn*10 + 0; clkMenu.incCount();
+          //CLEARS the second X
+          oled.setCursor(hour2X,hour2Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the second hour digit
+          oled.setCursor(hour2X,hour2Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("0");
+          }
+        else if (clkMenu.getCount() == 2 )
+          {
+          minIn = 0; clkMenu.incCount();
+          //CLEARS the third X
+          oled.setCursor(min1X,min1Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the first min digit
+          oled.setCursor(min1X,min1Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("0");
+          }
+        else if (clkMenu.getCount() == 3 )
+          {
+          minIn = minIn*10 + 0; clkMenu.incCount();
+          //CLEARS the fourth X
+          oled.setCursor(min2X,min2Y);
+          oled.setTextColor(OLED_Backround_Color);
+          oled.print("X");
+          //Prints the second min digit
+          oled.setCursor(min2X,min2Y);
+          oled.setTextColor(clkMenu.getColor());
+          oled.print("0");
+          }
+      break;//case '0'
+
+      //else if (customKey == '*'){}
+      case '#':
+        //clears screen
+        oled.setTextColor(OLED_Backround_Color);
+        oled.setCursor(menu1Xtab,menu1Y);
+        if(clkMenu.getLevel() == 15){oled.print("Time\nEnter the time\nXX:XX");}
+        else if(clkMenu.getLevel() == 25){oled.print("Pill Alarm\nEnter the time\nXX:XX");}
+        else if(clkMenu.getLevel() == 35){oled.print("Alarm\nEnter the time\nXX:XX");}
+
+        if(hourIn < 10){oled.setCursor(hour1X,hour1Y);oled.print("0");
+                        oled.setCursor(hour2X,hour2Y);oled.print(hourIn);}
+        else           {oled.setCursor(hour1X,hour1Y);oled.print(hourIn);}
+
+        if(minIn > 9)  {oled.setCursor(min1X,min1Y);oled.print(minIn);}
+        else           {oled.setCursor(min1X,min1Y);oled.print("0");
+                        oled.setCursor(min2X,min2Y);oled.print(minIn);}
+
+        oled.setTextColor(clkMenu.getColor());
+        oled.setCursor(menu1X,menu1Y);
+        oled.setTextSize(1);
+        oled.print("1:Time\n2:Pill Alarm\n3:Alarm\n4:Child Safety\n5:Change PIN\n6:WiFi\n7:Colors\n8:Pills Replaced");
+
+        clkMenu.setLevel(1); customKey = 'z';
+    break;// case '#'
+    default:
+    customKey = 'z';
+   }//switch(customKey)
+  break;//menuLevel 10 20 30
+// TIME/Pill Alarm/Alarm MENU LOOP  24 HOUR---------- ↑ ---------------
+
+
 
 // Child SAFETY or Change PIN -------------- ↓ --------------
 //PINin is a temp value
@@ -842,7 +1302,7 @@ switch(clkMenu.getLevel())
         oled.print("Child Safety\nChild Safety is\ncurrently:");
         if (clkMenu.getChildSafety()){oled.print("ON\n1:Keep ON\n2:Turn OFF");}
         else {oled.print("OFF\n1:Turn ON\n2:Keep OFF");}
-        clkMenu.setLevel(0);clkMenu.setClkON(true);
+        clkMenu.setLevel(0); rtcTime(1);clkMenu.setClkON(true);
         //safety on
         clkMenu.setChildSafety(true);
         }
@@ -878,7 +1338,7 @@ switch(clkMenu.getLevel())
         oled.print("Child Safety\nChild Safety is\ncurrently:");
         if (clkMenu.getChildSafety()){oled.print("ON\n1:Keep ON\n2:Turn OFF");}
         else {oled.print("OFF\n1:Turn ON\n2:Keep OFF");}
-        clkMenu.setLevel(0);clkMenu.setClkON(true);
+        clkMenu.setLevel(0); rtcTime(1);clkMenu.setClkON(true);
         //Safety Off
         clkMenu.setChildSafety(false);
         }
@@ -890,7 +1350,7 @@ switch(clkMenu.getLevel())
         (clkMenu.getLevel() == 40) ? oled.print("Child Safety\n") : oled.print("Change PIN\n");
         oled.print("Wrong PIN\n1:Retry Input\n2:Exit");
         //exit
-        clkMenu.setLevel(0);clkMenu.setClkON(true);
+        clkMenu.setLevel(0); rtcTime(1);clkMenu.setClkON(true);
         }
     break; //case '2'
 
@@ -1039,7 +1499,7 @@ switch(clkMenu.getLevel())
         oled.setTextColor(OLED_Backround_Color);
         oled.setCursor(menu1Xtab,menu1Y);
         oled.print("Change Pin\nEnter a new PIN\nfollowed by a *\n");oled.print(PINin);
-        clkMenu.setLevel(0);clkMenu.setClkON(true);
+        clkMenu.setLevel(0); rtcTime(1);clkMenu.setClkON(true);
         } //Finished inputing new PIN
 
     break; //case '*'
@@ -1206,7 +1666,7 @@ char alphabet[] = {'a','b','c' ,'d','e','f' ,'g','h','i',   // 0
       oled.print("Press * to save\nPress # to exit");
 
       oled.setTextColor(clkMenu.getColor());
-      clkMenu.setLevel(0);
+      clkMenu.setLevel(0); rtcTime(1);
       clkMenu.setClkON(true);
       }
     break;//end of #
@@ -1282,7 +1742,7 @@ char alphabet[] = {'a','b','c' ,'d','e','f' ,'g','h','i',   // 0
       oled.print("Press * to save\nPress # to exit");
 
       oled.setTextColor(clkMenu.getColor());
-      clkMenu.setLevel(0);
+      clkMenu.setLevel(0); rtcTime(1);
       clkMenu.setClkON(true);
       }
     customKey = 'z'; //prevents menu jumping
@@ -1339,7 +1799,7 @@ char alphabet[] = {'a','b','c' ,'d','e','f' ,'g','h','i',   // 0
       oled.setCursor(menu1Xtab,menu1Y);
       oled.print("Pills Replaced\nHave you reset\nyour pills?\n1:Yes\n2:No");
           //clock menu
-      clkMenu.setLevel(0); customKey = 'z';
+      clkMenu.setLevel(0); rtcTime(1); customKey = 'z';
       //Turns clock back on
       clkMenu.setClkON(true);
    }
@@ -1388,8 +1848,8 @@ void rtcTime(uint8_t in)
       //10pm-midnight
       else if((now.hour() > 21) && (now.hour() < 25)) {oled.setCursor(RTChour1X,RTChour1Y);oled.print((now.hour()), DEC);}
       //AM PM
-      //if((now.hour() >= 0) && (now.hour() < 12)){  } //AM
-      //else                                      {  } //PM
+      if((now.hour() >= 0) && (now.hour() < 12)){oled.setTextSize(2);oled.setCursor(RTCampmX,RTCampmY);oled.print("AM");oled.setTextSize(3);} //AM
+      else                                      {oled.setTextSize(2);oled.setCursor(RTCampmX,RTCampmY);oled.print("PM");oled.setTextSize(3);} //PM
       }
     
     oled.setCursor(40,12); 
@@ -1446,8 +1906,9 @@ void rtcTime(uint8_t in)
 
         //Remove the AM/PM indicator
         //remove AM if hourOld == 11
-
+        if(hourOld == 11){oled.setTextSize(2);oled.print('A');oled.setTextSize(3);}
         //remove PM if hourOld == 23
+        else if(hourOld == 23){oled.setTextSize(2);oled.print('P');oled.setTextSize(3);}
 
         oled.setTextColor(clkMenu.getColor());
         //PRINT now.hour(), DEC 12
@@ -1464,8 +1925,9 @@ void rtcTime(uint8_t in)
 
         //ADD the AM/PM indicator
         //Add AM if hourOld == 0
-
+        if(hourOld == 0) {oled.setTextSize(2);oled.setCursor(RTCampmX,RTCampmY);oled.print('A');oled.setTextSize(3);}
         //Add PM if hourOld == 12
+        if(hourOld == 12){oled.setTextSize(2);oled.setCursor(RTCampmX,RTCampmY);oled.print('P');oled.setTextSize(3);}
         
        }//end 12 hour
        
