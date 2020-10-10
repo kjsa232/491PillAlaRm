@@ -6,6 +6,7 @@ if (customKey){Serial.println(customKey);}
 switch(clkMenu.getLevel())
   {
   case 0:
+  /* //removes code that was used for testing
       if (customKey == '1'){ OLED_Text_Color = OLED_Color_White; }
       else if (customKey == '2'){ OLED_Text_Color = OLED_Color_Green; }
       else if (customKey == '3'){ OLED_Text_Color = OLED_Color_Blue; oled.fillCircle(oled.width()/2, oled.height()/2, 10, OLED_Color_Green);      }
@@ -43,7 +44,7 @@ switch(clkMenu.getLevel())
                         OLED_Color_Red    // Color of the Line
                         );
       }
-      else if (customKey == '*')  //Menu
+      else*/ if (customKey == '*')  //Menu
       {
       clkMenu.setClkON(false);
       oled.fillScreen(OLED_Color_Black);   //SLOW
@@ -1614,7 +1615,7 @@ char alphabet[] = {'a','b','c' ,'d','e','f' ,'g','h','i',   // 0
   }//end of switch(customKey)
   break; // end of wifi Menu level 60
 
-// Colors
+//END WiFi //////////////////// START Colors ////////////////////////////
   case 70:
     oled.setTextSize(1);
   // Open the color menu
@@ -1644,6 +1645,7 @@ char alphabet[] = {'a','b','c' ,'d','e','f' ,'g','h','i',   // 0
     customKey = 'z';
   }//end of switch(customKey)
   break; //case 70 colors
+///////////END COLORS////////////////////////////////////////////////////////////////START PILLS REPLACED
 // Pills Replaced
   case 80:
    oled.setTextSize(1);
@@ -1680,6 +1682,7 @@ char alphabet[] = {'a','b','c' ,'d','e','f' ,'g','h','i',   // 0
       clkMenu.setLevel(1); customKey = 'z';
    }
   break;//case 80 pills replaced
+  ////////////////////////////////////////////////////////////////////////////////// END PILLS REPLACED
   default:
   customKey = 'z';
   }//END of switch(clkMenu.getLevel())
