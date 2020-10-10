@@ -33,7 +33,9 @@
     oled.setCursor(RTCmin1X,RTCmin1Y);
     if(now.minute() < 10){oled.print('0');}
     oled.print(now.minute());
-
+    //update hourOld and minOld, for when you are in menu and the min/hour changes
+    hourOld = now.hour();
+    minOld = now.minute();
    }
    else //update
    {
