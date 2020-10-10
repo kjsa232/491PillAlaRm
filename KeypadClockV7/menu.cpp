@@ -4,7 +4,6 @@
 #include <SPI.h>
 #include <Keypad.h>
 #include "Arduino.h"
-#include "constants.h"
 
 #include "menu.h"
 
@@ -19,25 +18,22 @@ Menu::Menu()
   wifiPASS = "";
   PIN = "147";
   timeFormat = 12;
-  
-  hourIn = 0;
-  minIn = 0;
-  ampmIn = 0; //0:not set 1:AM 2:PM
+
   isDisplayVisible = false;
 }
 
 // LEVEL
-void Menu::setLevel(uint16_t newLevel)
+void Menu::setLevel(uint8_t newLevel)
 {
   menuLevel = newLevel;
   count = 0;
   //if(newLevel == 0){clkON = true;}
 }
-uint16_t Menu::getLevel(){return menuLevel;}
+uint8_t Menu::getLevel(){return menuLevel;}
 
 // COUNT
-void Menu::setCount(uint16_t newCount){count = newCount;}
-uint16_t Menu::getCount(){return count;}
+void Menu::setCount(uint8_t newCount){count = newCount;}
+uint8_t Menu::getCount(){return count;}
 void Menu::incCount(){count++;}
 
 // CLK ON
@@ -61,9 +57,19 @@ void Menu::setPASS(String input){wifiPASS = input;}
 String Menu::getPASS(){return wifiPASS;}
 
 //Time  Format
-void Menu::setTimeFormat(uint16_t newFormat){timeFormat = newFormat;} //only pass 12 or 24 in
-uint16_t Menu::getTimeFormat(){return timeFormat;}
+void Menu::setTimeFormat(uint8_t newFormat){timeFormat = newFormat;} //only pass 12 or 24 in
+uint8_t Menu::getTimeFormat(){return timeFormat;}
 
 //Child Safety
 void Menu::setChildSafety(bool newState){childSafety = newState;}
 bool Menu::getChildSafety(){return childSafety;}
+
+//Alarm Time
+void Menu::setAlarmTime(uint8_t hour, uint8_t min){alarmHH = hour; alarmMM = min;}
+uint8_t Menu::getAlarmHH(){return alarmHH;}
+uint8_t Menu::getAlarmMM(){return alarmMM;}
+
+//Pill Alarm Time
+void Menu::setPillTime(uint8_t hour, uint8_t min){pillHH = hour; pillMM = min;}
+uint8_t Menu::getPillHH(){return pillHH;}
+uint8_t Menu::getPillMM(){return pillMM;}
