@@ -17,6 +17,16 @@ uint8_t snoozeAlarmMM = clkMenu.getAlarmMM();
 
 
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ALARMS
+
+//have these as variable of menu class, public variables
+//have them set when the alarm time is set, same function call
+uint8_t snoozeAlarmHH = clkMenu.getAlarmHH();
+uint8_t snoozeAlarmMM = clkMenu.getAlarmMM();
+
+
+
 uint8_t pillAlarm()
 {
   uint8_t AlarmTripped = 1; //0 for false 1 for true
@@ -34,13 +44,15 @@ uint8_t pillAlarm()
 
     case 1:
     //checks shild safety on/OFF
-      //if on get PIN INPUT
-    if(clkMenu.getChildSafety());
+    //if on get PIN INPUT
+    if(clkMenu.getChildSafety())
     {
       // I'll do this later, I will just need to paste code in here and modify it minimaly
       // I am leavbing it out because it is a lot of lines
+      pillAlarmState = 2; //skips for now
     }
-    else{pillAlarmState = 2;} //if child safety is false this will skip this section
+    else {pillAlarmState = 2;} //if child safety is false this will skip this section
+
     if(PINin == clkMenu.getPIN()){pillAlarmState = 2;}
     break; // this will allow looping over
 
@@ -76,8 +88,8 @@ uint8_t pillAlarm()
     clkMenu.incPillAlarm();
     AlarmTripped = 0;
     pillAlarmState = 0;
-    break;
-    default:
+    //break;
+    //default:
   }//switch(pillAlarmState)
   return AlarmTripped;
 }//pillAlarm()
@@ -88,7 +100,7 @@ uint8_t pillAlarm()
 // These commands will be implemented in final
   //clkMenu.getPillHH();
   //clkMenu.getPillMM();
-  if(Pill_Alarm_Trigger_Time || pillAlarmTripped == 1){pillAlarmTripped = pillAlarm(); }
+  //if(Pill_Alarm_Trigger_Time || pillAlarmTripped == 1){pillAlarmTripped = pillAlarm(); }
 
 
 // ------------------------------------------------------------------------------------
@@ -169,8 +181,8 @@ uint8_t alarm()
       clkMenu.snoozeAlarmHH = clkMenu.getAlarmHH();
       clkMenu.snoozeAlarmMM = clkMenu.getAlarmMM();
 
-      break;
-      default:
+      //break;
+      //default:
     }
     break; // this will allow looping over
 
@@ -180,8 +192,8 @@ uint8_t alarm()
 
     AlarmTripped = 0;
     alarmState = 0;
-    break;
-    default:
+    //break;
+    //default:
   }//switch(alarmState)
   return AlarmTripped;
 }//alarm()
@@ -192,4 +204,4 @@ uint8_t alarm()
 // These commands will be implemented in final
   //clkMenu.getAlarmHH();
   //clkMenu.getAlarmMM();
-  if(Alarm_Trigger_Time || alarmTripped == 1 || Snooze_Alarm_Trigger_Time){alarmTripped = alarm(); }
+  //if(Alarm_Trigger_Time || alarmTripped == 1 || Snooze_Alarm_Trigger_Time){alarmTripped = alarm(); }
