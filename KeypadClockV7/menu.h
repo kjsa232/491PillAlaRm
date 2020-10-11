@@ -49,7 +49,12 @@ public:
   void setPillTime(uint8_t hour, uint8_t min);
   uint8_t getPillHH();
   uint8_t getPillMM();
+  
+  uint8_t getPillCounter();
+  void incPillAlarm();
+  void resetPillCounter();
 
+//Variables
   uint8_t snoozeAlarmHH;
   uint8_t snoozeAlarmMM;
 
@@ -71,6 +76,7 @@ private:
 
   uint8_t pillHH; //pill alarm hour
   uint8_t pillMM; //pill alarm min
+  uint8_t pillCounter; //Number of times you have gonw through the pill alarm
 
   bool isDisplayVisible = false; // assume the display is off until configured in setup()
 

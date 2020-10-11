@@ -74,3 +74,8 @@ uint8_t Menu::getAlarmMM(){return alarmMM;}
 void Menu::setPillTime(uint8_t hour, uint8_t min){pillHH = hour; pillMM = min;}
 uint8_t Menu::getPillHH(){return pillHH;}
 uint8_t Menu::getPillMM(){return pillMM;}
+
+//Pill Alarm Counter
+uint8_t Menu::getPillCounter(){return pillCounter;}
+void Menu::incPillAlarm(){pillCounter += 1;};
+void Menu::resetPillCounter(){pillCounter = 0;};
