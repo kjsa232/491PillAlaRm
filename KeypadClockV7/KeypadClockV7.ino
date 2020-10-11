@@ -11,6 +11,7 @@
 #include <Wire.h>
 #include "ds3231.h"
 
+//CALL THE ANALOG PINS AS DIGITAL: call them [Pin 14 .. Pin 19]
 
 //KEYPAD
 char customKey;
@@ -30,6 +31,7 @@ Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS)
 
 #define SerialDebugging true
 
+///////////////////DISPLAY///////////////////////////////
 // The SSD1331 is connected like this (plus VCC plus GND)
 const uint8_t OLED_pin_scl_sck = 12;  //12 old
 const uint8_t OLED_pin_sda_mosi = 11; //11 old
@@ -54,30 +56,59 @@ uint16_t OLED_Backround_Color = OLED_Color_Black;
 // Menu Line positions
 const uint8_t menu1X = 0;   //menu line 1
 const uint8_t menu1Xtab = 4;//menu line 1 indent
-const uint8_t menu1Y = 1;  //menu line 1
-
+const uint8_t menu1Y = 0;  //menu line 1
 const uint8_t menu2X = 0;   //menu line 2
-const uint8_t menu2Y = 9;  //menu line 2
-
+const uint8_t menu2Y = 8;  //menu line 2
 const uint8_t menu4X = 0;   //menu line 4
-const uint8_t menu4Y = 25;  //menu line 4
-
-const uint8_t menu3Y = 17;  //menu line 3
-const uint8_t menu5Y = 33;  //menu line 5
-const uint8_t menu6Y = 41;  //menu line 6
-const uint8_t menu7Y = 49;  //menu line 7
-const uint8_t menu8Y = 57;  //menu line 8
+const uint8_t menu4Y = 24;  //menu line 4
+const uint8_t menu3Y = 16;  //menu line 3
+const uint8_t menu5Y = 32;  //menu line 5
+const uint8_t menu6Y = 40;  //menu line 6
+const uint8_t menu7Y = 48;  //menu line 7
+const uint8_t menu8Y = 56;  //menu line 8
 
 //location of HH:MM for time Menus
 const uint8_t hour1X = 0;  //menu clock input
-const uint8_t hour1Y = 17; //menu clock input
+const uint8_t hour1Y = 16; //menu clock input
 const uint8_t hour2X = 6;  //menu clock input
-const uint8_t hour2Y = 17; //menu clock input
+const uint8_t hour2Y = 16; //menu clock input
 const uint8_t min1X = 18;  //menu clock input
-const uint8_t min1Y = 17;  //menu clock input
+const uint8_t min1Y = 16;  //menu clock input
 const uint8_t min2X = 24;  //menu clock input
-const uint8_t min2Y = 17;  //menu clock input
+const uint8_t min2Y = 16;  //menu clock input
 
+//////WiFi VARS//////////////////////////////////////
+String inputString1 = ""; //temp storage
+String inputString2 =""; //temp storage
+uint16_t abLine = 0;
+char alphabet[] = {'a','b','c' ,'d','e','f' ,'g','h','i',
+                   'j','k','l' ,'m','n','o' ,'p','q','r',
+                   's','t','u' ,'v','w','x' ,'y','z',' ',
+                   'A','B','C' ,'D','E','F' ,'G','H','I',
+                   'J','K','L' ,'M','N','N' ,'O','P','Q',
+                   'R','S','T' ,'U','V','W' ,'X','Y','Z',
+                   '0','1','2' ,'3','4','5' ,'6','7','8',
+                   '9','!','@' ,'#','$','%' ,'^','&','*',
+                   '(',')','-' ,'_','=','+' ,',','?','.',
+                   '<','>','\'','"','\\','/','|',':',';',
+                   '"','[',']' ,'{','}' ,'`','~',' ',' ',};
+
+// assume the display is off until configured in setup()
+bool isDisplayVisible = false;
+// declare size of working string buffers. Basic strlen("d hh:mm:ss") = 10
+const size_t MaxString = 16;
+// the string being displayed on the SSD1331 (initially empty)
+char oldTimeString[MaxString] = { 0 };
+// the interrupt service routine affects this
+volatile bool isButtonPressed = false;
+
+String PINin = "";
+volatile uint16_t hourIn = 0;
+volatile uint16_t minIn = 0;
+volatile uint16_t ampmIn = 0; //0:not set 1:AM 2:PM
+//volatile uint16_t clkMenu.setColor(OLED_Color_Green);
+
+///////////////////////RTC VAR///////////////////
 //rtc clock times
 uint8_t hourOld;
 uint8_t minOld;
@@ -95,21 +126,14 @@ const uint8_t RTCmin2Y = 12;  //menu clock input
 const uint8_t RTCampmX = 15;
 const uint8_t RTCampmY = 35;
 
-String inputString1 = ""; //temp storage
-String inputString2 =""; //temp storage
-uint16_t abLine = 0;
-char alphabet[] = {'a','b','c' ,'d','e','f' ,'g','h','i',
-                   'j','k','l' ,'m','n','o' ,'p','q','r',
-                   's','t','u' ,'v','w','x' ,'y','z',' ',
-                   'A','B','C' ,'D','E','F' ,'G','H','I',
-                   'J','K','L' ,'M','N','N' ,'O','P','Q',
-                   'R','S','T' ,'U','V','W' ,'X','Y','Z',
-                   '0','1','2' ,'3','4','5' ,'6','7','8',
-                   '9','!','@' ,'#','$','%' ,'^','&','*',
-                   '(',')','-' ,'_','=','+' ,',','?','.',
-                   '<','>','\'','"','\\','/','|',':',';',
-                   '"','[',']' ,'{','}' ,'`','~',' ',' ',};
+/////////////////ALARM VARS//////////////////////////
+//helper variable to set state of the alarm to allow loops without using a loop that will freeze the program
+uint8_t pillAlarmState = 0;
+uint8_t alarmState = 0;
+uint8_t pillAlarmTripped = 0; //for pillAlarm()
+uint8_t alarmTripped = 0; //for alarm()
 
+//////////////DECLARATIONS OF CLASSES//////////////////////////
 // declare the display
 Adafruit_SSD1331 oled = Adafruit_SSD1331(OLED_pin_cs_ss,OLED_pin_dc_rs,OLED_pin_sda_mosi,OLED_pin_scl_sck,OLED_pin_res_rst);
 //declare the menu
@@ -119,34 +143,18 @@ RTC_DS3231 rtc;
 DateTime now;
 
 uint16_t OLED_Text_Color = clkMenu.getColor();
-
-// assume the display is off until configured in setup()
-bool isDisplayVisible = false;
-// declare size of working string buffers. Basic strlen("d hh:mm:ss") = 10
-const size_t MaxString = 16;
-// the string being displayed on the SSD1331 (initially empty)
-char oldTimeString[MaxString] = { 0 };
-// the interrupt service routine affects this
-volatile bool isButtonPressed = false;
-
-String PINin = "";
-volatile uint16_t hourIn = 0;
-volatile uint16_t minIn = 0;
-volatile uint16_t ampmIn = 0; //0:not set 1:AM 2:PM
-//volatile uint16_t clkMenu.setColor(OLED_Color_Green);
+//END GLOBAL VARIABLES ///////////////////////////////////////////
 
 // interrupt service routine
 void senseButtonPressed() {
     if (!isButtonPressed) {isButtonPressed = true;}
 }
 
-//END GLOBALS
-
 void setup()
 {
 //rtcTime
 rtc.begin();
-rtc.adjust(DateTime(F(__DATE__),F( __TIME__)));
+rtc.adjust(DateTime((__DATE__),( __TIME__)));
 // settling time for the rtc
 delay(750);
 //oled.fillScreen(OLED_Backround_Color);
@@ -182,11 +190,16 @@ keypadMenu();
 //RTC CLOCK TIME
 rtcTime(0);
 
-//CALL THE PILL ALARM FUNCTION
-//  if(Pill_Alarm_Trigger_Time || pillAlarmTripped == 1){pillAlarmTripped = pillAlarm(); }
 
-//call the alarm function here
-//  if(Alarm_Trigger_Time || alarmTripped == 1 || Snooze_Alarm_Trigger_Time){alarmTripped = alarm(); }
+//CALL THE PILL ALARM FUNCTION
+// check if the trigger time for the pill alarm is the current time
+if( (clkMenu.getPillHH() == now.hour() && clkMenu.getPillMM() == now.minute()) || (pillAlarmTripped) ) {pillAlarmTripped = pillAlarm();}
+
+//CALL THE ALARM FUNCTION
+// check if the trigger time for the pill alarm is the current time
+if( (clkMenu.getAlarmHH() == now.hour() && clkMenu.getAlarmMM() == now.minute()) || (alarmTripped) || 
+    (clkMenu.snoozeAlarmHH == now.hour() && clkMenu.snoozeAlarmMM == now.minute()) ) {alarmTripped = alarm();}
+
 
 // no need to be in too much of a hurry, shorten if too much latency
 //delay(100);
