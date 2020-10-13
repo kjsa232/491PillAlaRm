@@ -8,7 +8,8 @@ class Menu
 public:
   // Default Constructor
   Menu();
-
+  // Load Constructor
+  Menu(uint8_t in);
 
   // functions
 
@@ -61,7 +62,8 @@ public:
 private:
   // data
   uint8_t count;
-  uint8_t menuLevel; // 0:main, 1:SUB MENU , 10:Time, 20:Pill Alarm, 30:Alarm, 40:Child Safety, 50:PIN, 60:WiFi, 70:Colors
+  uint8_t menuLevel; // 0:main, 1:SUB MENU , 10:Time, 20:Pill Alarm, 30:Alarm, 40:Child Safety, 50:PIN, 60:WiFi,70:Pills Replaced, 
+                      // 80:settings 81:Colors 82: Time Format
                       // 24 hour time menu    15:Time, 25:Pill Alarm, 35:Alarm
   bool clkON; //when true display time, when false disable to allow for menus
   uint16_t menuColor;

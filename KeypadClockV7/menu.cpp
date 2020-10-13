@@ -5,8 +5,11 @@
 #include <SPI.h>
 #include <Keypad.h>
 #include "Arduino.h"
+#include <EEPROM.h> // This will allow saving valies for loss of power
 
 #include "menu.h"
+
+#define EEADDR 166 // Start location to write EEPROM data.
 
 //constructor
 Menu::Menu()
@@ -18,8 +21,31 @@ Menu::Menu()
   wifiSSID = "";
   wifiPASS = "";
   PIN = "147";
-  timeFormat = 12;
+  timeFormat = 24;
 
+  isDisplayVisible = false;
+}
+Menu::Menu(uint8_t in)
+{
+  //Read EEPROM
+  int EEAddr = EEADDR;
+  EEPROM.get(EEAddr, menuColor); EEAddr += sizeof(menuColor);       //EEAddr = 166
+  EEPROM.get(EEAddr, timeFormat); EEAddr += sizeof(timeFormat);     //EEAddr = 168
+  EEPROM.get(EEAddr, childSafety); EEAddr += sizeof(childSafety);   //EEAddr = 169
+  EEPROM.get(EEAddr, alarmHH); EEAddr += sizeof(alarmHH);           //EEAddr = 170
+  EEPROM.get(EEAddr, alarmMM); EEAddr += sizeof(alarmMM);           //EEAddr = 171
+  EEPROM.get(EEAddr, pillHH); EEAddr += sizeof(pillHH);             //EEAddr = 172
+  EEPROM.get(EEAddr, pillMM); EEAddr += sizeof(pillMM);             //EEAddr = 173
+  EEPROM.get(EEAddr, pillCounter); EEAddr += sizeof(pillCounter);   //EEAddr = 174
+  EEPROM.get(EEAddr, PIN); EEAddr += sizeof(PIN);                   //EEAddr = 175 // max size is 20, larger than needed to be safe.
+  EEPROM.get(EEAddr, wifiSSID); EEAddr += sizeof(wifiSSID);         //EEAddr = 195 
+  EEPROM.get(EEAddr, wifiPASS); EEAddr += sizeof(wifiPASS);         //EEAddr = 195  + sizeof(wifiSSID)
+
+  snoozeAlarmHH = in;
+  snoozeAlarmMM = 60 + in; 
+  menuLevel = 0;
+  count = 0;
+  clkON = true;
   isDisplayVisible = false;
 }
 
