@@ -11,7 +11,7 @@ void keypadMenu()
     case 0:
           if (customKey == '1'){ OLED_Text_Color = OLED_Color_White; }
           else if (customKey == '2'){ OLED_Text_Color = OLED_Color_Green; }
-          else if (customKey == '3'){ OLED_Text_Color = OLED_Color_Blue; oled.fillCircle(oled.width()/2, oled.height()/2, 10, OLED_Color_Green);      }
+          else if (customKey == '3'){ oled.setCursor(menu1X, menu7Y); oled.setTextSize(1);oled.print(sizeof(clkMenu.getColor() ));      }
           else if (customKey == '4')
           {
             OLED_Text_Color = OLED_Color_Cyan;
@@ -1400,24 +1400,25 @@ void keypadMenu()
           {
             if (clkMenu.getLevel() == 40)
             {
-              clkMenu.setCount(2);
-
-              //clear screen
-              oled.setTextColor(OLED_Backround_Color);
-              oled.setCursor(menu2X, menu2Y);
-              oled.print("Enter your PIN\nfollowed by *\n"); oled.print(PINin);
-
-              //print next menu
-              oled.setTextColor(clkMenu.getColor());
-              oled.setCursor(menu2X, menu2Y);
-              oled.print("Child Safety is\ncurrently:");
-              if (clkMenu.getChildSafety()) {
-                oled.print("ON\n1:Keep ON\n2:Turn OFF");
-              }
-              else {
-                oled.print("OFF\n1:Turn ON\n2:Keep OFF");
-              }
-              PINin = "";
+                clkMenu.setCount(2);
+  
+                //clear screen
+                oled.setTextColor(OLED_Backround_Color);
+                oled.setCursor(menu2X, menu2Y);
+                oled.print("Enter your PIN\nfollowed by *\n"); oled.print(PINin);
+  
+                //print next menu
+                oled.setTextColor(clkMenu.getColor());
+                oled.setCursor(menu2X, menu2Y);
+                oled.print("Child Safety is\ncurrently:");
+                if (clkMenu.getChildSafety()) {
+                  oled.print("ON\n1:Keep ON\n2:Turn OFF");
+                }
+                else {
+                  oled.print("OFF\n1:Turn ON\n2:Keep OFF");
+                }
+                PINin = "";
+                
             }//goes to child safety submenu
 
             else
@@ -1455,7 +1456,7 @@ void keypadMenu()
             //clear screan
             oled.setTextColor(OLED_Backround_Color);
             oled.setCursor(menu1Xtab, menu1Y);
-            oled.print("Change Pin\nEnter a new PIN\nfollowed by a *\n"); oled.print(PINin);
+            oled.print("Change PIN\nEnter a new PIN\nfollowed by *\n"); oled.print(PINin);
             clkMenu.setLevel(0); rtcTime(1); clkMenu.setClkON(true);
           } //Finished inputing new PIN
 
@@ -1469,20 +1470,37 @@ void keypadMenu()
           //clears screen
           oled.setTextColor(OLED_Backround_Color);
           oled.setCursor(menu1Xtab, menu1Y);
-          if (clkMenu.getLevel() == 40) {
+          if (clkMenu.getLevel() == 40) 
+          {
+            if(clkMenu.getCount() < 2)
+            {
             oled.print("Child Safety\nEnter your PIN\nfollowed by *\n");
             oled.print(PINin);
+            PINin = "";
+            }
+            else if (clkMenu.getCount() == 2 )
+            {
+            //clear screan, exit menu
+            oled.setTextColor(OLED_Backround_Color);
+            oled.setCursor(menu1Xtab, menu1Y);
+            oled.print("Child Safety\nChild Safety is\ncurrently:");
+            if (clkMenu.getChildSafety()) {oled.print("ON\n1:Keep ON\n2:Turn OFF");}
+            else {oled.print("OFF\n1:Turn ON\n2:Keep OFF");}
+            //clkMenu.setLevel(0); rtcTime(1); clkMenu.setClkON(true);
+            }
           }
-          else if (clkMenu.getLevel() == 50) {
+          else if (clkMenu.getLevel() == 50) 
+          {
             oled.print("Change PIN\nEnter your PIN\nfollowed by *\n");
             oled.print(PINin);
+            oled.setCursor(menu2X, menu2Y);
+            oled.print("Enter a new PIN");
           }
           //prev menu
           oled.setTextColor(clkMenu.getColor());
           oled.setCursor(menu1X, menu1Y);
           oled.setTextSize(1);
           oled.print("1:Time\n2:Pill Alarm\n3:Alarm\n4:Child Safety\n5:Change PIN\n6:WiFi\n7:Pills Replaced\n8:Settings");
-
           clkMenu.setLevel(1); customKey = 'z';
           break;//case '#'
         default:
@@ -1841,12 +1859,66 @@ void keypadMenu()
       // Open the color menu
       switch (customKey)
       {
-        case '1': clkMenu.setColor(OLED_Color_Blue);    break;
-        case '2': clkMenu.setColor(OLED_Color_Cyan);    break;
-        case '3': clkMenu.setColor(OLED_Color_Green);   break;
-        case '4': clkMenu.setColor(OLED_Color_Yellow);  break;
-        case '5': clkMenu.setColor(OLED_Color_Magenta); break;
-        case '6': clkMenu.setColor(OLED_Color_White);   break;
+        case '1': clkMenu.setColor(OLED_Color_Blue);    
+        oled.setTextColor(OLED_Backround_Color);
+        oled.setCursor(menu1Xtab, menu1Y);
+        oled.print("Colors\nPick Font Color\n1:Blue\n2:Cyan\n3:Green\n4:Yellow\n5:Magenta\n6:White");
+        //Exit to Clock
+        clkMenu.setLevel(0); rtcTime(1);
+        clkMenu.setClkON(true);
+        customKey = 'z'; //This prevents the 1st input for the sub menu from being a 1   
+        break;
+        
+        case '2': clkMenu.setColor(OLED_Color_Cyan);    
+        oled.setTextColor(OLED_Backround_Color);
+        oled.setCursor(menu1Xtab, menu1Y);
+        oled.print("Colors\nPick Font Color\n1:Blue\n2:Cyan\n3:Green\n4:Yellow\n5:Magenta\n6:White");
+        //Exit to Clock
+        clkMenu.setLevel(0); rtcTime(1);
+        clkMenu.setClkON(true);
+        customKey = 'z'; //This prevents the 1st input for the sub menu from being a 1 
+        break;
+        
+        case '3': clkMenu.setColor(OLED_Color_Green);   
+        oled.setTextColor(OLED_Backround_Color);
+        oled.setCursor(menu1Xtab, menu1Y);
+        oled.print("Colors\nPick Font Color\n1:Blue\n2:Cyan\n3:Green\n4:Yellow\n5:Magenta\n6:White");
+        //Exit to Clock
+        clkMenu.setLevel(0); rtcTime(1);
+        clkMenu.setClkON(true);
+        customKey = 'z'; //This prevents the 1st input for the sub menu from being a 1 
+        break;
+        
+        case '4': clkMenu.setColor(OLED_Color_Yellow);  
+        oled.setTextColor(OLED_Backround_Color);
+        oled.setCursor(menu1Xtab, menu1Y);
+        oled.print("Colors\nPick Font Color\n1:Blue\n2:Cyan\n3:Green\n4:Yellow\n5:Magenta\n6:White");
+        //Exit to Clock
+        clkMenu.setLevel(0); rtcTime(1);
+        clkMenu.setClkON(true);
+        customKey = 'z'; //This prevents the 1st input for the sub menu from being a 1 
+        break;
+        
+        case '5': clkMenu.setColor(OLED_Color_Magenta); 
+        oled.setTextColor(OLED_Backround_Color);
+        oled.setCursor(menu1Xtab, menu1Y);
+        oled.print("Colors\nPick Font Color\n1:Blue\n2:Cyan\n3:Green\n4:Yellow\n5:Magenta\n6:White");
+        //Exit to Clock
+        clkMenu.setLevel(0); rtcTime(1);
+        clkMenu.setClkON(true);
+        customKey = 'z'; //This prevents the 1st input for the sub menu from being a 1 
+        break;
+        
+        case '6': clkMenu.setColor(OLED_Color_White);   
+        oled.setTextColor(OLED_Backround_Color);
+        oled.setCursor(menu1Xtab, menu1Y);
+        oled.print("Colors\nPick Font Color\n1:Blue\n2:Cyan\n3:Green\n4:Yellow\n5:Magenta\n6:White");
+        //Exit to Clock
+        clkMenu.setLevel(0); rtcTime(1);
+        clkMenu.setClkON(true);
+        customKey = 'z'; //This prevents the 1st input for the sub menu from being a 1 
+        break;
+        
         case '#':
           OLED_Text_Color = clkMenu.getColor();
           //clears screen
@@ -1856,7 +1928,7 @@ void keypadMenu()
           //prev menu
           oled.setTextColor(clkMenu.getColor());
           oled.setCursor(menu1Xtab, menu1Y);
-          oled.setTextSize(1);
+          //oled.setTextSize(1);
           oled.print("Settings\n1:Colors\n2:Time Format");
 
           clkMenu.setLevel(80); customKey = 'z';
