@@ -32,9 +32,8 @@ public:
   void setColor(uint16_t newColor);
   uint16_t getColor();
 
-  void setSSID(String input);
-  String getSSID();
-  void setPASS(String input);
+  void setWiFi(String SSIDin, String PASSin);
+  String getSSID(); //convert to char* with : ssid = SSID.c_str();
   String getPASS();
 
   void setTimeFormat(uint8_t newFormat);

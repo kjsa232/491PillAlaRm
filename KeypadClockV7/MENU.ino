@@ -1725,8 +1725,7 @@ void keypadMenu()
           else if (clkMenu.getCount() == 2)
           {
             //save the values
-            clkMenu.setSSID(inputString1);
-            clkMenu.setPASS(inputString2);
+            clkMenu.setWiFi(inputString1, inputString2);
             //clear the screen
             oled.setTextColor(OLED_Backround_Color);
             oled.setCursor(menu1Xtab, menu1Y);
