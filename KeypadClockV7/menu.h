@@ -8,11 +8,9 @@ class Menu
 public:
   // Default Constructor
   Menu();
-  // Load Constructor
-  Menu(uint8_t in);
-
   // functions
-
+  
+  void load();
 
   void setLevel(uint8_t newLevel);
   uint8_t getLevel();

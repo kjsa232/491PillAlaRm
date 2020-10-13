@@ -25,7 +25,7 @@ Menu::Menu()
 
   isDisplayVisible = false;
 }
-Menu::Menu(uint8_t in)
+void Menu::load()
 {
   //Read EEPROM
   int EEAddr = EEADDR;
