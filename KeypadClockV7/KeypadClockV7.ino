@@ -155,7 +155,7 @@ void setup()
 {
 //rtcTime
 rtc.begin();
-rtc.adjust(DateTime((__DATE__),( __TIME__)));
+//rtc.adjust(DateTime((__DATE__),( __TIME__)));
 // settling time for the rtc
 delay(750);
 //oled.fillScreen(OLED_Backround_Color);
@@ -178,8 +178,11 @@ RTC_DS3231 rtc;
 DateTime now = rtc.now();
 hourOld = now.hour();
 minOld = now.minute();
+
+//load variables into clkMenu, Alarms, Pill counter, PIN, WiFi, Time Format, Menu Color, Child Safety
+clkMenu.load();
+oled.fillScreen(OLED_Backround_Color);
 rtcTime(1);
-//delay(250);
 }
 
 

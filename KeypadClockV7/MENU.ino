@@ -252,12 +252,12 @@ void keypadMenu()
         {
           //This will set the time
           if(ampmIn == 2){
-                          if(hourIn != 12){rtc.adjust(DateTime(now.year(), now.month(), now.day(), hourIn + 12, minIn, now.second()));}
-                          else            {rtc.adjust(DateTime(now.year(), now.month(), now.day(), 12         , minIn, now.second()));}
+                          if(hourIn != 12){rtc.adjust(DateTime(now.year(), now.month(), now.day(), hourIn + 12, minIn, 0));}
+                          else            {rtc.adjust(DateTime(now.year(), now.month(), now.day(), 12         , minIn, 0));}
                           }
           else           {
-                          if(hourIn != 12){rtc.adjust(DateTime(now.year(), now.month(), now.day(), hourIn, minIn, now.second()));}
-                          else            {rtc.adjust(DateTime(now.year(), now.month(), now.day(), 0     , minIn, now.second()));}
+                          if(hourIn != 12){rtc.adjust(DateTime(now.year(), now.month(), now.day(), hourIn, minIn, 0));}
+                          else            {rtc.adjust(DateTime(now.year(), now.month(), now.day(), 0     , minIn, 0));}
                          }
         }
         //IF PILL ALARM
@@ -749,7 +749,7 @@ void keypadMenu()
         if (clkMenu.getLevel() == 15)
         {
           //This will set the time
-          rtc.adjust(DateTime(now.year(), now.month(), now.day(), hourIn, minIn, now.second()));          
+          rtc.adjust(DateTime(now.year(), now.month(), now.day(), hourIn, minIn, 0));          
         }
         //IF PILL ALARM
         else if (clkMenu.getLevel() == 25)

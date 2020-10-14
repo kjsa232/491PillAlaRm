@@ -102,11 +102,11 @@
         else if((hourOld > 9) && (hourOld < 12))  {oled.setCursor(RTChour2X,RTChour2Y);oled.print((now.hour() - 10));}
         else /* hourOld == 22 or 23 */            {oled.setCursor(RTChour2X,RTChour2Y);oled.print((now.hour() - 22));}
 
-        //ADD the AM/PM indicator
+        //ADD the AM/PM indicator Prints the M, just to make sure it is there, it was missing in a run through
         //Add AM if hourOld == 0
-        if(hourOld == 0) {oled.setTextSize(2);oled.setCursor(RTCampmX,RTCampmY);oled.print('A');oled.setTextSize(3);}
+        if(hourOld == 0) {oled.setTextSize(2);oled.setCursor(RTCampmX,RTCampmY);oled.print("AM");oled.setTextSize(3);}
         //Add PM if hourOld == 12
-        if(hourOld == 12){oled.setTextSize(2);oled.setCursor(RTCampmX,RTCampmY);oled.print('P');oled.setTextSize(3);}
+        if(hourOld == 12){oled.setTextSize(2);oled.setCursor(RTCampmX,RTCampmY);oled.print("PM");oled.setTextSize(3);}
 
        }//end 12 hour
 
