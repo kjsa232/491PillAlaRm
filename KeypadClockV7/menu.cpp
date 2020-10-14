@@ -30,9 +30,11 @@ void Menu::eepromUpdateString(char address, String DATA)
 {
   uint16_t _size = DATA.length();
   uint16_t i;
+  char currChar;
   for(i=0; i < _size; i++)
   {
-    EEPROM.write(address + i, DATA[i]);
+    currChar = EEPROM.read(address + 1);
+    if(currChar != DATA[i]){EEPROM.write(address + i, DATA[i]);}
   }
   EEPROM.write(address + _size, '\0');   //Add termination null character for String Data
   //EEPROM.commit();

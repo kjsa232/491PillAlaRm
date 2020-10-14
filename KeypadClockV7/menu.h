@@ -59,7 +59,7 @@ public:
 
 private:
   // helper functions
-  void eepromUpdateString(char address, String data);
+  void eepromUpdateString(char address, String DATA);
   String eepromReadString(char address);
   
   // data
