@@ -11,7 +11,8 @@ void keypadMenu()
     case 0:
           if (customKey == '1'){ OLED_Text_Color = OLED_Color_White; }
           else if (customKey == '2'){ OLED_Text_Color = OLED_Color_Green; }
-          else if (customKey == '3'){ oled.setCursor(menu1X, menu7Y); oled.setTextSize(1);oled.print(sizeof(clkMenu.getColor() ));      }
+          else if (customKey == '3'){ oled.setCursor(menu1X, menu7Y); oled.setTextSize(1);
+          oled.print(clkMenu.getPIN().c_str()); oled.print(clkMenu.getSSID().c_str()); oled.print(clkMenu.getPASS().c_str());    }
           else if (customKey == '4')
           {
             OLED_Text_Color = OLED_Color_Cyan;
@@ -46,6 +47,7 @@ void keypadMenu()
                             OLED_Color_Red    // Color of the Line
                             );
           }
+          else if (customKey == '9'){clkMenu.load();}
           else if (customKey == '*')  //Menu
       {
         clkMenu.setClkON(false);

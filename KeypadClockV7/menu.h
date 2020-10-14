@@ -52,11 +52,16 @@ public:
   void incPillAlarm();
   void resetPillCounter();
 
+
 //Variables
   uint8_t snoozeAlarmHH;
   uint8_t snoozeAlarmMM;
 
 private:
+  // helper functions
+  void eepromUpdateString(char address, String data);
+  String eepromReadString(char address);
+  
   // data
   uint8_t count;
   uint8_t menuLevel; // 0:main, 1:SUB MENU , 10:Time, 20:Pill Alarm, 30:Alarm, 40:Child Safety, 50:PIN, 60:WiFi,70:Pills Replaced, 

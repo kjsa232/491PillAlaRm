@@ -5,6 +5,7 @@
 #include <Adafruit_SSD1331.h>
 #include <SPI.h>
 #include <Keypad.h>
+#include <EEPROM.h>
 #include "menu.h" //contains Menu::
 //RTC CLOCK
 #include "RTClib.h"
