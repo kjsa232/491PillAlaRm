@@ -1,3 +1,6 @@
+#include <Firebase_Arduino_WiFiNINA_HTTPClient.h>
+#include <Firebase_Arduino_WiFiNINA.h>
+
 //KeypadClockV7.ino
 
 #include <Arduino.h>
@@ -11,6 +14,12 @@
 #include "RTClib.h"
 #include <Wire.h>
 #include "ds3231.h"
+//#include "Firebase_Arduino_WiFiNINA.h"
+
+//Firebase defines
+#define FIREBASE_HOST "pill-alarm-be539.firebaseio.com"
+#define FIREBASE_AUTH "UaIlUqx6ZnV0xkLNyIkSeOD6dHDD3Xm3KoKM2r0O"
+
 
 //CALL THE ANALOG PINS AS DIGITAL: call them [Pin 14 .. Pin 19]
 
@@ -143,6 +152,9 @@ Menu clkMenu;
 RTC_DS3231 rtc;
 DateTime now;
 
+//Define Firebase data object
+FirebaseData firebaseData;
+
 uint16_t OLED_Text_Color = clkMenu.getColor();
 //END GLOBAL VARIABLES ///////////////////////////////////////////
 
@@ -194,6 +206,22 @@ keypadMenu();
 //RTC CLOCK TIME
 rtcTime(0);
 
+  String WIFI_SSID = clkMenu.getSSID();
+  const char* w_SSID = WIFI_SSID.c_str();
+  String WIFI_PASSWORD = clkMenu.getPASS(); 
+  const char* PASSWORD = WIFI_PASSWORD.c_str();
+// Serial.print("Connecting to Wi-Fi");
+  int status = WL_IDLE_STATUS;
+  while (status != WL_CONNECTED)
+  {
+    status = WiFi.begin(w_SSID, PASSWORD);
+    Serial.print(".");
+    delay(300);
+  }
+
+  while (status == WL_CONNECTED) {
+    //put in wifi signal picture
+  }
 
 //CALL THE PILL ALARM FUNCTION
 // check if the trigger time for the pill alarm is the current time
