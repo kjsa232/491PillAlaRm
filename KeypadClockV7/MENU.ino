@@ -40,12 +40,21 @@ void keypadMenu()
           }
           else if (customKey == '6')
           {
-            OLED_Text_Color = OLED_Color_Red;
-            oled.drawCircle(oled.width()/4,   // X-Axis of the center
-                            oled.height()/2,  // Y-Axis of the center
-                            5,                // Radius of the circle
-                            OLED_Color_Red    // Color of the Line
-                            );
+            //Wifi Connected
+            //outline
+            oled.drawLine(77,3,82,8,OLED_Color_White); // x1 y1 x2 y2 color
+            oled.drawLine(83,7,87,3,OLED_Color_White); // x1 y1 x2 y2 color
+            oled.drawPixel(86,2,OLED_Color_White);
+            oled.drawPixel(86,2,OLED_Color_White);
+            oled.drawPixel(85,1,OLED_Color_White);
+            oled.drawPixel(84,1,OLED_Color_White);
+            oled.drawLine(83,0,81,0,OLED_Color_White); // x1 y1 x2 y2 color
+            oled.drawPixel(80,1,OLED_Color_White);
+            oled.drawPixel(79,1,OLED_Color_White);
+            oled.drawPixel(78,2,OLED_Color_White);
+            //fill connected
+//            oled.fillTriangle() //
+
           }
           else if (customKey == '9'){clkMenu.load();}
           else if (customKey == '*')  //Menu
