@@ -26,33 +26,31 @@ Menu::Menu()
 }
 
 //PRIVATE, HELPER FUNCTIONS
-void Menu::eepromUpdateString(char address, String DATA)
+//eeprom update and read String are based heavily on code found here: https://circuits4you.com/2018/10/16/arduino-reading-and-writing-string-to-eeprom/
+//originaly update was just write, but changed due to limited number of writes to EEPROM.
+void Menu::eepromUpdateString(uint8_t address, String DATA)
 {
-  uint16_t _size = DATA.length();
-  uint16_t i;
+  uint8_t sizeDATA = DATA.length();
   char currChar;
-  for(i=0; i < _size; i++)
-  {
+  for(uint8_t i = 0; i < sizeDATA; i++)
+    {
     currChar = EEPROM.read(address + 1);
     if(currChar != DATA[i]){EEPROM.write(address + i, DATA[i]);}
-  }
-  EEPROM.write(address + _size, '\0');   //Add termination null character for String Data
-  //EEPROM.commit();
-  
+    }
+  EEPROM.write(address + sizeDATA, '\0');   //Add termination null character for String  
 }
-String Menu::eepromReadString(char address)
+String Menu::eepromReadString(uint8_t address)
 { 
-  uint16_t i;
+  uint8_t i;
+  uint8_t len = 0;
   char data[80]; //Max 80 Bytes
-  uint16_t len = 0;
-  unsigned char currChar;
-  currChar = EEPROM.read(address);
-  while(currChar != '\0' && len < 500)   //Read until null character
-  {    
+  char currChar = EEPROM.read(address);
+  while(currChar != '\0' && len < 80)   //Read until null character or max length
+    {    
     currChar = EEPROM.read(address + len);
     data[len] = currChar;
     len++;
-  }
+    }
   data[len] = '\0';
   return String(data);
   
@@ -71,11 +69,8 @@ void Menu::load()
   EEPROM.get(6, pillHH);                     //EEAddr = 6
   EEPROM.get(7, pillMM);                     //EEAddr = 7
   EEPROM.get(8, pillCounter);                //EEAddr = 8
-//EEPROM.get(9, PIN);                        //EEAddr = 9 // max size is 20, larger than needed to be safe.
   PIN = eepromReadString(9);
-//EEPROM.get(29, wifiSSID);                  //EEAddr = 29 
   wifiSSID = eepromReadString(29);
-//EEPROM.get(29+sizeof(wifiSSID), wifiPASS); //EEAddr = 29  + sizeof(wifiSSID)
   wifiPASS = eepromReadString(29+sizeof(wifiPASS));
   
   snoozeAlarmHH = alarmHH;

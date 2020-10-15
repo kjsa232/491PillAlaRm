@@ -59,8 +59,8 @@ public:
 
 private:
   // helper functions
-  void eepromUpdateString(char address, String DATA);
-  String eepromReadString(char address);
+  void eepromUpdateString(uint8_t address, String DATA);
+  String eepromReadString(uint8_t address);
   
   // data
   uint8_t count;
