@@ -29,8 +29,8 @@ void keypadMenu()
             //OLED_Text_Color = OLED_Color_White;
                        // X←,Y↑,↔,↨, Color
             oled.drawRect(89, 1, 7, 9, OLED_Color_White);   //Outline
-            oled.drawPixel(89, 1, OLED_Color_Black);
-            oled.drawPixel(95, 1, OLED_Color_Black);
+            oled.drawPixel(89, 1, OLED_Backround_Color);
+            oled.drawPixel(95, 1, OLED_Backround_Color);
                         // X←,Y↑,↔,↨, Color
              oled.fillRect(90, 2, 5, 7, OLED_Color_Green); //Green Fill
                        // X, Y, Color
@@ -53,10 +53,30 @@ void keypadMenu()
             oled.drawPixel(79,1,OLED_Color_White);
             oled.drawPixel(78,2,OLED_Color_White);
             //fill connected
-//            oled.fillTriangle() //
-
+            oled.fillTriangle(78,3,82,7,86,3, clkMenu.getColor()  ); //x0 y0 x1 y1 x2 y2 color
+            oled.drawLine(79,2,85,2, clkMenu.getColor() );
+            oled.drawLine(81,1,83,1, clkMenu.getColor() );
           }
-          else if (customKey == '9'){clkMenu.load();}
+          else if (customKey == '7')
+          {
+            //Wifi Disconnected
+            //outline
+            oled.drawLine(77,3,82,8,OLED_Color_White); // x1 y1 x2 y2 color
+            oled.drawLine(83,7,87,3,OLED_Color_White); // x1 y1 x2 y2 color
+            oled.drawPixel(86,2,OLED_Color_White);
+            oled.drawPixel(86,2,OLED_Color_White);
+            oled.drawPixel(85,1,OLED_Color_White);
+            oled.drawPixel(84,1,OLED_Color_White);
+            oled.drawLine(83,0,81,0,OLED_Color_White); // x1 y1 x2 y2 color
+            oled.drawPixel(80,1,OLED_Color_White);
+            oled.drawPixel(79,1,OLED_Color_White);
+            oled.drawPixel(78,2,OLED_Color_White);
+            //fill connected
+            oled.fillTriangle(78,3,82,7,86,3, OLED_Backround_Color  ); //x0 y0 x1 y1 x2 y2 color
+            oled.drawLine(79,2,85,2, OLED_Backround_Color );
+            oled.drawLine(81,1,83,1, OLED_Backround_Color );
+          }
+          else if (customKey == '9'){OLED_Color_Black;}
           else if (customKey == '*')  //Menu
       {
         clkMenu.setClkON(false);
@@ -68,7 +88,7 @@ void keypadMenu()
         oled.setTextColor(clkMenu.getColor());
         oled.setCursor(menu1X, menu1Y);
         oled.setTextSize(1);
-        oled.print("1:Time\n2:Pill Alarm\n3:Alarm\n4:Child Safety\n5:Change PIN\n6:WiFi\n7:Pills Replaced\n8:Settings");
+        oled.print(menu1Text);
         clkMenu.setLevel(1);
         customKey = 'z'; //This prevents the 1st input for the sub menu from being a 1
       }
@@ -90,7 +110,7 @@ void keypadMenu()
           //clear screen text
           oled.setTextColor(OLED_Backround_Color);
           oled.setCursor(menu1X, menu1Y);
-          oled.print("1:Time\n2:Pill Alarm\n3:Alarm\n4:Child Safety\n5:Change PIN\n6:WiFi\n7:Pills Replaced\n8:Settings");
+          oled.print(menu1Text);
 
           oled.setTextColor(clkMenu.getColor());
           oled.setCursor(menu1Xtab, menu1Y);
@@ -109,7 +129,7 @@ void keypadMenu()
           //clear screen text
           oled.setTextColor(OLED_Backround_Color);
           oled.setCursor(menu1X, menu1Y);
-          oled.print("1:Time\n2:Pill Alarm\n3:Alarm\n4:Child Safety\n5:Change PIN\n6:WiFi\n7:Pills Replaced\n8:Settings");
+          oled.print(menu1Text);
 
           oled.setTextColor(clkMenu.getColor());
           oled.setCursor(menu1Xtab, menu1Y);
@@ -128,7 +148,7 @@ void keypadMenu()
           //clear screen text
           oled.setTextColor(OLED_Backround_Color);
           oled.setCursor(menu1X, menu1Y);
-          oled.print("1:Time\n2:Pill Alarm\n3:Alarm\n4:Child Safety\n5:Change PIN\n6:WiFi\n7:Pills Replaced\n8:Settings");
+          oled.print(menu1Text);
 
           oled.setTextColor(clkMenu.getColor());
           oled.setCursor(menu1Xtab, menu1Y);
@@ -147,7 +167,7 @@ void keypadMenu()
           //clear screen text
           oled.setTextColor(OLED_Backround_Color);
           oled.setCursor(menu1X, menu1Y);
-          oled.print("1:Time\n2:Pill Alarm\n3:Alarm\n4:Child Safety\n5:Change PIN\n6:WiFi\n7:Pills Replaced\n8:Settings");
+          oled.print(menu1Text);
 
           oled.setTextColor(clkMenu.getColor());
           oled.setCursor(menu1Xtab, menu1Y);
@@ -162,7 +182,7 @@ void keypadMenu()
           //clear screen text
           oled.setTextColor(OLED_Backround_Color);
           oled.setCursor(menu1X, menu1Y);
-          oled.print("1:Time\n2:Pill Alarm\n3:Alarm\n4:Child Safety\n5:Change PIN\n6:WiFi\n7:Pills Replaced\n8:Settings");
+          oled.print(menu1Text);
 
           oled.setTextColor(clkMenu.getColor());
           oled.setCursor(menu1Xtab, menu1Y);
@@ -177,7 +197,7 @@ void keypadMenu()
           //clear screen text
           oled.setTextColor(OLED_Backround_Color);
           oled.setCursor(menu1X, menu1Y);
-          oled.print("1:Time\n2:Pill Alarm\n3:Alarm\n4:Child Safety\n5:Change PIN\n6:WiFi\n7:Pills Replaced\n8:Settings");
+          oled.print(menu1Text);
 
           oled.setTextColor(clkMenu.getColor());
           oled.setCursor(menu1Xtab, menu1Y);
@@ -199,7 +219,7 @@ void keypadMenu()
           //clear screen text
           oled.setTextColor(OLED_Backround_Color);
           oled.setCursor(menu1X, menu1Y);
-          oled.print("1:Time\n2:Pill Alarm\n3:Alarm\n4:Child Safety\n5:Change PIN\n6:WiFi\n7:Pills Replaced\n8:Settings");
+          oled.print(menu1Text);
 
           oled.setTextColor(clkMenu.getColor());
           oled.setCursor(menu1Xtab, menu1Y);
@@ -213,7 +233,7 @@ void keypadMenu()
           //clear screen text
           oled.setTextColor(OLED_Backround_Color);
           oled.setCursor(menu1X, menu1Y);
-          oled.print("1:Time\n2:Pill Alarm\n3:Alarm\n4:Child Safety\n5:Change PIN\n6:WiFi\n7:Pills Replaced\n8:Settings");
+          oled.print(menu1Text);
 
           oled.setTextColor(clkMenu.getColor());
           oled.setCursor(menu1Xtab, menu1Y);
@@ -227,7 +247,7 @@ void keypadMenu()
           //clear screen text
           oled.setTextColor(OLED_Backround_Color);
           oled.setCursor(menu1X, menu1Y);
-          oled.print("1:Time\n2:Pill Alarm\n3:Alarm\n4:Child Safety\n5:Change PIN\n6:WiFi\n7:Pills Replaced\n8:Settings");
+          oled.print(menu1Text);
 
           clkMenu.setLevel(0); rtcTime(1);
           clkMenu.setClkON(true);
@@ -733,7 +753,7 @@ void keypadMenu()
           oled.setTextColor(clkMenu.getColor());
           oled.setCursor(menu1X, menu1Y);
           oled.setTextSize(1);
-          oled.print("1:Time\n2:Pill Alarm\n3:Alarm\n4:Child Safety\n5:Change PIN\n6:WiFi\n7:Pills Replaced\n8:Settings");
+          oled.print(menu1Text);
 
           clkMenu.setLevel(1); customKey = 'z';
           break;// case '#'
@@ -1221,7 +1241,7 @@ void keypadMenu()
           oled.setTextColor(clkMenu.getColor());
           oled.setCursor(menu1X, menu1Y);
           oled.setTextSize(1);
-          oled.print("1:Time\n2:Pill Alarm\n3:Alarm\n4:Child Safety\n5:Change PIN\n6:WiFi\n7:Pills Replaced\n8:Settings");
+          oled.print(menu1Text);
 
           clkMenu.setLevel(1); customKey = 'z';
           break;// case '#'
@@ -1511,7 +1531,7 @@ void keypadMenu()
           oled.setTextColor(clkMenu.getColor());
           oled.setCursor(menu1X, menu1Y);
           oled.setTextSize(1);
-          oled.print("1:Time\n2:Pill Alarm\n3:Alarm\n4:Child Safety\n5:Change PIN\n6:WiFi\n7:Pills Replaced\n8:Settings");
+          oled.print(menu1Text);
           clkMenu.setLevel(1); customKey = 'z';
           break;//case '#'
         default:
@@ -1794,7 +1814,7 @@ void keypadMenu()
         oled.setTextColor(clkMenu.getColor());
         oled.setCursor(menu1X, menu1Y);
         oled.setTextSize(1);
-        oled.print("1:Time\n2:Pill Alarm\n3:Alarm\n4:Child Safety\n5:Change PIN\n6:WiFi\n7:Pills Replaced\n8:Settings");
+        oled.print(menu1Text);
 
         clkMenu.setLevel(1); customKey = 'z';
       }
@@ -1855,7 +1875,7 @@ void keypadMenu()
         oled.setTextColor(clkMenu.getColor());
         oled.setCursor(menu1X, menu1Y);
         oled.setTextSize(1);
-        oled.print("1:Time\n2:Pill Alarm\n3:Alarm\n4:Child Safety\n5:Change PIN\n6:WiFi\n7:Pills Replaced\n8:Settings");
+        oled.print(menu1Text);
 
         clkMenu.setLevel(1); customKey = 'z';
       }
