@@ -184,7 +184,7 @@ uint8_t pillAlarm()
 {
   customKey = customKeypad.getKey();
   OLED_Text_Color = OLED_Color_Red; //red for alarm
-  rtcTime(1);
+  if(now.minute() == clkMenu.getPillMM()){rtcTime(1);} else{rtcTime(0);}
   uint8_t AlarmTripped = 1; //0 for false 1 for true
   switch(pillAlarmState)
   {
@@ -379,7 +379,7 @@ uint8_t alarm()
 {
   customKey = customKeypad.getKey();
   OLED_Text_Color = OLED_Color_Red; //red for alarm
-  rtcTime(1);
+  if(now.minute() == clkMenu.getAlarmMM()){rtcTime(1);} else{rtcTime(0);}
   uint8_t AlarmTripped = 1; //0 for false 1 for true
   switch(alarmState)
   {
