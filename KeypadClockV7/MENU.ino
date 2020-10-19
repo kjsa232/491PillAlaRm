@@ -370,7 +370,7 @@ void keypadMenu()
           else if((clkMenu.getAlarmHH() > 21) && (clkMenu.getAlarmHH() < 24)) {oled.print(clkMenu.getAlarmHH() - 12, DEC);}
           else if(clkMenu.getAlarmHH() == 0)                                  {oled.print("12");}
           oled.print(':');
-          if(clkMenu.getAlarmHH() < 10)                                       {oled.print('0');}oled.print(clkMenu.getAlarmHH());
+          if(clkMenu.getAlarmMM() < 10)                                       {oled.print('0');}oled.print(clkMenu.getAlarmMM());
           //AM PM
           if((clkMenu.getAlarmHH() >= 0) && (clkMenu.getAlarmHH() < 12))      {oled.print(" AM");} //AM
           else                                                                {oled.print(" PM");} //PM
