@@ -2,9 +2,22 @@
 
  void rtcTime(uint8_t in)
 {
-   oled.setTextSize(3);
-   oled.setTextColor(clkMenu.getColor());
+   
    now = rtc.now();
+
+   if(clkMenu.getClkON()) // This will skip this code when in a menu
+     {
+     //CHECK IF OUT OF PILLS
+     if(clkMenu.getPillCounter() == 7){oled.setTextColor(OLED_Color_Red);}
+     else                             {oled.setTextColor(OLED_Backround_Color);}
+     // if pill counter == 7 print in red else print in backround
+     oled.setTextSize(1);
+     oled.setCursor(menu1X,menu1Y);
+     oled.print("OUT OF PILLS");
+     }
+   
+   oled.setTextSize(3);
+   oled.setTextColor(OLED_Text_Color);
    if(in == 1)
    {
     oled.setCursor(RTChour1X,RTChour1Y);
@@ -29,7 +42,7 @@
       else                                      {oled.setTextSize(2);oled.setCursor(RTCampmX,RTCampmY);oled.print("PM");oled.setTextSize(3);} //PM
       }
 
-    oled.setCursor(40,12);
+    oled.setCursor(40,11);
     oled.print(':');
     oled.setCursor(RTCmin1X,RTCmin1Y);
     if(now.minute() < 10){oled.print('0');}
@@ -42,7 +55,7 @@
    {
    if(clkMenu.getClkON()) // This will skip this code when in a menu
    {
-     oled.setCursor(40,12); oled.print(':'); // This is the :, HH:MM, it doesn't need to be printed elsewhere
+     oled.setCursor(40,11); oled.print(':'); // This is the :, HH:MM, it doesn't need to be printed elsewhere
 
 // CHECK AND UPDATE THE HOUR
      if(hourOld != now.hour())
@@ -58,7 +71,7 @@
         else if (hourOld < 23)  {oled.setCursor(RTChour2X,RTChour2Y);oled.print((hourOld - 20));}
         else /* hourOld == 23*/ {oled.setCursor(RTChour1X,RTChour1Y);oled.print(hourOld);}
 
-        oled.setTextColor(clkMenu.getColor());
+        oled.setTextColor(OLED_Text_Color);
         //PRINT now.hour(), DEC 24
         if(hourOld < 9)         {oled.setCursor(RTChour2X,RTChour2Y);oled.print(now.hour(), DEC);}
         else if(hourOld == 9)   {oled.setCursor(RTChour1X,RTChour1Y);oled.print(now.hour(), DEC);}
@@ -89,7 +102,7 @@
         //remove PM if hourOld == 23
         else if(hourOld == 23){oled.setTextSize(2);oled.print('P');oled.setTextSize(3);}
 
-        oled.setTextColor(clkMenu.getColor());
+        oled.setTextColor(OLED_Text_Color);
         //PRINT now.hour(), DEC 12
         //1-8 am and pm
         if((hourOld > 0) && (hourOld < 9))        {oled.setCursor(RTChour2X,RTChour2Y);oled.print(now.hour());}
@@ -135,7 +148,7 @@
         else/* minOld == 59 */ {oled.setCursor(RTCmin1X,RTCmin1Y);oled.print(minOld);}
 
         //print (now.minute(), DEC);
-        oled.setTextColor(clkMenu.getColor());
+        oled.setTextColor(OLED_Text_Color);
 
         if(minOld < 9)         {oled.setCursor(RTCmin2X,RTCmin2Y);oled.print(now.minute(), DEC);}
         else if(minOld == 9)   {oled.setCursor(RTCmin1X,RTCmin1Y);oled.print(now.minute(), DEC);}
@@ -169,6 +182,9 @@ uint8_t snoozeAlarmMM = clkMenu.getAlarmMM();
 
 uint8_t pillAlarm()
 {
+  customKey = customKeypad.getKey();
+  OLED_Text_Color = OLED_Color_Red; //red for alarm
+  rtcTime(1);
   uint8_t AlarmTripped = 1; //0 for false 1 for true
   switch(pillAlarmState)
   {
@@ -179,27 +195,143 @@ uint8_t pillAlarm()
     //Turn on the Speaker
     // DAVID INSERT HERE
 
-    pillAlarmState = 1;
+    if(clkMenu.getChildSafety() == 1)
+    {
+      oled.setTextSize(1);
+      oled.setTextColor(OLED_Text_Color);
+      oled.setCursor(menu1X, menu7Y);
+      oled.print("Enter PIN then *");
+      PINin = "";
+      pillAlarmState = 1;  
+    }
+    else {pillAlarmState = 2; goto CASE2;}
     // NO break; to allow fall through
 
     case 1:
     //checks shild safety on/OFF
     //if on get PIN INPUT
-    if(clkMenu.getChildSafety())
-    {
-      // I'll do this later, I will just need to paste code in here and modify it minimaly
-      // I am leavbing it out because it is a lot of lines
-      pillAlarmState = 2; //skips for now
-    }
-    else {pillAlarmState = 2;} //if child safety is false this will skip this section
-    
-    if(PINin == clkMenu.getPIN()){pillAlarmState = 2;}
-    break; // this will allow looping over
+      oled.setTextSize(1);
 
+      // NON WORKING CASE 1
+
+switch (customKey)
+      {
+        case '1':
+          PINin += '1';
+          //Prints the PINin
+          oled.setCursor(menu4X, menu8Y);
+          oled.setTextColor(OLED_Text_Color);
+          oled.print(PINin);
+        break; //case '1'
+
+        case '2':
+          PINin += '2';
+          //Prints the PINin
+          oled.setCursor(menu4X, menu8Y);
+          oled.setTextColor(OLED_Text_Color);
+          oled.print(PINin);
+          break; //case '2'
+
+        case '3':
+          PINin += '3';
+          //Prints the PINin
+          oled.setCursor(menu4X, menu8Y);
+          oled.setTextColor(OLED_Text_Color);
+          oled.print(PINin);
+          break; //case '3'
+
+        case '4':
+          PINin += '4';
+          //Prints the PINin
+          oled.setCursor(menu4X, menu8Y);
+          oled.setTextColor(OLED_Text_Color);
+          oled.print(PINin);
+          break; //case '4'
+
+        case '5':
+          PINin += '5';
+          //Prints the PINin
+          oled.setCursor(menu4X, menu8Y);
+          oled.setTextColor(OLED_Text_Color);
+          oled.print(PINin);
+          break; //case '5'
+
+        case '6':
+          PINin += '6';
+          //Prints the PINin
+          oled.setCursor(menu4X, menu8Y);
+          oled.setTextColor(OLED_Text_Color);
+          oled.print(PINin);
+          break; //case '6'
+
+        case '7':
+          PINin += '7';
+          //Prints the PINin
+          oled.setCursor(menu4X, menu8Y);
+          oled.setTextColor(OLED_Text_Color);
+          oled.print(PINin);
+          break; //case '7'
+
+        case '8':
+          PINin += '8';
+          //Prints the PINin
+          oled.setCursor(menu4X, menu8Y);
+          oled.setTextColor(OLED_Text_Color);
+          oled.print(PINin);
+          break; //case '8'
+
+        case '9':
+          PINin += '9';
+          //Prints the PINin
+          oled.setCursor(menu4X, menu8Y);
+          oled.setTextColor(OLED_Text_Color);
+          oled.print(PINin);
+          break; //case '9'
+
+        case '0':
+          PINin += '0';
+          //Prints the PINin
+          oled.setCursor(menu4X, menu8Y);
+          oled.setTextColor(OLED_Text_Color);
+          oled.print(PINin);
+          break; //case '0'
+
+        case '*':
+          if (PINin == clkMenu.getPIN())
+            {
+            oled.setCursor(menu4X, menu7Y);
+            oled.setTextColor(OLED_Backround_Color);
+            oled.print("Enter PIN then *\n");
+            oled.print(PINin);
+            //clear PINin
+            PINin = "";
+            //Proceed to next phase of Alarm, Dispense the Pills
+            pillAlarmState = 2;
+      
+            }// END RIGHT INPUT
+          else if (PINin != clkMenu.getPIN())
+            {
+            oled.setCursor(menu4X, menu8Y);
+            oled.setTextColor(OLED_Backround_Color);
+            oled.print(PINin);
+            //clear PINin
+            PINin = "";
+            } // END WRONG INPUT
+          break; //case '*'
+        default:
+          customKey = 'z';
+      } // switch(customKey)
+
+    break; // this will allow looping over prev
+
+    CASE2:
     case 2:
     //wait for the cup to be in place VIA the light sensor
     // if it is in place set [pillAlarmState = 3;]
     // DAVID INSERT HERE
+
+    //TEST
+    if(customKey == '7'){pillAlarmState = 3;customKey = 'z';}
     break;
 
     case 3:
@@ -216,7 +348,9 @@ uint8_t pillAlarm()
     //snooze when removed
     // if it is removed, set [pillAlarmState = 5;]
     // DAVID INSERT HERE
-
+    
+    //TEST
+    if(customKey == '8'){pillAlarmState = 5;customKey = 'z';}
     break; //this causes a loop until cup removed
 
     case 5:
@@ -227,20 +361,15 @@ uint8_t pillAlarm()
     //increment the pillAlarm counter
     clkMenu.incPillAlarm();
     AlarmTripped = 0;
+    OLED_Text_Color = clkMenu.getColor(); //reset Color
+    rtcTime(1);
     pillAlarmState = 0;
     //break;
     //default:
   }//switch(pillAlarmState)
+  
   return AlarmTripped;
 }//pillAlarm()
-
-//This is how to call this function in the loop
-
-// check if the trigger time for the pill alarm is the current time
-// These commands will be implemented in final
-  //clkMenu.getPillHH();
-  //clkMenu.getPillMM();
-  //if(Pill_Alarm_Trigger_Time || pillAlarmTripped == 1){pillAlarmTripped = pillAlarm(); }
 
 
 // ------------------------------------------------------------------------------------
@@ -248,6 +377,9 @@ uint8_t pillAlarm()
 //use global variables
 uint8_t alarm()
 {
+  customKey = customKeypad.getKey();
+  OLED_Text_Color = OLED_Color_Red; //red for alarm
+  rtcTime(1);
   uint8_t AlarmTripped = 1; //0 for false 1 for true
   switch(alarmState)
   {
@@ -263,55 +395,55 @@ uint8_t alarm()
     switch(customKey)
     {
       case '1':
-      snoozeAlarmMM += 1;
+      clkMenu.snoozeAlarmMM = now.minute() + 1;
       if(clkMenu.snoozeAlarmMM >= 60){clkMenu.snoozeAlarmMM -= 60; clkMenu.snoozeAlarmHH += 1;}
       alarmState = 2;
 
       break;
       case '2':
-      snoozeAlarmMM += 2;
+      clkMenu.snoozeAlarmMM = now.minute() +  2;
       if(clkMenu.snoozeAlarmMM >= 60){clkMenu.snoozeAlarmMM -= 60; clkMenu.snoozeAlarmHH += 1;}
       alarmState = 2;
 
       break;
       case '3':
-      snoozeAlarmMM += 3;
+      clkMenu.snoozeAlarmMM = now.minute() +  3;
       if(clkMenu.snoozeAlarmMM >= 60){clkMenu.snoozeAlarmMM -= 60; clkMenu.snoozeAlarmHH += 1;}
       alarmState = 2;
 
       break;
       case '4':
-      snoozeAlarmMM += 4;
+      clkMenu.snoozeAlarmMM = now.minute() +  4;
       if(clkMenu.snoozeAlarmMM >= 60){clkMenu.snoozeAlarmMM -= 60; clkMenu.snoozeAlarmHH += 1;}
       alarmState = 2;
 
       break;
       case '5':
-      snoozeAlarmMM += 5;
+      clkMenu.snoozeAlarmMM = now.minute() +  5;
       if(clkMenu.snoozeAlarmMM >= 60){clkMenu.snoozeAlarmMM -= 60; clkMenu.snoozeAlarmHH += 1;}
       alarmState = 2;
 
       break;
       case '6':
-      snoozeAlarmMM += 6;
+      clkMenu.snoozeAlarmMM = now.minute() +  6;
       if(clkMenu.snoozeAlarmMM >= 60){clkMenu.snoozeAlarmMM -= 60; clkMenu.snoozeAlarmHH += 1;}
       alarmState = 2;
 
       break;
       case '7':
-      snoozeAlarmMM += 7;
+      clkMenu.snoozeAlarmMM = now.minute() +  7;
       if(clkMenu.snoozeAlarmMM >= 60){clkMenu.snoozeAlarmMM -= 60; clkMenu.snoozeAlarmHH += 1;}
       alarmState = 2;
 
       break;
       case '8':
-      snoozeAlarmMM += 8;
+      clkMenu.snoozeAlarmMM = now.minute() +  8;
       if(clkMenu.snoozeAlarmMM >= 60){clkMenu.snoozeAlarmMM -= 60; clkMenu.snoozeAlarmHH += 1;}
       alarmState = 2;
 
       break;
       case '9':
-      snoozeAlarmMM += 9;
+      clkMenu.snoozeAlarmMM = now.minute() +  9;
       if(clkMenu.snoozeAlarmMM >= 60){clkMenu.snoozeAlarmMM -= 60; clkMenu.snoozeAlarmHH += 1;}
       alarmState = 2;
 
@@ -320,9 +452,11 @@ uint8_t alarm()
       // normalize the snooze global variables
       clkMenu.snoozeAlarmHH = clkMenu.getAlarmHH();
       clkMenu.snoozeAlarmMM = clkMenu.getAlarmMM();
+      alarmState = 2;
 
       //break;
-      //default:
+      default:
+      customKey = 'z';
     }
     break; // this will allow looping over
 
@@ -331,17 +465,11 @@ uint8_t alarm()
     // DAVID INSERT HERE
 
     AlarmTripped = 0;
+    OLED_Text_Color = clkMenu.getColor(); //reset Color
+    rtcTime(1);
     alarmState = 0;
     //break;
     //default:
   }//switch(alarmState)
   return AlarmTripped;
 }//alarm()
-
-//This is how to call this function in the loop
-
-// check if the trigger time for the pill alarm is the current time
-// These commands will be implemented in final
-  //clkMenu.getAlarmHH();
-  //clkMenu.getAlarmMM();
-  //if(Alarm_Trigger_Time || alarmTripped == 1 || Snooze_Alarm_Trigger_Time){alarmTripped = alarm(); }
