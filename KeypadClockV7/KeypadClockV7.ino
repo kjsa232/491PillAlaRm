@@ -71,6 +71,7 @@ const uint8_t menu2X = 0;   //menu line 2
 const uint8_t menu2Y = 8;  //menu line 2
 const uint8_t menu4X = 0;   //menu line 4
 const uint8_t menu4Y = 24;  //menu line 4
+const uint8_t menu3X = 0;
 const uint8_t menu3Y = 16;  //menu line 3
 const uint8_t menu5Y = 32;  //menu line 5
 const uint8_t menu6Y = 40;  //menu line 6
@@ -112,6 +113,8 @@ char oldTimeString[MaxString] = { 0 };
 // the interrupt service routine affects this
 volatile bool isButtonPressed = false;
 
+
+String menu1Text = "1:Time\n2:Pill Alarm\n3:Alarm\n4:Child Safety\n5:Change PIN\n6:WiFi\n7:Pills Replaced\n8:Settings";
 String PINin = "";
 volatile uint16_t hourIn = 0;
 volatile uint16_t minIn = 0;
@@ -126,15 +129,15 @@ uint8_t minOld;
 
 // rtc clock location
 const uint8_t RTChour1X = 4;  //menu clock input
-const uint8_t RTChour1Y = 12; //menu clock input
+const uint8_t RTChour1Y = 11; //menu clock input
 const uint8_t RTChour2X = 22;  //menu clock input
-const uint8_t RTChour2Y = 12; //menu clock input
+const uint8_t RTChour2Y = 11; //menu clock input
 const uint8_t RTCmin1X = 58;  //menu clock input
-const uint8_t RTCmin1Y = 12;  //menu clock input
+const uint8_t RTCmin1Y = 11;  //menu clock input
 const uint8_t RTCmin2X = 76;  //menu clock input
-const uint8_t RTCmin2Y = 12;  //menu clock input
+const uint8_t RTCmin2Y = 11;  //menu clock input
 const uint8_t RTCampmX = 15;
-const uint8_t RTCampmY = 35;
+const uint8_t RTCampmY = 34;
 
 /////////////////ALARM VARS//////////////////////////
 //helper variable to set state of the alarm to allow loops without using a loop that will freeze the program
@@ -162,6 +165,11 @@ uint16_t OLED_Text_Color = clkMenu.getColor();
 void senseButtonPressed() {
     if (!isButtonPressed) {isButtonPressed = true;}
 }
+//FUNCTIONS
+void keypadMenu();
+void rtcTime(uint8_t in);
+uint8_t pillAlarm();
+uint8_t alarm();
 
 void setup()
 {
@@ -193,6 +201,7 @@ minOld = now.minute();
 
 //load variables into clkMenu, Alarms, Pill counter, PIN, WiFi, Time Format, Menu Color, Child Safety
 clkMenu.load();
+OLED_Text_Color = clkMenu.getColor();
 oled.fillScreen(OLED_Backround_Color);
 rtcTime(1);
 }
@@ -201,7 +210,7 @@ rtcTime(1);
 void loop()
 {
 //keypad
-keypadMenu();
+if((pillAlarmTripped == 0) && (alarmTripped == 0)){keypadMenu();}   //Skip over to allow input into Alarm Functions
 
 //RTC CLOCK TIME
 rtcTime(0);
@@ -225,12 +234,17 @@ rtcTime(0);
 
 //CALL THE PILL ALARM FUNCTION
 // check if the trigger time for the pill alarm is the current time
-if( (clkMenu.getPillHH() == now.hour() && clkMenu.getPillMM() == now.minute()) || (pillAlarmTripped) ) {pillAlarmTripped = pillAlarm();}
+if( (clkMenu.getPillHH() == now.hour() && clkMenu.getPillMM() == now.minute() && now.second() == 0) || (pillAlarmTripped == 1) ) {pillAlarmTripped = pillAlarm();}
 
 //CALL THE ALARM FUNCTION
 // check if the trigger time for the pill alarm is the current time
-if( (clkMenu.getAlarmHH() == now.hour() && clkMenu.getAlarmMM() == now.minute()) || (alarmTripped) || 
-    (clkMenu.snoozeAlarmHH == now.hour() && clkMenu.snoozeAlarmMM == now.minute()) ) {alarmTripped = alarm();}
+if( (clkMenu.getAlarmHH() == now.hour() && clkMenu.getAlarmMM() == now.minute() && now.second() == 0) || (alarmTripped == 1) || 
+    (clkMenu.snoozeAlarmHH == now.hour() && clkMenu.snoozeAlarmMM == now.minute() && now.second() == 0) ) 
+  {
+    // Check if the Pill Alarm is Active, INACTIVE: go into alarm, ACTIVE, delay until Pill Alarm is complete
+    if(pillAlarmTripped == 0){alarmTripped = alarm();}
+    else alarmTripped = 1;
+  }
 
 
 // no need to be in too much of a hurry, shorten if too much latency
