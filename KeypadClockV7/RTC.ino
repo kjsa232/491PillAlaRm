@@ -192,6 +192,7 @@ uint8_t pillAlarm()
     case 0:
     // Turn on LEDS that shine on the cup
     // DAVID INSERT HERE
+    
 
     //Turn on the Speaker
     // DAVID INSERT HERE
@@ -343,7 +344,7 @@ switch (customKey)
     //allow fallthrough
     case 4:
     // I WILL NEED TO ADD THE SNOOZE FROM THE ALARM CODE
-
+    //SSNOOZE for 1or 2 min, prefer 1 min
 
     //check if the cup has been removed
     //snooze when removed
@@ -358,7 +359,9 @@ switch (customKey)
     //check if cup was returned
     //true -> turn off Pill ALARM: LED, Speaker
     // DAVID INSERT HERE
+    //reset snooze
 
+    
     //increment the pillAlarm counter
     clkMenu.incPillAlarm();
     AlarmTripped = 0;
