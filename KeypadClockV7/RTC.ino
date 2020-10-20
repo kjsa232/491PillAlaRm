@@ -98,9 +98,9 @@
 
         //Remove the AM/PM indicator
         //remove AM if hourOld == 11
-        if(hourOld == 11){oled.setTextSize(2);oled.print('A');oled.setTextSize(3);}
+        if(hourOld == 11){oled.setTextSize(2);oled.setCursor(RTCampmX,RTCampmY);oled.print('A');oled.setTextSize(3);}
         //remove PM if hourOld == 23
-        else if(hourOld == 23){oled.setTextSize(2);oled.print('P');oled.setTextSize(3);}
+        else if(hourOld == 23){oled.setTextSize(2);oled.setCursor(RTCampmX,RTCampmY);oled.print('P');oled.setTextSize(3);}
 
         oled.setTextColor(OLED_Text_Color);
         //PRINT now.hour(), DEC 12
@@ -113,13 +113,14 @@
         else if((hourOld == 9)||(hourOld == 21) ) {oled.setCursor(RTChour1X,RTChour1Y);oled.print("10");}
         //10 and 11 am and pm
         else if((hourOld > 9) && (hourOld < 12))  {oled.setCursor(RTChour2X,RTChour2Y);oled.print((now.hour() - 10));}
-        else /* hourOld == 22 or 23 */            {oled.setCursor(RTChour2X,RTChour2Y);oled.print((now.hour() - 22));}
+        else if((hourOld == 23))                  {oled.setCursor(RTChour2X,RTChour2Y);oled.print('2');}
+        else /* hourOld == 22*/                   {oled.setCursor(RTChour2X,RTChour2Y);oled.print('1');}
 
-        //ADD the AM/PM indicator Prints the M, just to make sure it is there, it was missing in a run through
-        //Add AM if hourOld == 0
-        if(hourOld == 0) {oled.setTextSize(2);oled.setCursor(RTCampmX,RTCampmY);oled.print("AM");oled.setTextSize(3);}
-        //Add PM if hourOld == 12
-        if(hourOld == 12){oled.setTextSize(2);oled.setCursor(RTCampmX,RTCampmY);oled.print("PM");oled.setTextSize(3);}
+        //ADD the AM/PM indicator
+        //Add AM if hour == 0, hour old == 23
+        if(hourOld == 23) {oled.setTextSize(2);oled.setCursor(RTCampmX,RTCampmY);oled.print('A');oled.setTextSize(3);}
+        //Add PM if hour == 12 , hourold == 11
+        else if(hourOld == 11){oled.setTextSize(2);oled.setCursor(RTCampmX,RTCampmY);oled.print('P');oled.setTextSize(3);}
 
        }//end 12 hour
 
