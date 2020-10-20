@@ -1,8 +1,4 @@
-#include <Firebase_Arduino_WiFiNINA_HTTPClient.h>
-#include <Firebase_Arduino_WiFiNINA.h>
-
 //KeypadClockV7.ino
-
 #include <Arduino.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1331.h>
@@ -14,11 +10,6 @@
 #include "RTClib.h"
 #include <Wire.h>
 #include "ds3231.h"
-//#include "Firebase_Arduino_WiFiNINA.h"
-
-//Firebase defines
-#define FIREBASE_HOST "pill-alarm-be539.firebaseio.com"
-#define FIREBASE_AUTH "UaIlUqx6ZnV0xkLNyIkSeOD6dHDD3Xm3KoKM2r0O"
 
 
 //CALL THE ANALOG PINS AS DIGITAL: call them [Pin 14 .. Pin 19]
@@ -113,7 +104,6 @@ char oldTimeString[MaxString] = { 0 };
 // the interrupt service routine affects this
 volatile bool isButtonPressed = false;
 
-
 String menu1Text = "1:Time\n2:Pill Alarm\n3:Alarm\n4:Child Safety\n5:Change PIN\n6:WiFi\n7:Pills Replaced\n8:Settings";
 String PINin = "";
 volatile uint16_t hourIn = 0;
@@ -154,9 +144,6 @@ Menu clkMenu;
 //declare the clock
 RTC_DS3231 rtc;
 DateTime now;
-
-//Define Firebase data object
-FirebaseData firebaseData;
 
 uint16_t OLED_Text_Color = clkMenu.getColor();
 //END GLOBAL VARIABLES ///////////////////////////////////////////
@@ -206,7 +193,6 @@ oled.fillScreen(OLED_Backround_Color);
 rtcTime(1);
 }
 
-
 void loop()
 {
 //keypad
@@ -214,23 +200,12 @@ if((pillAlarmTripped == 0) && (alarmTripped == 0)){keypadMenu();}   //Skip over 
 
 //RTC CLOCK TIME
 rtcTime(0);
+String ssid = clkMenu.getSSID();
+String pass = clkMenu.getPASS();
+char* SSIDin = ssid.c_str();
+char* PASSin = pass.c_str();
 
-  String WIFI_SSID = clkMenu.getSSID();
-  const char* w_SSID = WIFI_SSID.c_str();
-  String WIFI_PASSWORD = clkMenu.getPASS(); 
-  const char* PASSWORD = WIFI_PASSWORD.c_str();
-// Serial.print("Connecting to Wi-Fi");
-  int status = WL_IDLE_STATUS;
-  while (status != WL_CONNECTED)
-  {
-    status = WiFi.begin(w_SSID, PASSWORD);
-    Serial.print(".");
-    delay(300);
-  }
 
-  while (status == WL_CONNECTED) {
-    //put in wifi signal picture
-  }
 
 //CALL THE PILL ALARM FUNCTION
 // check if the trigger time for the pill alarm is the current time
@@ -245,6 +220,8 @@ if( (clkMenu.getAlarmHH() == now.hour() && clkMenu.getAlarmMM() == now.minute() 
     if(pillAlarmTripped == 0){alarmTripped = alarm();}
     else alarmTripped = 1;
   }
+
+
 
 
 // no need to be in too much of a hurry, shorten if too much latency
