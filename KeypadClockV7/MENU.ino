@@ -351,7 +351,14 @@ void keypadMenu()
           else                                                              {oled.print(" PM");} //PM
           
           //this will set the Pill alarm
-          clkMenu.setPillTime(hourIn, minIn);
+          if(ampmIn == 2){
+                          if(hourIn != 12){clkMenu.setPillTime(hourIn+12, minIn);}
+                          else            {clkMenu.setPillTime(12, minIn);}
+                         }
+          else           {
+                          if(hourIn != 12){clkMenu.setPillTime(hourIn, minIn);}
+                          else            {clkMenu.setPillTime(0, minIn);}
+                         }
         }
         //IF ALARM
         else if (clkMenu.getLevel() == 30)
@@ -376,7 +383,14 @@ void keypadMenu()
           else                                                                {oled.print(" PM");} //PM
           
           // this will set the alarm
-          clkMenu.setAlarmTime(hourIn, minIn);
+          if(ampmIn == 2){
+                          if(hourIn != 12){clkMenu.setAlarmTime(hourIn+12, minIn);}
+                          else            {clkMenu.setAlarmTime(12, minIn);}
+                         }
+          else           {
+                          if(hourIn != 12){clkMenu.setAlarmTime(hourIn, minIn);}
+                          else            {clkMenu.setAlarmTime(0, minIn);}
+                         }
         }
 
         //clears screen

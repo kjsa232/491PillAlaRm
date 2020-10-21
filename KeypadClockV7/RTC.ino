@@ -185,7 +185,7 @@ uint8_t pillAlarm()
 {
   customKey = customKeypad.getKey();
   OLED_Text_Color = OLED_Color_Red; //red for alarm
-  if((now.minute() == clkMenu.getAlarmMM()) || (now.minute() == clkMenu.snoozeAlarmMM)){rtcTime(1);} else{rtcTime(0);}
+  if(now.minute() == clkMenu.getPillMM()) {rtcTime(1);} else{rtcTime(0);}
   uint8_t AlarmTripped = 1; //0 for false 1 for true
   switch(pillAlarmState)
   {
@@ -333,7 +333,7 @@ switch (customKey)
     // DAVID INSERT HERE
 
     //TEST
-    if(customKey == '7'){pillAlarmState = 3;customKey = 'z';}
+    if(customKey == '7'){pillAlarmState = 3;customKey = 'z';} //jump over cup in place
     break;
 
     case 3:
@@ -343,25 +343,45 @@ switch (customKey)
     pillAlarmState = 4;
     //allow fallthrough
     case 4:
-    // I WILL NEED TO ADD THE SNOOZE FROM THE ALARM CODE
-    //SSNOOZE for 1or 2 min, prefer 1 min
-
     //check if the cup has been removed
     //snooze when removed
     // if it is removed, set [pillAlarmState = 5;]
-    // DAVID INSERT HERE
-    
-    //TEST
-    if(customKey == '8'){pillAlarmState = 5;customKey = 'z';}
-    break; //this causes a loop until cup removed
 
+    //if(removed)
+    {
+    //stop the speaker
+    // DAVID INSERT HERE
+
+    pillAlarmState = 5;
+    //calculate time snooze ends
+    clkMenu.snoozePillSS = now.second();clkMenu.snoozePillMM = now.minute() + 1; 
+    if(clkMenu.snoozePillMM < 60){clkMenu.snoozePillHH = now.hour();}
+    else {clkMenu.snoozePillMM = 0; clkMenu.snoozePillHH = (now.hour() + 1) % 24;}
+    }
+    //TEST
+    if(customKey == '8'){pillAlarmState = 5;customKey = 'z';} //jump over pill removed check
+    break; //loop until cup removed
+    
     case 5:
+    //SNOOZE for 1 min, after the min has elapsed this will be called
+    if((clkMenu.snoozePillHH == now.hour()) && (clkMenu.snoozePillMM == now.minute()) && (clkMenu.snoozePillSS == now.second()))
+      {
+      //Enable Speaker
+      // DAVID INSERT HERE
+
+      pillAlarmState = 6;
+      }
+    
     //check if cup was returned
     //true -> turn off Pill ALARM: LED, Speaker
     // DAVID INSERT HERE
-    //reset snooze
 
+    //TEST
+    if(customKey == '9'){pillAlarmState = 6;customKey = 'z';} //jump over pill returned check
+
+    break; //loop until cup is returned
     
+    case 6:
     //increment the pillAlarm counter
     clkMenu.incPillAlarm();
     AlarmTripped = 0;
