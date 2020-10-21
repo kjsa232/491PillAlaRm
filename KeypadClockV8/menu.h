@@ -56,6 +56,9 @@ public:
 //Variables
   uint8_t snoozeAlarmHH;
   uint8_t snoozeAlarmMM;
+  uint8_t snoozePillHH;
+  uint8_t snoozePillMM;
+  uint8_t snoozePillSS;
 
 private:
   // helper functions
