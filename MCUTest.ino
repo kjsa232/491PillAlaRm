@@ -13,8 +13,8 @@ SoftwareSerial MCU(26, 27); // RX, TX
 #endif
 
 
-char ssid[] = "NETGEAR24";     // your network SSID (name)
-char pwd[] = "pickle123";  // your network password
+char ssid[] = "SSID";     // your network SSID (name)
+char pwd[] = "password";  // your network password
 char pwdErr[] = "xxxx";   // wrong password
 
 
