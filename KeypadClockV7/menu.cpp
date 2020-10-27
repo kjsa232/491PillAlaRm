@@ -41,7 +41,7 @@ void Menu::eepromUpdateString(uint8_t address, String DATA)
 }
 String Menu::eepromReadString(uint8_t address)
 { 
-  uint8_t i;
+  //uint8_t i;
   uint8_t len = 0;
   char data[80]; //Max 80 Bytes
   char currChar = EEPROM.read(address);
@@ -53,7 +53,6 @@ String Menu::eepromReadString(uint8_t address)
     }
   data[len] = '\0';
   return String(data);
-  
 }
 
 //FUNCTIONS
