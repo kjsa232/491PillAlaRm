@@ -37,7 +37,6 @@ int16_t counter = 0;
 int16_t aState;
 int16_t aLastState;
 int16_t angle = 0;
-///////////////////////
 
 
 //PINS
@@ -53,7 +52,6 @@ void speakerBoom();
 void ledIlluminate(uint8_t trip);
 void rotatePills();
 bool cupDetected();
-void motorSpin();
 
 void setup()
 {
@@ -125,8 +123,14 @@ if(flag)
     {
     myservo.write(92);
     delay(10);
+    rotateTripped = false;
     }
   aLastState = aState; // Updates the previous state of the outputA with the current state
+  }
+else
+  {
+   angle = 0;
+   counter = 0; 
   }
 }
 
@@ -136,9 +140,4 @@ bool cupDetected()
   //check for cupDetected
 
   return isThere;
-}
-
-void motorSpin()
-{
-  
 }
