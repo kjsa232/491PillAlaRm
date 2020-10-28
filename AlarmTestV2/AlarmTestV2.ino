@@ -37,6 +37,8 @@ int16_t counter = 0;
 int16_t aState;
 int16_t aLastState;
 int16_t angle = 0;
+///////////////////////
+
 
 //PINS
 uint8_t speaker = 53;
@@ -51,6 +53,7 @@ void speakerBoom();
 void ledIlluminate(uint8_t trip);
 void rotatePills();
 bool cupDetected();
+void motorSpin();
 
 void setup()
 {
@@ -74,12 +77,14 @@ void loop()
   case '2': speakerTripped = false; customKey = 'z'; break;
   case '3': ledTripped = true; customKey = 'z'; break;
   case '4': ledTripped = false; customKey = 'z'; break;
-  case '5': rotateTripped = true; customKey = 'z'; break;
+  case '5': rotateTripped = true;  customKey = 'z'; break;
   }
-  
+
+  rotatePills(rotateTripped);
   speakerBoom(speakerTripped);
   ledIlluminate(ledTripped);
-  if(rotateTripped){rotatePills();rotateTripped = false;}
+  
+  //if(rotateTripped){rotatePills();rotateTripped = false;}
   //delay(300);
   //if(cupDetected()){digitalWrite(led,HIGH);}
   //else{digitalWrite(led,LOW);}
@@ -101,25 +106,28 @@ if(flag){digitalWrite(led,HIGH);}
 else    {digitalWrite(led,LOW);}
 }
 
-void rotatePills()
+void rotatePills(bool flag)
 {
-aState = digitalRead(outputA); // Reads the "current" state of the outputA
-// If the previous and the current state of the outputA are different, that means a Pulse has occured
-myservo.write(90);
-if (aState != aLastState)
+if(flag)
   {
-  // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
-  if (digitalRead(outputB) != aState)   {  counter++;  }
-  else                                  {  counter--;  }
-  angle = counter;
+  aState = digitalRead(outputA); // Reads the "current" state of the outputA
+  // If the previous and the current state of the outputA are different, that means a Pulse has occured
+  myservo.write(90);
+  if (aState != aLastState)
+    {
+    // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
+    if (digitalRead(outputB) != aState)   {  counter++;  }
+    else                                  {  counter--;  }
+    angle = counter;
+    }
+    
+  if(angle > 3)
+    {
+    myservo.write(92);
+    delay(10);
+    }
+  aLastState = aState; // Updates the previous state of the outputA with the current state
   }
-  
-if(angle > 3)
-  {
-  myservo.write(92);
-  delay(10);
-  }
-aLastState = aState; // Updates the previous state of the outputA with the current state
 }
 
 bool cupDetected()
@@ -128,4 +136,9 @@ bool cupDetected()
   //check for cupDetected
 
   return isThere;
+}
+
+void motorSpin()
+{
+  
 }
