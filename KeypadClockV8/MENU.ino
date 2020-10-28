@@ -1,5 +1,27 @@
 //MENU.ino
 
+//helper function for clearing
+void clearCurrSetTo(uint8_t hourIn, uint8_t minIn)
+{
+oled.setTextColor(OLED_Backround_Color);
+//clear old pill alarm
+oled.setCursor(menu3X, menu6Y);
+oled.print("Currently set to");
+//1-9 am
+if((hourIn > 0) && (hourIn < 10))       {oled.print('0'); oled.print(hourIn);}
+//1-9 pm
+else if((hourIn > 12) && (hourIn < 22)) {oled.print('0'); oled.print(hourIn - 12);}
+//10am-Noon (
+else if((hourIn > 9) && (hourIn < 13))  {oled.print(hourIn);}
+//10pm-midnight
+else if((hourIn > 21) && (hourIn < 24)) {oled.print(hourIn - 12);}
+else if(hourIn == 0)                    {oled.print("12");}
+oled.print(':');
+if(minIn < 10)                          {oled.print('0');}oled.print(minIn);
+//AM PM
+if((hourIn >= 0) && (hourIn < 12))      {oled.print(" AM");} //AM
+else                                    {oled.print(" PM");} //PM
+}
 
 void keypadMenu()
 {
@@ -10,21 +32,7 @@ void keypadMenu()
   switch (clkMenu.getLevel())
   {
     case 0:
-          if (customKey == '1'){ OLED_Text_Color = OLED_Color_White; }
-          else if (customKey == '2'){ OLED_Text_Color = OLED_Color_Green; }
-          else if (customKey == '3'){ oled.setCursor(menu1X, menu7Y); oled.setTextSize(1);
-          oled.print(clkMenu.getPIN().c_str()); oled.print(clkMenu.getSSID().c_str()); oled.print(clkMenu.getPASS().c_str());   }
-          else if (customKey == '4')
-          {
-            OLED_Text_Color = OLED_Color_Cyan;
-            oled.fillCircle(oled.width()/4,   // X-Axis of the center
-                            oled.height()/2,  // Y-Axis of the center
-                            5,                // Radius of the circle
-                            OLED_Color_Cyan   // Color of the circle
-                            );
-          oled.drawPixel(0, 63, OLED_Color_White);
-          }
-          else if (customKey == '5')
+          if (customKey == '5')
           {
             // Battery Full
             //OLED_Text_Color = OLED_Color_White;
@@ -77,15 +85,11 @@ void keypadMenu()
             oled.drawLine(79,2,85,2, OLED_Backround_Color );
             oled.drawLine(81,1,83,1, OLED_Backround_Color );
           }
-          else if (customKey == '9'){OLED_Color_Black;}
-          else if (customKey == '*')  //Menu
+      else if (customKey == '*')  //Menu
       {
         clkMenu.setClkON(false);
         oled.fillScreen(OLED_Color_Black);   //SLOW
 
-        //oled.setTextColor(OLED_Backround_Color);
-        //oled.setCursor(hhX,hhY);
-        //oled.print("XXXXX");
         oled.setTextColor(OLED_Text_Color);
         oled.setCursor(menu1X, menu1Y);
         oled.setTextSize(1);
@@ -331,24 +335,7 @@ void keypadMenu()
         //IF PILL ALARM
         else if (clkMenu.getLevel() == 20)
         {
-          oled.setTextColor(OLED_Backround_Color);
-          //clear old pill alarm
-          oled.setCursor(menu3X, menu6Y);
-          oled.print("Currently set to");
-          //1-9 am
-          if((clkMenu.getPillHH() > 0) && (clkMenu.getPillHH() < 10))       {oled.print('0'); oled.print(clkMenu.getPillHH(), DEC);}
-          //1-9 pm
-          else if((clkMenu.getPillHH() > 12) && (clkMenu.getPillHH() < 22)) {oled.print('0'); oled.print(clkMenu.getPillHH() - 12, DEC);}
-          //10am-Noon (
-          else if((clkMenu.getPillHH() > 9) && (clkMenu.getPillHH() < 13))  {oled.print((clkMenu.getPillHH()), DEC);}
-          //10pm-midnight
-          else if((clkMenu.getPillHH() > 21) && (clkMenu.getPillHH() < 24)) {oled.print(clkMenu.getPillHH() - 12, DEC);}
-          else if(clkMenu.getPillHH() == 0)                                 {oled.print("12");}
-          oled.print(':');
-          if(clkMenu.getPillMM() < 10)                                      {oled.print('0');}oled.print(clkMenu.getPillMM());
-          //AM PM
-          if((clkMenu.getPillHH() >= 0) && (clkMenu.getPillHH() < 12))      {oled.print(" AM");} //AM
-          else                                                              {oled.print(" PM");} //PM
+         clearCurrSetTo(clkMenu.getPillHH(),clkMenu.getPillMM());
           
           //this will set the Pill alarm
           if(ampmIn == 2){
@@ -363,24 +350,7 @@ void keypadMenu()
         //IF ALARM
         else if (clkMenu.getLevel() == 30)
         {
-          oled.setTextColor(OLED_Backround_Color);
-          //clear old pill alarm
-          oled.setCursor(menu3X, menu6Y);
-          oled.print("Currently set to");
-          //1-9 am
-          if((clkMenu.getAlarmHH() > 0) && (clkMenu.getAlarmHH() < 10))       {oled.print('0'); oled.print(clkMenu.getAlarmHH(), DEC);}
-          //1-9 pm
-          else if((clkMenu.getAlarmHH() > 12) && (clkMenu.getAlarmHH() < 22)) {oled.print('0'); oled.print(clkMenu.getAlarmHH() - 12, DEC);}
-          //10am-Noon (
-          else if((clkMenu.getAlarmHH() > 9) && (clkMenu.getAlarmHH() < 13))  {oled.print((clkMenu.getAlarmHH()), DEC);}
-          //10pm-midnight
-          else if((clkMenu.getAlarmHH() > 21) && (clkMenu.getAlarmHH() < 24)) {oled.print(clkMenu.getAlarmHH() - 12, DEC);}
-          else if(clkMenu.getAlarmHH() == 0)                                  {oled.print("12");}
-          oled.print(':');
-          if(clkMenu.getAlarmMM() < 10)                                       {oled.print('0');}oled.print(clkMenu.getAlarmMM());
-          //AM PM
-          if((clkMenu.getAlarmHH() >= 0) && (clkMenu.getAlarmHH() < 12))      {oled.print(" AM");} //AM
-          else                                                                {oled.print(" PM");} //PM
+          clearCurrSetTo(clkMenu.getAlarmHH(),clkMenu.getAlarmMM());
           
           // this will set the alarm
           if(ampmIn == 2){
@@ -826,21 +796,7 @@ void keypadMenu()
             if(hourIn < 10){oled.print(hourIn);oled.setCursor(menu3X, menu3Y);oled.print('0');} oled.print(hourIn);
             oled.print(':');
             if(minIn < 10) {oled.print(minIn);oled.setCursor(menu3X, menu3Y);oled.print('0');} oled.print(minIn);
-            oled.print("\n\n\nCurrently set to");
-            //1-9 am
-            if((clkMenu.getPillHH() > 0) && (clkMenu.getPillHH() < 10))       {oled.print('0'); oled.print(clkMenu.getPillHH(), DEC);}
-            //1-9 pm
-            else if((clkMenu.getPillHH() > 12) && (clkMenu.getPillHH() < 22)) {oled.print('0'); oled.print(clkMenu.getPillHH() - 12, DEC);}
-            //10am-Noon (
-            else if((clkMenu.getPillHH() > 9) && (clkMenu.getPillHH() < 13))  {oled.print((clkMenu.getPillHH()), DEC);}
-            //10pm-midnight
-            else if((clkMenu.getPillHH() > 21) && (clkMenu.getPillHH() < 24)) {oled.print(clkMenu.getPillHH() - 12, DEC);}
-            else if(clkMenu.getPillHH() == 0)                                 {oled.print("12");}
-            oled.print(':');
-            if(clkMenu.getPillMM() < 10)                                      {oled.print('0');}oled.print(clkMenu.getPillMM());
-            //AM PM
-            if((clkMenu.getPillHH() >= 0) && (clkMenu.getPillHH() < 12))      {oled.print(" AM");} //AM
-            else                                                              {oled.print(" PM");} //PM
+            clearCurrSetTo(clkMenu.getPillHH(), clkMenu.getPillMM());
             }
           else if (clkMenu.getLevel() == 30) 
           {
@@ -849,21 +805,7 @@ void keypadMenu()
             if(hourIn < 10){oled.print(hourIn);oled.setCursor(menu3X, menu3Y);oled.print('0');} oled.print(hourIn);
             oled.print(':');
             if(minIn < 10) {oled.print(minIn);oled.setCursor(menu3X, menu3Y);oled.print('0');} oled.print(minIn);
-            oled.print("\n\n\nCurrently set to");
-            //1-9 am
-            if((clkMenu.getAlarmHH() > 0) && (clkMenu.getAlarmHH() < 10))       {oled.print('0'); oled.print(clkMenu.getAlarmHH(), DEC);}
-            //1-9 pm
-            else if((clkMenu.getAlarmHH() > 12) && (clkMenu.getAlarmHH() < 22)) {oled.print('0'); oled.print(clkMenu.getAlarmHH() - 12, DEC);}
-            //10am-Noon (
-            else if((clkMenu.getAlarmHH() > 9) && (clkMenu.getAlarmHH() < 13))  {oled.print((clkMenu.getAlarmHH()), DEC);}
-            //10pm-midnight
-            else if((clkMenu.getAlarmHH() > 21) && (clkMenu.getAlarmHH() < 24)) {oled.print(clkMenu.getAlarmHH() - 12, DEC);}
-            else if(clkMenu.getAlarmHH() == 0)                                  {oled.print("12");}
-            oled.print(':'); 
-            if(clkMenu.getAlarmMM() < 10)                                       {oled.print('0');}oled.print(clkMenu.getAlarmMM());
-            //AM PM
-            if((clkMenu.getAlarmHH() >= 0) && (clkMenu.getAlarmHH() < 12))      {oled.print(" AM");} //AM
-            else                                                                {oled.print(" PM");} //PM
+            clearCurrSetTo(clkMenu.getAlarmHH(), clkMenu.getAlarmMM());
           }
 
           if (hourIn < 10) {
