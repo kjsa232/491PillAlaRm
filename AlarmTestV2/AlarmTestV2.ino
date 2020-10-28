@@ -1,6 +1,8 @@
 #include <Wire.h>
 #include <Keypad.h>
 
+#include <Arduino.h>
+
 //new includes
 #include <Servo.h>
 
@@ -26,8 +28,9 @@ byte colPins[COLS] = {3, 2, 1};
 Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS);
 
 // ALARM GLOBALS
-uint8_t speakerTripped = 0; //Lets there be sound
-uint8_t ledTripped = 0;     //Lets there be light
+bool speakerTripped = 0; //Lets there be sound
+bool ledTripped = 0;     //Lets there be light
+uint16_t speakerSound = 500;
 
 uint8_t counter = 0;
 uint8_t aState;
@@ -63,21 +66,19 @@ Serial.begin (9600);
 aLastState = digitalRead(outputA);
 }
 
-
-
 void loop()
 {
   customKey = customKeypad.getKey();
   switch(customKey)
   {
-  case '1': speakerTripped = 1; customKey = 'z'; break;
-  case '2': speakerTripped = 0; customKey = 'z'; break;
-  case '3': ledTripped = 1; customKey = 'z'; break;
-  case '4': ledTripped = 0; customKey = 'z'; break;
+  case '1': speakerTripped = true; customKey = 'z'; break;
+  case '2': speakerTripped = false; customKey = 'z'; break;
+  case '3': ledTripped = true; customKey = 'z'; break;
+  case '4': ledTripped = false; customKey = 'z'; break;
   case '5': rotatePills(); customKey = 'z'; break;
   }
-
-  if(speakerTripped == 1){speakerBoom();}
+  
+  if(speakerTripped){speakerBoom();}
   ledIlluminate(ledTripped);
   //delay(300);
   //if(cupDetected()){digitalWrite(led,HIGH);}
@@ -87,20 +88,22 @@ void loop()
 //////////////////////////////////////////////////////////////////////////////////////
 //Functions
 
-void speakerBoom()
+void speakerBoom(bool trip)
 {
+  if(trip){  tone(speaker,speakerSound); delay(15); speakerSound++; if(speakerSound >= 700){speakerSound = 500};  }
+  else    {speakerSound = 500;}
 // Let there be sound
-for(uint8_t i=500;i<700;i++)  {  tone(speaker,i);  delay(15);  }
-for(uint8_t i=700;i>500;i--)  {  tone(speaker,i);  delay(15);  }
+//for(uint16_t i=500;i<700;i++)  {  tone(speaker,i);  delay(15);  }
+//for(uint16_t i=700;i>500;i--)  {  tone(speaker,i);  delay(15);  }
 // and there was sound
 }
 
-void ledIlluminate(uint8_t trip)
+void ledIlluminate(bool trip)
 {
 // Let there be light
-if(trip == 1){digitalWrite(led,HIGH);}
+if(trip){digitalWrite(led,HIGH);}
 // there was light
-else         {digitalWrite(led,LOW);}
+else    {digitalWrite(led,LOW);}
 }
 
 void rotatePills()
