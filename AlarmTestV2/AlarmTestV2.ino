@@ -78,7 +78,7 @@ void loop()
   case '5': rotatePills(); customKey = 'z'; break;
   }
   
-  if(speakerTripped){speakerBoom(speakerTripped);}
+  speakerBoom(speakerTripped);
   ledIlluminate(ledTripped);
   //delay(300);
   //if(cupDetected()){digitalWrite(led,HIGH);}
