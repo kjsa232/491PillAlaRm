@@ -48,8 +48,9 @@ uint8_t run = 1; // what does this thing here do?
 void speakerBoom();
 void ledIlluminate(uint8_t trip);
 void rotatePills();
+bool cupDetected)();
 
-void setup() 
+void setup()
 {
 pinMode(speaker, OUTPUT);
 pinMode(led, OUTPUT);
@@ -58,7 +59,7 @@ pinMode(led, OUTPUT);
 myservo.attach(motor); //previously 9 check PINS above for current
 pinMode (outputA,INPUT);
 pinMode (outputB,INPUT);
- 
+
 Serial.begin (9600);
 lcd.begin(16,2);
 // Reads the initial state of the outputA
@@ -67,7 +68,7 @@ aLastState = digitalRead(outputA);
 
 
 
-void loop() 
+void loop()
 {
   customKey = customKeypad.getKey();
   switch(customKey)
@@ -78,7 +79,7 @@ void loop()
   case '4': ledTripped = 1; cusomKey = 'z'; break;
   case '5': rotatePills(); cusomKey = 'z'; break;
   }
-  
+
   if(speakerTripped == 1){speakerBoom();}
   ledIlluminate(ledTripped);
 }
@@ -110,7 +111,7 @@ myservo.write(90);
 if (aState != aLastState)
   {
   // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
-  if (digitalRead(outputB) != aState)   {  counter ++;  lcd.clear();  } 
+  if (digitalRead(outputB) != aState)   {  counter ++;  lcd.clear();  }
   else                                  {  counter --;  lcd.clear();  }
   Serial.print("Position: ");  Serial.println(counter);
   lcd.setCursor(0, 0);
@@ -118,7 +119,7 @@ if (aState != aLastState)
   lcd.setCursor(10, 0);
   lcd.print(counter);
   angle = counter;
-  
+
   }
 if(angle > 3)
   {
@@ -127,4 +128,12 @@ if(angle > 3)
   exit(0);
   }
 aLastState = aState; // Updates the previous state of the outputA with the current state
+}
+
+bool cupDetected)()
+{
+  bool isThere = false;
+  //check for cupDetected
+
+  return isThere;
 }
