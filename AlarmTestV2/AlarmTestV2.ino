@@ -59,7 +59,6 @@ pinMode (outputA,INPUT);
 pinMode (outputB,INPUT);
 
 Serial.begin (9600);
-lcd.begin(16,2);
 // Reads the initial state of the outputA
 aLastState = digitalRead(outputA);
 }
