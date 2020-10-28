@@ -60,8 +60,6 @@ pinMode(led, OUTPUT);
 myservo.attach(motor); //previously 9 check PINS above for current
 pinMode (outputA,INPUT);
 pinMode (outputB,INPUT);
-
-Serial.begin (9600);
 // Reads the initial state of the outputA
 aLastState = digitalRead(outputA);
 }
@@ -114,7 +112,6 @@ if (aState != aLastState)
   // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
   if (digitalRead(outputB) != aState)   {  counter ++;  }
   else                                  {  counter --;  }
-  Serial.print("Position: ");  Serial.println(counter);
   angle = counter;
 
   }
@@ -122,7 +119,6 @@ if(angle > 3)
   {
   myservo.write(92);
   delay(10);
-  exit(0);
   }
 aLastState = aState; // Updates the previous state of the outputA with the current state
 }
