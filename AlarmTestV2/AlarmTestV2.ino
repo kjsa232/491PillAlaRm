@@ -30,12 +30,13 @@ Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS)
 // ALARM GLOBALS
 bool speakerTripped = 0; //Lets there be sound
 bool ledTripped = 0;     //Lets there be light
+bool rotateTripped = 0;
 uint16_t speakerSound = 500;
 
-uint8_t counter = 0;
-uint8_t aState;
-uint8_t aLastState;
-uint8_t angle = 0;
+int16_t counter = 0;
+int16_t aState;
+int16_t aLastState;
+int16_t angle = 0;
 
 //PINS
 uint8_t speaker = 53;
@@ -73,11 +74,12 @@ void loop()
   case '2': speakerTripped = false; customKey = 'z'; break;
   case '3': ledTripped = true; customKey = 'z'; break;
   case '4': ledTripped = false; customKey = 'z'; break;
-  case '5': rotatePills(); customKey = 'z'; break;
+  case '5': rotateTripped = true; customKey = 'z'; break;
   }
   
   speakerBoom(speakerTripped);
   ledIlluminate(ledTripped);
+  if(rotateTripped){rotatePills();rotateTripped = false;}
   //delay(300);
   //if(cupDetected()){digitalWrite(led,HIGH);}
   //else{digitalWrite(led,LOW);}
@@ -89,11 +91,8 @@ void loop()
 void speakerBoom(bool trip)
 {
   if(trip){  tone(speaker,speakerSound); delay(15); speakerSound++; if(speakerSound >= 700){speakerSound = 500;}  }
-  else    {speakerSound = 500;}
-// Let there be sound
-//for(uint16_t i=500;i<700;i++)  {  tone(speaker,i);  delay(15);  }
-//for(uint16_t i=700;i>500;i--)  {  tone(speaker,i);  delay(15);  }
-// and there was sound
+  else    { noTone(speaker); speakerSound = 500;}
+
 }
 
 void ledIlluminate(bool flag)
@@ -110,11 +109,11 @@ myservo.write(90);
 if (aState != aLastState)
   {
   // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
-  if (digitalRead(outputB) != aState)   {  counter ++;  }
-  else                                  {  counter --;  }
+  if (digitalRead(outputB) != aState)   {  counter++;  }
+  else                                  {  counter--;  }
   angle = counter;
-
   }
+  
 if(angle > 3)
   {
   myservo.write(92);
