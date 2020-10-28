@@ -90,7 +90,7 @@ void loop()
 
 void speakerBoom(bool trip)
 {
-  if(trip){  tone(speaker,speakerSound); delay(15); speakerSound++; if(speakerSound >= 700){speakerSound = 500};  }
+  if(trip){  tone(speaker,speakerSound); delay(15); speakerSound++; if(speakerSound >= 700){speakerSound = 500;}  }
   else    {speakerSound = 500;}
 // Let there be sound
 //for(uint16_t i=500;i<700;i++)  {  tone(speaker,i);  delay(15);  }
