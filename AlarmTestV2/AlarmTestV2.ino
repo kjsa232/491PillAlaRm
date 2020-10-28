@@ -3,13 +3,11 @@
 
 //new includes
 #include <Servo.h>
-#include <LiquidCrystal.h> //remove in final
 
-#define outputA 6
-#define outputB 7
+#define outputA 49
+#define outputB 50
 
 Servo myservo;
-LiquidCrystal lcd(23, 25, 27, 29, 31, 33); //CHANGED THESE PINS
 
 //KEYPAD
 char customKey;
@@ -82,6 +80,9 @@ void loop()
 
   if(speakerTripped == 1){speakerBoom();}
   ledIlluminate(ledTripped);
+
+  if(cupDetected()){digitalWrite(led,HIGH);}
+  else{digitalWrite(led,LOW);}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -111,13 +112,9 @@ myservo.write(90);
 if (aState != aLastState)
   {
   // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
-  if (digitalRead(outputB) != aState)   {  counter ++;  lcd.clear();  }
-  else                                  {  counter --;  lcd.clear();  }
+  if (digitalRead(outputB) != aState)   {  counter ++;  }
+  else                                  {  counter --;  }
   Serial.print("Position: ");  Serial.println(counter);
-  lcd.setCursor(0, 0);
-  lcd.print("Position: ");
-  lcd.setCursor(10, 0);
-  lcd.print(counter);
   angle = counter;
 
   }

@@ -5,8 +5,8 @@
 #include <Servo.h>
 #include <LiquidCrystal.h> //remove in final
 
-#define outputA 6
-#define outputB 7
+#define outputA 49
+#define outputB 50
 
 Servo myservo;
 LiquidCrystal lcd(23, 25, 27, 29, 31, 33); //CHANGED THESE PINS
