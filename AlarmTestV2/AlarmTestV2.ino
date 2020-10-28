@@ -80,7 +80,7 @@ void loop()
 
   if(speakerTripped == 1){speakerBoom();}
   ledIlluminate(ledTripped);
-
+  delay(300);
   if(cupDetected()){digitalWrite(led,HIGH);}
   else{digitalWrite(led,LOW);}
 }
