@@ -46,7 +46,7 @@ uint8_t run = 1; // what does this thing here do?
 void speakerBoom();
 void ledIlluminate(uint8_t trip);
 void rotatePills();
-bool cupDetected)();
+bool cupDetected();
 
 void setup()
 {
@@ -127,7 +127,7 @@ if(angle > 3)
 aLastState = aState; // Updates the previous state of the outputA with the current state
 }
 
-bool cupDetected)()
+bool cupDetected()
 {
   bool isThere = false;
   //check for cupDetected
