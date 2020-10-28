@@ -71,11 +71,11 @@ void loop()
   customKey = customKeypad.getKey();
   switch(customKey)
   {
-  case '1': speakerTripped = 1; cusomKey = 'z'; break;
-  case '2': speakerTripped = 0; cusomKey = 'z'; break;
-  case '3': ledTripped = 0; cusomKey = 'z'; break;
-  case '4': ledTripped = 1; cusomKey = 'z'; break;
-  case '5': rotatePills(); cusomKey = 'z'; break;
+  case '1': speakerTripped = 1; customKey = 'z'; break;
+  case '2': speakerTripped = 0; customKey = 'z'; break;
+  case '3': ledTripped = 0; customKey = 'z'; break;
+  case '4': ledTripped = 1; customKey = 'z'; break;
+  case '5': rotatePills(); customKey = 'z'; break;
   }
 
   if(speakerTripped == 1){speakerBoom();}
