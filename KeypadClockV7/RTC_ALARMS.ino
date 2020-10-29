@@ -173,14 +173,6 @@
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ALARMS
-
-//have these as variable of menu class, public variables
-//have them set when the alarm time is set, same function call
-uint8_t snoozeAlarmHH = clkMenu.getAlarmHH();
-uint8_t snoozeAlarmMM = clkMenu.getAlarmMM();
-
-
-
 uint8_t pillAlarm()
 {
   customKey = customKeypad.getKey();
@@ -191,11 +183,9 @@ uint8_t pillAlarm()
   {
     case 0:
     // Turn on LEDS that shine on the cup
-    // DAVID INSERT HERE
-    
-
+    ledTripped = true;
     //Turn on the Speaker
-    // DAVID INSERT HERE
+    speakerTripped = true;
 
     if(clkMenu.getChildSafety() == 1)
     {
@@ -330,7 +320,7 @@ switch (customKey)
     case 2:
     //wait for the cup to be in place VIA the light sensor
     // if it is in place set [pillAlarmState = 3;]
-    // DAVID INSERT HERE
+    if(cupDetected()){pillAlarmState = 3;}
 
     //TEST
     if(customKey == '7'){pillAlarmState = 3;customKey = 'z';} //jump over cup in place
@@ -338,7 +328,7 @@ switch (customKey)
 
     case 3:
     //rotate the motor to dispense the pills
-    // DAVID INSERT HERE
+    rotateTripped = true;
 
     pillAlarmState = 4;
     //allow fallthrough
@@ -347,10 +337,10 @@ switch (customKey)
     //snooze when removed
     // if it is removed, set [pillAlarmState = 5;]
 
-    //if(removed)
+    if(!cupDetected())//if(removed)
     {
     //stop the speaker
-    // DAVID INSERT HERE
+    speakerTripped = false;
 
     pillAlarmState = 5;
     //calculate time snooze ends
@@ -358,6 +348,7 @@ switch (customKey)
     if(clkMenu.snoozePillMM < 60){clkMenu.snoozePillHH = now.hour();}
     else {clkMenu.snoozePillMM = 0; clkMenu.snoozePillHH = (now.hour() + 1) % 24;}
     }
+    
     //TEST
     if(customKey == '8'){pillAlarmState = 5;customKey = 'z';} //jump over pill removed check
     break; //loop until cup removed
@@ -367,18 +358,23 @@ switch (customKey)
     if((clkMenu.snoozePillHH == now.hour()) && (clkMenu.snoozePillMM == now.minute()) && (clkMenu.snoozePillSS == now.second()))
       {
       //Enable Speaker
-      // DAVID INSERT HERE
+      speakerTripped = true;
 
       pillAlarmState = 6;
       }
     
     //check if cup was returned
     //true -> turn off Pill ALARM: LED, Speaker
-    // DAVID INSERT HERE
+    if(cupDetected())
+    {
+      pillAlarmState = 6;
+      speakerTripped = false;
+      ledTripped = false;
+    }
 
     //TEST
-    if(customKey == '9'){pillAlarmState = 6;customKey = 'z';} //jump over pill returned check
-
+    if(customKey == '9'){pillAlarmState = 6;customKey = 'z';speakerTripped = false;ledTripped = false;} //jump over pill returned check
+    
     break; //loop until cup is returned
     
     case 6:
@@ -409,7 +405,7 @@ uint8_t alarm()
   {
     case 0:
     //Turn on the Speaker
-    // DAVID INSERT HERE
+    speakerTripped = true;
 
     alarmState = 1;
     // NO break; to allow fall through
@@ -486,7 +482,7 @@ uint8_t alarm()
 
     case 2:
     // turn off ALARM: Speaker
-    // DAVID INSERT HERE
+    speakerTripped = false;
 
     AlarmTripped = 0;
     OLED_Text_Color = clkMenu.getColor(); //reset Color
@@ -497,3 +493,55 @@ uint8_t alarm()
   }//switch(alarmState)
   return AlarmTripped;
 }//alarm()
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ALARM TRIPPED FUNCTIONS
+void speakerBoom(bool trip)
+{
+  if(trip){  tone(speaker,speakerSound); delay(15); speakerSound++; if(speakerSound >= 700){speakerSound = 500;}  }
+  else    { noTone(speaker); speakerSound = 500;}
+}
+
+void ledIlluminate(bool trip)
+{
+if(trip){digitalWrite(led,HIGH);}
+else    {digitalWrite(led,LOW);}
+}
+
+void rotatePills(bool trip)
+{
+if(trip)
+  {
+  aState = digitalRead(outputA); // Reads the "current" state of the outputA
+  // If the previous and the current state of the outputA are different, that means a Pulse has occured
+  myservo.write(90);
+  if (aState != aLastState)
+    {
+    // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
+    if (digitalRead(outputB) != aState)   {  counter++;  }
+    else                                  {  counter--;  }
+    angle = counter;
+    }
+    
+  if(angle > 3)
+    {
+    myservo.write(92);
+    delay(10);
+    rotateTripped = false;
+    }
+  aLastState = aState; // Updates the previous state of the outputA with the current state
+  }
+else
+  {
+   angle = 0;
+   counter = 0; 
+  }
+}
+
+bool cupDetected()
+{
+  bool isThere = false;
+  //check for cupDetected
+
+  return isThere;
+}
