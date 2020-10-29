@@ -11,6 +11,11 @@
 #include <Wire.h>
 #include "ds3231.h"
 
+//Motor in alarm
+#include <Servo.h>
+#define outputA 49
+#define outputB 50
+
 
 //CALL THE ANALOG PINS AS DIGITAL: call them [Pin 14 .. Pin 19]
 
@@ -135,6 +140,23 @@ uint8_t pillAlarmState = 0;
 uint8_t alarmState = 0;
 uint8_t pillAlarmTripped = 0; //for pillAlarm()
 uint8_t alarmTripped = 0; //for alarm()
+uint8_t snoozeAlarmHH = 70; //garbage value before its set
+uint8_t snoozeAlarmMM = 70; //garbage value before its set
+
+// for alarm tripped func
+bool speakerTripped = 0; //Lets there be sound
+bool ledTripped = 0;     //Lets there be light
+bool rotateTripped = 0;
+uint16_t speakerSound = 500;
+// for motor and encoder
+int16_t counter = 0;
+int16_t aState;
+int16_t aLastState;
+int16_t angle = 0;
+//PINS
+uint8_t speaker = 53;
+uint8_t led = 52;
+uint8_t motor = 51;
 
 //////////////DECLARATIONS OF CLASSES//////////////////////////
 // declare the display
@@ -144,6 +166,8 @@ Menu clkMenu;
 //declare the clock
 RTC_DS3231 rtc;
 DateTime now;
+//declare servo
+Servo myservo;
 
 uint16_t OLED_Text_Color = clkMenu.getColor();
 //END GLOBAL VARIABLES ///////////////////////////////////////////
@@ -154,10 +178,17 @@ void senseButtonPressed() {
 }
 //FUNCTIONS
 void keypadMenu();
+void clearCurrSetTo(uint8_t hourIn, uint8_t minIn);
+
 void rtcTime(uint8_t in);
 uint8_t pillAlarm();
 uint8_t alarm();
+void speakerBoom(bool trip);
+void ledIlluminate(bool trip);
+void rotatePills(bool trip);
+bool cupDetected();
 
+//////////////////////////////////////////////////////////////
 void setup()
 {
 //rtcTime
@@ -180,14 +211,27 @@ oled.setTextSize(3);
 // the display is now on
 isDisplayVisible = true;
 
-//WORKING
+//WORKING RTC
 RTC_DS3231 rtc;
 DateTime now = rtc.now();
 hourOld = now.hour();
 minOld = now.minute();
 
+//Alarm Tripped Pins
+pinMode(speaker, OUTPUT);
+pinMode(led, OUTPUT);
+
+//Motor Control
+myservo.attach(motor); //previously 9 check PINS above for current
+pinMode (outputA,INPUT);
+pinMode (outputB,INPUT);
+// Reads the initial state of the outputA
+aLastState = digitalRead(outputA);
+
 //load variables into clkMenu, Alarms, Pill counter, PIN, WiFi, Time Format, Menu Color, Child Safety
 clkMenu.load();
+uint8_t snoozeAlarmHH = clkMenu.getAlarmHH();
+uint8_t snoozeAlarmMM = clkMenu.getAlarmMM();
 OLED_Text_Color = clkMenu.getColor();
 oled.fillScreen(OLED_Backround_Color);
 rtcTime(1);
@@ -221,7 +265,10 @@ if( (clkMenu.getAlarmHH() == now.hour() && clkMenu.getAlarmMM() == now.minute() 
     else alarmTripped = 1;
   }
 
-
+//CALL ALARM TRIPPED FUNTIONS
+rotatePills(rotateTripped);
+speakerBoom(speakerTripped);
+ledIlluminate(ledTripped);
 
 
 // no need to be in too much of a hurry, shorten if too much latency
