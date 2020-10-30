@@ -185,7 +185,7 @@ uint8_t pillAlarm();
 uint8_t alarm();
 void speakerBoom(bool trip);
 void ledIlluminate(bool trip);
-void rotatePills(bool trip);
+bool rotatePills(bool trip);
 bool cupDetected();
 
 //////////////////////////////////////////////////////////////
@@ -254,13 +254,7 @@ char* PASSin = pass.c_str();
 //CALL THE PILL ALARM FUNCTION
 // check if the trigger time for the pill alarm is the current time
 if( (clkMenu.getPillHH() == now.hour() && clkMenu.getPillMM() == now.minute() && now.second() == 0) || (pillAlarmTripped == 1) ) 
-  {
-    pillAlarmTripped = pillAlarm();
-    //CALL ALARM TRIPPED FUNTIONS
-    rotatePills(rotateTripped);
-    speakerBoom(speakerTripped);
-    ledIlluminate(ledTripped);
-  }
+  {    pillAlarmTripped = pillAlarm();  }
 
 //CALL THE ALARM FUNCTION
 // check if the trigger time for the pill alarm is the current time
@@ -268,18 +262,14 @@ if( (clkMenu.getAlarmHH() == now.hour() && clkMenu.getAlarmMM() == now.minute() 
     (clkMenu.snoozeAlarmHH == now.hour() && clkMenu.snoozeAlarmMM == now.minute() && now.second() == 0) ) 
   {
     // Check if the Pill Alarm is Active, INACTIVE: go into alarm, ACTIVE, delay until Pill Alarm is complete
-    if(pillAlarmTripped == 0)
-    {
-      alarmTripped = alarm();
-      //CALL ALARM TRIPPED FUNTIONS
-      rotatePills(rotateTripped);
-      speakerBoom(speakerTripped);
-      ledIlluminate(ledTripped);
-    }
+    if(pillAlarmTripped == 0)    {      alarmTripped = alarm();    }
     else alarmTripped = 1;
   }
-
+  
+//CALL ALARM TRIPPED FUNTIONS
 rotatePills(rotateTripped);
+speakerBoom(speakerTripped);
+ledIlluminate(ledTripped);
 
 
 // no need to be in too much of a hurry, shorten if too much latency

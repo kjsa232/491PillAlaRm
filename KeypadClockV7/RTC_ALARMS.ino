@@ -320,18 +320,18 @@ switch (customKey)
     case 2:
     //wait for the cup to be in place VIA the light sensor
     // if it is in place set [pillAlarmState = 3;]
-    if(cupDetected()){pillAlarmState = 3;}
+    if(cupDetected()){pillAlarmState = 3;rotateTripped = true;rotateAngle = 0;rotateCounter = 0;}
 
     //TEST
-    if(customKey == '7'){pillAlarmState = 3;customKey = 'z';} //jump over cup in place
+    if(customKey == '7'){pillAlarmState = 3;rotateTripped = true;rotateAngle = 0;rotateCounter = 0;customKey = 'z';} //jump over cup in place
     break;
 
     case 3:
     //rotate the motor to dispense the pills
-    rotateTripped = true;
-
-    pillAlarmState = 4;
-    //allow fallthrough
+    while(rotateTripped){rotateTripped = rotatePills(rotateTripped);}
+    if(!rotateTripped){pillAlarmState = 4;}
+    break; //to loop over motor
+    
     case 4:
     //check if the cup has been removed
     //snooze when removed
@@ -356,12 +356,8 @@ switch (customKey)
     case 5:
     //SNOOZE for 1 min, after the min has elapsed this will be called
     if((clkMenu.snoozePillHH == now.hour()) && (clkMenu.snoozePillMM == now.minute()) && (clkMenu.snoozePillSS == now.second()))
-      {
-      //Enable Speaker
-      speakerTripped = true;
+      { speakerTripped = true; } //Enable Speaker
 
-      pillAlarmState = 6;
-      }
     
     //check if cup was returned
     //true -> turn off Pill ALARM: LED, Speaker
@@ -509,7 +505,7 @@ if(trip){digitalWrite(led,HIGH);}
 else    {digitalWrite(led,LOW);}
 }
 
-void rotatePills(bool trip)
+bool rotatePills(bool trip)
 {
 if(trip)
   {
@@ -529,6 +525,7 @@ if(trip)
     myservo.write(92);
     delay(10);
     rotateTripped = false;
+    trip = false;
     }
   aLastState = aState; // Updates the previous state of the outputA with the current state
   }
@@ -537,6 +534,7 @@ else
   rotateAngle = 0;
   rotateCounter = 0; 
   }
+  return trip;
 }
 
 bool cupDetected()

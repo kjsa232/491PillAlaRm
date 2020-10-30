@@ -32,7 +32,7 @@ void keypadMenu()
   switch (clkMenu.getLevel())
   {
     case 0:
-          if (customKey == '4'){rotateTripped = true;  customKey = 'z';}
+          if (customKey == '4'){rotateAngle = 0;rotateCounter = 0;rotateTripped = true;  customKey = 'z';}
           if (customKey == '5')
           {
             // Battery Full
