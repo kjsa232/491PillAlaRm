@@ -30,20 +30,20 @@ char hexaKeys[ROWS][COLS] = {
   {'*', '0', '#'}
 };
 
-// digital connection Pins to the arduino for the keypad
-byte rowPins[ROWS] = {7, 6, 5, 4};
-byte colPins[COLS] = {3, 2, 1};
+// digital connection Pins to the arduino for the keypad //new 22-28, when looking at keypad(faceup)22 is leftmost
+byte rowPins[ROWS] = {22, 23, 24, 25}; // old 7,6,5,4
+byte colPins[COLS] = {26, 27, 28};     // old 3,2,1
 Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS);
 
 #define SerialDebugging true
 
 ///////////////////DISPLAY///////////////////////////////
-// The SSD1331 is connected like this (plus VCC plus GND)
-const uint8_t OLED_pin_scl_sck = 12;  //12 old
-const uint8_t OLED_pin_sda_mosi = 11; //11 old
-const uint8_t OLED_pin_cs_ss = 10;
-const uint8_t OLED_pin_res_rst = 9;
-const uint8_t OLED_pin_dc_rs = 8;
+// The SSD1331 is connected like this (plus VCC plus GND) new 44-48
+const uint8_t OLED_pin_scl_sck = 44;  //12 old
+const uint8_t OLED_pin_sda_mosi = 45; //11 old
+const uint8_t OLED_pin_cs_ss = 48;    //old 10
+const uint8_t OLED_pin_res_rst = 46;   //old 9
+const uint8_t OLED_pin_dc_rs = 47;     //old 8
 
 // SSD1331 color definitions
 const uint16_t OLED_Color_Black = 0x0000;
