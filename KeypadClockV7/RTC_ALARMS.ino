@@ -384,6 +384,7 @@ switch (customKey)
     OLED_Text_Color = clkMenu.getColor(); //reset Color
     rtcTime(1);
     pillAlarmState = 0;
+    rotateTripped = false;myservo.write(92);
     //break;
     //default:
   }//switch(pillAlarmState)
@@ -518,12 +519,12 @@ if(trip)
   if (aState != aLastState)
     {
     // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
-    if (digitalRead(outputB) != aState)   {  counter++;  }
-    else                                  {  counter--;  }
-    angle = counter;
+    if (digitalRead(outputB) != aState)   {  rotateCounter++;  }
+    else                                  {  rotateCounter--;  }
+    rotateAngle =rotateCounter;
     }
     
-  if(angle > 3)
+  if(rotateAngle > 3)
     {
     myservo.write(92);
     delay(10);
@@ -533,8 +534,8 @@ if(trip)
   }
 else
   {
-   angle = 0;
-   counter = 0; 
+  rotateAngle = 0;
+  rotateCounter = 0; 
   }
 }
 

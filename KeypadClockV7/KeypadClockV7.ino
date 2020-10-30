@@ -149,14 +149,14 @@ bool ledTripped = 0;     //Lets there be light
 bool rotateTripped = 0;
 uint16_t speakerSound = 500;
 // for motor and encoder
-int16_t counter = 0;
-int16_t aState;
-int16_t aLastState;
-int16_t angle = 0;
+volatile int16_t rotateCounter = 0;
+volatile int16_t aState;
+volatile int16_t aLastState;
+volatile int16_t rotateAngle = 0;
 //PINS
 uint8_t speaker = 53;
 uint8_t led = 52;
-uint8_t motor = 51;
+int motor = 41;
 
 //////////////DECLARATIONS OF CLASSES//////////////////////////
 // declare the display
@@ -253,7 +253,14 @@ char* PASSin = pass.c_str();
 
 //CALL THE PILL ALARM FUNCTION
 // check if the trigger time for the pill alarm is the current time
-if( (clkMenu.getPillHH() == now.hour() && clkMenu.getPillMM() == now.minute() && now.second() == 0) || (pillAlarmTripped == 1) ) {pillAlarmTripped = pillAlarm();}
+if( (clkMenu.getPillHH() == now.hour() && clkMenu.getPillMM() == now.minute() && now.second() == 0) || (pillAlarmTripped == 1) ) 
+  {
+    pillAlarmTripped = pillAlarm();
+    //CALL ALARM TRIPPED FUNTIONS
+    rotatePills(rotateTripped);
+    speakerBoom(speakerTripped);
+    ledIlluminate(ledTripped);
+  }
 
 //CALL THE ALARM FUNCTION
 // check if the trigger time for the pill alarm is the current time
@@ -261,14 +268,18 @@ if( (clkMenu.getAlarmHH() == now.hour() && clkMenu.getAlarmMM() == now.minute() 
     (clkMenu.snoozeAlarmHH == now.hour() && clkMenu.snoozeAlarmMM == now.minute() && now.second() == 0) ) 
   {
     // Check if the Pill Alarm is Active, INACTIVE: go into alarm, ACTIVE, delay until Pill Alarm is complete
-    if(pillAlarmTripped == 0){alarmTripped = alarm();}
+    if(pillAlarmTripped == 0)
+    {
+      alarmTripped = alarm();
+      //CALL ALARM TRIPPED FUNTIONS
+      rotatePills(rotateTripped);
+      speakerBoom(speakerTripped);
+      ledIlluminate(ledTripped);
+    }
     else alarmTripped = 1;
   }
 
-//CALL ALARM TRIPPED FUNTIONS
 rotatePills(rotateTripped);
-speakerBoom(speakerTripped);
-ledIlluminate(ledTripped);
 
 
 // no need to be in too much of a hurry, shorten if too much latency
