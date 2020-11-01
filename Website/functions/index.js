@@ -4,6 +4,8 @@
 
 firebase = require("firebase")
 
+const functions = require('firebase-functions');
+
 var firebaseConfig = {
     apiKey: "AIzaSyDQMp5PMRIwRnqzYmLdBuSDjy9VjhvoZ7Y",
     authDomain: "pill-alarm-be539.firebaseapp.com",
@@ -19,73 +21,92 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 console.log("Initialized Firebase Project")
 
-var schedule = require('node-schedule');
+// Initialize Twilio
+const accountSid = 'AC7ad554ea01770c1f8fa534929aa22066';
+const authToken = 'c3e2cb72a6c449d91141ab46f97afe5d';
+const client = require('twilio')(accountSid, authToken);
+console.log("Initialized Twilio SMS API.")
 
-firebase.database().ref("status/12312312312").set({
-    "pills_taken": true
-})
+// Initialize Send Grid
+const sgMail = require('@sendgrid/mail');
+sgMail.setApiKey("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");
+console.log("Initialized Send Grid Email API.")
 
-firebase.database().ref("status/55555").set({
-    "pills_taken": false
-})
-
-firebase.database().ref("status/12324123123").set({
-    "pills_taken": true
-})
-
-firebase.database().ref("status/123241231232").set({
-    "pills_taken": false
-})
-
-
-var monitor_pills = schedule.scheduleJob('*/5 * * * * *', function(){
-    console.log('Checking Pill Status');
-    firebase.database().ref("status/").once('value').then(function(status_info){
-        var all_status = status_info.val()
-        if (all_status == null || all_status.length == 0){
-            console.log("No New Status Received...")
-            return
-        }
-        for (i in all_status){
-            var status = all_status[i]
-            var serial_number = i
-            var pills_taken = status.pills_taken
-            //No action needed if pills taken
-            if (pills_taken){
-                console.log("Pills have been taken for SN: " + serial_number + ". Removing Status.")
-                firebase.database().ref("status/" + serial_number).remove()
-            }
-            else{
-                console.log("Pills not taken for SN: " + serial_number + ".")
-                firebase.database().ref("users/" + serial_number).once('value').then(function(user_info){
-                    var user = user_info.val();
-                    if (user == null){
-                        console.log("No User Registered with Serial Number: " + serial_number)
-                        firebase.database().ref("status/" + serial_number).remove()
-                        return
-                    }
-                    var name = user.name
-                    var email = user.email
-                    var email_notification = user.emailNotifications
-                    var phone = user.phone
-                    var phone_notification = user.phoneNotifications
-                    if (email_notification){
-                        var email_text = "Hello " + name + ",\n" + " \
-                            Your Pill Alarm user with Serial Number " + serial_number + " has not removed their pills today."
-                        console.log("Sending Email to " + email)
-                        console.log(email_text)
-                    }
-                    if (phone_notification){
-                        var phone_text = "Hello " + name + "." + " \
-                        Your Pill Alarm user with Serial Number " + serial_number + " has not removed their pills today."
-                        console.log("Sending Text to " + phone)
-                        console.log(phone_text)
-                    }
-                    firebase.database().ref("status/" + serial_number).remove()
-                })
-            }
-
-        }
+function send_email_notification(email, subject, content){
+    const msg = {
+        to: email,
+        from: 'ukypillalarm@gmail.com', // Use the email address or domain you verified above
+        subject: subject,
+        text: content,
+    };
+    sgMail.send(msg).then(() =>{
+        console.log("Sent Email to " + email)
+        console.log("Content:")
+        console.log(content)
+        console.log("\n")
+    }).catch((error) => {
+        console.log(error)
     })
-  });
-  
+}
+
+function send_text_notification(phone, content){
+    if (!phone.startsWith("+1"))
+        phone = "+1" + phone
+
+    client.messages
+    .create({
+        body: content,
+        from: '+13205261983',
+        to: phone
+    }, function(error, item){
+        if (error)
+            console.log(error)
+        else{
+            console.log("Sent Message to " + phone)
+            console.log("Content:")
+            console.log(content)
+            console.log("\n")
+        }
+    });
+
+}
+
+function monitor_database(){
+    var users_not_taken_ref = firebase.database().ref("users").orderByChild("taken").equalTo(false)
+
+    users_not_taken_ref.on('value', function(snapshot){
+        snapshot.forEach(function(childSnapshot){
+            var serial_number = childSnapshot.key
+            var user = childSnapshot.val()
+            console.log("Pills not taken for SN: " + serial_number + ".")
+            var name = user.name
+            var email = user.email
+            var email_notification = user.emailNotifications
+            var phone = user.phone
+            var phone_notification = user.phoneNotifications
+            if (email_notification){
+                var subject = "Pill Alarm: Missed Pill Notification"
+                var email_text = "Hello " + name + ",\n\n" + 
+                "Your Pill Alarm user with Serial Number " + serial_number + " has not removed their pills today."
+                send_email_notification(email, subject, email_text);
+            }
+            console.log("\n")
+            if (phone_notification){
+                var phone_text = "Hello " + name + ", " + "Your Pill Alarm user with Serial Number " 
+                                 + serial_number + " has not removed their pills today.";
+    
+                send_text_notification(phone, phone_text)
+            }
+            console.log("\n\n\n");
+            childSnapshot.ref.update({
+                 "taken": true
+            })
+        })
+    })    
+}
+
+monitor_database();
+
+// firebase.database().ref("users/12312312312").update({
+//     "taken": false
+// })
