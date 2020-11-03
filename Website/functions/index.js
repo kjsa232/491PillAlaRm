@@ -5,7 +5,7 @@
 firebase = require("firebase")
 
 var firebaseConfig = {
-    apiKey: "AIzaSyDQMp5PMRIwRnqzYmLdBuSDjy9VjhvoZ7Y",
+    apiKey: "*****",
     authDomain: "pill-alarm-be539.firebaseapp.com",
     databaseURL: "https://pill-alarm-be539.firebaseio.com",
     projectId: "pill-alarm-be539",
