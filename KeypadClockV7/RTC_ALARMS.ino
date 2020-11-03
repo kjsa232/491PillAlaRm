@@ -520,7 +520,7 @@ if(trip)
     rotateAngle =rotateCounter;
     }
     
-  if(rotateAngle > 3)
+  if(rotateAngle < -3)
     {
     myservo.write(92);
     delay(10);
@@ -541,6 +541,17 @@ bool cupDetected()
 {
   bool isThere = false;
   //check for cupDetected
+  int sensor = analogRead(A0);
+  
+  if (sensor < 300 ) 
+  {   // Change 100 to the number depending on the light in your area.
+    //detects light
+    isThere = true;
+  }
 
+  else 
+  {
+    isThere = false;
+  }
   return isThere;
 }

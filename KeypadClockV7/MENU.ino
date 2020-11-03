@@ -32,8 +32,13 @@ void keypadMenu()
   switch (clkMenu.getLevel())
   {
     case 0:
-          if (customKey == '4'){rotateAngle = 0;rotateCounter = 0;rotateTripped = true;  customKey = 'z';}
-          if (customKey == '5')
+          if (customKey == '1')
+          {
+            while(rotateTripped){rotateTripped = rotatePills(rotateTripped);}
+            if(!rotateTripped){pillAlarmState = 4;}
+          }
+          else if (customKey == '4'){rotateAngle = 0;rotateCounter = 0;rotateTripped = true;  customKey = 'z';}
+          else if (customKey == '5')
           {
             // Battery Full
             //OLED_Text_Color = OLED_Color_White;
