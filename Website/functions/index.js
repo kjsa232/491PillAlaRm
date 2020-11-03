@@ -7,7 +7,7 @@ firebase = require("firebase")
 const functions = require('firebase-functions');
 
 var firebaseConfig = {
-    apiKey: "AIzaSyDQMp5PMRIwRnqzYmLdBuSDjy9VjhvoZ7Y",
+    apiKey: "****",
     authDomain: "pill-alarm-be539.firebaseapp.com",
     databaseURL: "https://pill-alarm-be539.firebaseio.com",
     projectId: "pill-alarm-be539",
@@ -22,8 +22,8 @@ firebase.initializeApp(firebaseConfig);
 console.log("Initialized Firebase Project")
 
 // Initialize Twilio
-const accountSid = 'AC7ad554ea01770c1f8fa534929aa22066';
-const authToken = 'c3e2cb72a6c449d91141ab46f97afe5d';
+const accountSid = '****';
+const authToken = '*****';
 const client = require('twilio')(accountSid, authToken);
 console.log("Initialized Twilio SMS API.")
 
