@@ -17,8 +17,8 @@
 //#include "Firebase_Arduino_WiFiNINA.h"
 
 //Firebase defines
-#define FIREBASE_HOST "pill-alarm-be539.firebaseio.com"
-#define FIREBASE_AUTH "UaIlUqx6ZnV0xkLNyIkSeOD6dHDD3Xm3KoKM2r0O"
+#define FIREBASE_HOST "************"
+#define FIREBASE_AUTH "*************"
 
 
 //CALL THE ANALOG PINS AS DIGITAL: call them [Pin 14 .. Pin 19]
@@ -155,7 +155,11 @@ Menu clkMenu;
 RTC_DS3231 rtc;
 DateTime now;
 
-//Define Firebase data object
+//Define 
+
+
+
+data object
 FirebaseData firebaseData;
 
 //END GLOBAL VARIABLES ///////////////////////////////////////////
