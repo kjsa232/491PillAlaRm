@@ -16,10 +16,10 @@
 #include "FirebaseESP8266.h"
 #include <ESP8266WiFi.h>
 #include <SoftwareSerial.h>
-#define FIREBASE_HOST "pill-alarm-be539.firebaseio.com" //Without http:// or https:// schemes
-#define FIREBASE_AUTH "UaIlUqx6ZnV0xkLNyIkSeOD6dHDD3Xm3KoKM2r0O"
-#define WIFI_SSID "Team 09"
-#define WIFI_PASSWORD "trashcan"
+#define FIREBASE_HOST "***********" //Without http:// or https:// schemes
+#define FIREBASE_AUTH "************"
+#define WIFI_SSID "************"
+#define WIFI_PASSWORD "************"
 
 //Define FirebaseESP8266 data object
 FirebaseData firebaseData;
