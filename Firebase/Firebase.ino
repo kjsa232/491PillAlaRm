@@ -17,10 +17,10 @@
 
 #include "Firebase_Arduino_WiFiNINA.h"
 
-#define FIREBASE_HOST "pill-alarm-be539.firebaseio.com"
-#define FIREBASE_AUTH "UaIlUqx6ZnV0xkLNyIkSeOD6dHDD3Xm3KoKM2r0O"
-//#define WIFI_SSID "NETGEAR24"
-//#define WIFI_PASSWORD "pickle123"
+#define FIREBASE_HOST "*******"
+#define FIREBASE_AUTH "********"
+//#define WIFI_SSID "*****"
+//#define WIFI_PASSWORD "*****"
 
 //Define Firebase data object
 FirebaseData firebaseData;
