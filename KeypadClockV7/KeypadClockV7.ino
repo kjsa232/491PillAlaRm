@@ -220,6 +220,7 @@ minOld = now.minute();
 //Alarm Tripped Pins
 pinMode(speaker, OUTPUT);
 pinMode(led, OUTPUT);
+pinMode(35, OUTPUT);
 
 //Motor Control
 myservo.attach(motor); //previously 9 check PINS above for current
@@ -244,12 +245,6 @@ if((pillAlarmTripped == 0) && (alarmTripped == 0)){keypadMenu();}   //Skip over 
 
 //RTC CLOCK TIME
 rtcTime(0);
-String ssid = clkMenu.getSSID();
-String pass = clkMenu.getPASS();
-char* SSIDin = ssid.c_str();
-char* PASSin = pass.c_str();
-
-
 
 //CALL THE PILL ALARM FUNCTION
 // check if the trigger time for the pill alarm is the current time

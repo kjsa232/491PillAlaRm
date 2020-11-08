@@ -509,6 +509,7 @@ bool rotatePills(bool trip)
 {
 if(trip)
   {
+    digitalWrite(35, HIGH);
   aState = digitalRead(outputA); // Reads the "current" state of the outputA
   // If the previous and the current state of the outputA are different, that means a Pulse has occured
   myservo.write(90);
@@ -526,6 +527,7 @@ if(trip)
     delay(10);
     rotateTripped = false;
     trip = false;
+    digitalWrite(35, LOW);
     }
   aLastState = aState; // Updates the previous state of the outputA with the current state
   }
