@@ -131,6 +131,9 @@ volatile uint16_t minIn = 0;
 volatile uint16_t ampmIn = 0; //0:not set 1:AM 2:PM
 //volatile uint16_t clkMenu.setColor(OLED_Color_Green);
 
+//FIREBASE VARS//////////////////////////
+bool firebaseSend = false;
+
 ///////////////////////RTC VAR///////////////////
 //rtc clock times
 uint8_t hourOld;
@@ -212,8 +215,6 @@ void speakerBoom(bool trip);
 void ledIlluminate(bool trip);
 bool rotatePills(bool trip);
 bool cupDetected();
-
-//bool firebaseSend = false;
 
 //////////////////////////////////////////////////////////////
 void setup()
