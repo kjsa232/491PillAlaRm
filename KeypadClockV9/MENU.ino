@@ -1,25 +1,25 @@
 //MENU.ino
 
 //helper function for clearing
-void clearCurrSetTo(uint8_t hourIn, uint8_t minIn)
+void clearCurrSetTo(uint8_t hourIn2, uint8_t minIn2)
 {
 oled.setTextColor(OLED_Backround_Color);
 //clear old pill alarm
 oled.setCursor(menu3X, menu6Y);
 oled.print("Currently set to");
 //1-9 am
-if((hourIn > 0) && (hourIn < 10))       {oled.print('0'); oled.print(hourIn);}
+if((hourIn2 > 0) && (hourIn2 < 10))       {oled.print('0'); oled.print(hourIn2);}
 //1-9 pm
-else if((hourIn > 12) && (hourIn < 22)) {oled.print('0'); oled.print(hourIn - 12);}
+else if((hourIn2 > 12) && (hourIn2 < 22)) {oled.print('0'); oled.print(hourIn2 - 12);}
 //10am-Noon (
-else if((hourIn > 9) && (hourIn < 13))  {oled.print(hourIn);}
+else if((hourIn2 > 9) && (hourIn2 < 13))  {oled.print(hourIn2);}
 //10pm-midnight
-else if((hourIn > 21) && (hourIn < 24)) {oled.print(hourIn - 12);}
-else if(hourIn == 0)                    {oled.print("12");}
+else if((hourIn2 > 21) && (hourIn2 < 24)) {oled.print(hourIn2 - 12);}
+else if(hourIn2 == 0)                    {oled.print("12");}
 oled.print(':');
-if(minIn < 10)                          {oled.print('0');}oled.print(minIn);
+if(minIn2 < 10)                          {oled.print('0');}oled.print(minIn2);
 //AM PM
-if((hourIn >= 0) && (hourIn < 12))      {oled.print(" AM");} //AM
+if((hourIn2 >= 0) && (hourIn2 < 12))      {oled.print(" AM");} //AM
 else                                    {oled.print(" PM");} //PM
 }
 
@@ -1070,7 +1070,7 @@ void keypadMenu()
         case '4':
           if (clkMenu.getCount() == 1 && hourIn < 2 )
           {
-            hourIn = 4; clkMenu.incCount();
+            hourIn = hourIn * 10 + 4; clkMenu.incCount();
             //CLEARS the second X
             oled.setCursor(hour2X, hour2Y);
             oled.setTextColor(OLED_Backround_Color);
@@ -1109,7 +1109,7 @@ void keypadMenu()
         case '5':
           if (clkMenu.getCount() == 1 && hourIn < 2 )
           {
-            hourIn = 5; clkMenu.incCount();
+            hourIn = hourIn * 10 + 5; clkMenu.incCount();
             //CLEARS the second X
             oled.setCursor(hour2X, hour2Y);
             oled.setTextColor(OLED_Backround_Color);
@@ -1148,7 +1148,7 @@ void keypadMenu()
         case '6':
           if (clkMenu.getCount() == 1 && hourIn < 2 )
           {
-            hourIn = 6; clkMenu.incCount();
+            hourIn = hourIn * 10 + 6; clkMenu.incCount();
             //CLEARS the second X
             oled.setCursor(hour2X, hour2Y);
             oled.setTextColor(OLED_Backround_Color);
@@ -1175,7 +1175,7 @@ void keypadMenu()
         case '7':
           if (clkMenu.getCount() == 1 && hourIn < 2 )
           {
-            hourIn = 7; clkMenu.incCount();
+            hourIn = hourIn * 10 + 7; clkMenu.incCount();
             //CLEARS the second X
             oled.setCursor(hour2X, hour2Y);
             oled.setTextColor(OLED_Backround_Color);
@@ -1202,7 +1202,7 @@ void keypadMenu()
         case '8':
           if (clkMenu.getCount() == 1 && hourIn < 2 )
           {
-            hourIn = 8; clkMenu.incCount();
+            hourIn = hourIn * 10 + 8; clkMenu.incCount();
             //CLEARS the second X
             oled.setCursor(hour2X, hour2Y);
             oled.setTextColor(OLED_Backround_Color);
@@ -1229,7 +1229,7 @@ void keypadMenu()
         case '9':
           if (clkMenu.getCount() == 1 && hourIn < 2 )
           {
-            hourIn = 9; clkMenu.incCount();
+            hourIn = hourIn * 10 + 9; clkMenu.incCount();
             //CLEARS the second X
             oled.setCursor(hour2X, hour2Y);
             oled.setTextColor(OLED_Backround_Color);

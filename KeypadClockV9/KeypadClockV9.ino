@@ -35,29 +35,30 @@ char hexaKeys[ROWS][COLS] = {
 };
 
 // digital connection Pins to the arduino for the keypad //new 22-28, when looking at keypad(faceup)22 is leftmost
-//byte rowPins[ROWS] = {22, 23, 24, 25}; // old 7,6,5,4
-//byte colPins[COLS] = {26, 27, 28};     // old 3,2,1
+byte rowPins[ROWS] = {22, 23, 24, 25}; // old 7,6,5,4
+byte colPins[COLS] = {26, 27, 28};     // old 3,2,1
 
-byte rowPins[ROWS] = {30, 29, 28, 27};
-byte colPins[COLS] = {26, 25, 24};
+//byte rowPins[ROWS] = {30, 29, 28, 27};
+//byte colPins[COLS] = {26, 25, 24};
 Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS);
 
 #define SerialDebugging true
 
 ///////////////////DISPLAY///////////////////////////////
 // The SSD1331 is connected like this (plus VCC plus GND) new 44-48
-//const uint8_t OLED_pin_scl_sck = 44;  //12 old
-//const uint8_t OLED_pin_sda_mosi = 45; //11 old
-//const uint8_t OLED_pin_cs_ss = 48;    //old 10
-//const uint8_t OLED_pin_res_rst = 46;   //old 9
-//const uint8_t OLED_pin_dc_rs = 47;     //old 8
+const uint8_t OLED_pin_scl_sck = 44;  //12 old
+const uint8_t OLED_pin_sda_mosi = 45; //11 old
+const uint8_t OLED_pin_cs_ss = 48;    //old 10
+const uint8_t OLED_pin_res_rst = 46;   //old 9
+const uint8_t OLED_pin_dc_rs = 47;     //old 8
 
-const uint8_t OLED_pin_scl_sck = 48;  //12 old
-const uint8_t OLED_pin_sda_mosi = 47; //11 old
-const uint8_t OLED_pin_cs_ss = 44;
-const uint8_t OLED_pin_res_rst = 46;
-const uint8_t OLED_pin_dc_rs = 45;
-
+/*
+  const uint8_t OLED_pin_scl_sck = 48;  //12 old
+  const uint8_t OLED_pin_sda_mosi = 47; //11 old
+  const uint8_t OLED_pin_cs_ss = 44;
+  const uint8_t OLED_pin_res_rst = 46;
+  const uint8_t OLED_pin_dc_rs = 45;
+*/
 
 // SSD1331 color definitions
 const uint16_t OLED_Color_Black = 0x0000;
@@ -132,7 +133,7 @@ volatile uint16_t ampmIn = 0; //0:not set 1:AM 2:PM
 //volatile uint16_t clkMenu.setColor(OLED_Color_Green);
 
 //FIREBASE VARS//////////////////////////
-bool firebaseSend = false;
+bool firebaseSend = true;
 
 ///////////////////////RTC VAR///////////////////
 //rtc clock times
@@ -182,7 +183,7 @@ volatile int16_t rotateAngle = 0;
 //PINS
 uint8_t speaker = 53;
 uint8_t led = 52;
-int motor = 41;
+int motor = 37;
 
 //////////////DECLARATIONS OF CLASSES//////////////////////////
 // declare the display
@@ -301,7 +302,7 @@ void loop()
     Serial.println(pass);
     ssidOld = ssid;
     passOld = pass;
-  }*/
+    }*/
 
 
   //CALL THE PILL ALARM FUNCTION
@@ -309,17 +310,29 @@ void loop()
   if ( (clkMenu.getPillHH() == now.hour() && clkMenu.getPillMM() == now.minute() && now.second() == 0) || (pillAlarmTripped == 1) )
   {
     pillAlarmTripped = pillAlarm();
-    uint8_t sendMsgMM, sendMsgHH; 
+    uint8_t sendMsgMM, sendMsgHH;
     sendMsgHH = clkMenu.getPillHH();
     sendMsgMM = clkMenu.getPillMM() + 1;
-    if(sendMsgMM >= 60) {
+    if (sendMsgMM >= 60) {
       sendMsgMM -= 60;
       sendMsgHH += 1;
     }
-    if((now.hour() == sendMsgHH) && (now.minute() == sendMsgMM)) {
-      firebaseSend = true;
-    }else {
-      firebaseSend = false;
+    if((clkMenu.getPillHH() == now.hour() && clkMenu.getPillMM() == now.minute() && now.second() == 0)){firebaseSend = true;}
+    if ((now.hour() == sendMsgHH) && (now.minute() == sendMsgMM) && (now.second() == 0)) {
+      if(firebaseSend)
+      {
+        mySerial.println('*');
+        Serial.println("trigger");
+        firebaseSend = false;
+      }
+
+      
+
+        
+
+      
+    } else {
+     // firebaseSend = false;
     }
   }
 
@@ -340,14 +353,14 @@ void loop()
   speakerBoom(speakerTripped);
   ledIlluminate(ledTripped);
 
-  bool firebaseSend = false;
+  /*bool firebaseSend = true;
 
   if ( firebaseSend ) {
 
     mySerial.println("trigger");
-    Serial.print("trigger");
+    Serial.println("trigger");
 
-  }
+  }*/
 
 
   // no need to be in too much of a hurry, shorten if too much latency

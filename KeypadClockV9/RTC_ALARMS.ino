@@ -511,7 +511,7 @@ if(trip)
   {
   aState = digitalRead(outputA); // Reads the "current" state of the outputA
   // If the previous and the current state of the outputA are different, that means a Pulse has occured
-  myservo.write(90);
+  myservo.write(90); //was 90, 85 is fater and stronger, lower it more for more power, closer to zero the faster
   if (aState != aLastState)
     {
     // If the outputB state is different to the outputA state, that means the encoder is rotating clockwise
