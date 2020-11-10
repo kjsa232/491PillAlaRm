@@ -8,8 +8,8 @@
 //FirebaseESP8266.h must be included before ESP8266WiFi.h
 #include "FirebaseESP8266.h"
 #include <SoftwareSerial.h>
-#define FIREBASE_HOST "pill-alarm-be539.firebaseio.com" //Without http:// or https:// schemes
-#define FIREBASE_AUTH "UaIlUqx6ZnV0xkLNyIkSeOD6dHDD3Xm3KoKM2r0O"
+#define FIREBASE_HOST "**************" //Without http:// or https:// schemes
+#define FIREBASE_AUTH "*****************"
 
 
 //Define FirebaseESP8266 data object
