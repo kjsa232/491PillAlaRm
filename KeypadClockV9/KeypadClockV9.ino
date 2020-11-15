@@ -22,6 +22,7 @@
 SoftwareSerial mySerial(10, 11);
 
 //CALL THE ANALOG PINS AS DIGITAL: call them [Pin 14 .. Pin 19]
+uint8_t displayLevel = 6;
 
 //KEYPAD
 char customKey;
@@ -125,7 +126,7 @@ char oldTimeString[MaxString] = { 0 };
 // the interrupt service routine affects this
 volatile bool isButtonPressed = false;
 
-String menu1Text = "1:Time\n2:Pill Alarm\n3:Alarm\n4:Child Safety\n5:Change PIN\n6:WiFi\n7:Pills Replaced\n8:Settings";
+String menu1Text = "1:Time\n2:Pill Alarm\n3:Alarm\n4:Child Safety\n5:Change PIN\n6:WiFi\n7:Reset Pills\n8:Settings";
 String PINin = "";
 volatile uint16_t hourIn = 0;
 volatile uint16_t minIn = 0;
@@ -185,6 +186,9 @@ uint8_t speaker = 53;
 uint8_t led = 52;
 int motor = 37;
 
+//wifi connection chip talking
+bool wifiConnectionStatus = false;
+
 //////////////DECLARATIONS OF CLASSES//////////////////////////
 // declare the display
 Adafruit_SSD1331 oled = Adafruit_SSD1331(OLED_pin_cs_ss, OLED_pin_dc_rs, OLED_pin_sda_mosi, OLED_pin_scl_sck, OLED_pin_res_rst);
@@ -216,6 +220,8 @@ void speakerBoom(bool trip);
 void ledIlluminate(bool trip);
 bool rotatePills(bool trip);
 bool cupDetected();
+void batteryLevel();
+bool wifiConnected(bool wifiStatus);
 
 //////////////////////////////////////////////////////////////
 void setup()
@@ -275,6 +281,7 @@ void setup()
   oled.fillScreen(OLED_Backround_Color);
   rtcTime(1);
 
+  wifiConnectionStatus = false;
   mySerial.begin(9600);
 }
 
@@ -292,19 +299,6 @@ void loop()
   char* SSIDin = ssid.c_str();
   char* PASSin = pass.c_str();
 
-  /*if (ssidOld != ssid) {
-    // send ssid and pass to esp
-    mySerial.print(ssid + '\n' + pass + '*');
-    Serial.println("sending");
-    Serial.println("ssid: ");
-    Serial.println(ssid);
-    Serial.println("pass: ");
-    Serial.println(pass);
-    ssidOld = ssid;
-    passOld = pass;
-    }*/
-
-
   //CALL THE PILL ALARM FUNCTION
   // check if the trigger time for the pill alarm is the current time
   if ( (clkMenu.getPillHH() == now.hour() && clkMenu.getPillMM() == now.minute() && now.second() == 0) || (pillAlarmTripped == 1) )
@@ -318,23 +312,16 @@ void loop()
       sendMsgHH += 1;
     }
     if((clkMenu.getPillHH() == now.hour() && clkMenu.getPillMM() == now.minute() && now.second() == 0)){firebaseSend = true;}
-    if ((now.hour() == sendMsgHH) && (now.minute() == sendMsgMM) && (now.second() == 0)) {
+    if ((now.hour() == sendMsgHH) && (now.minute() == sendMsgMM) && (now.second() == 0)) 
+    {
       if(firebaseSend)
       {
         mySerial.println('*');
         Serial.println("trigger");
         firebaseSend = false;
       }
-
-      
-
-        
-
-      
-    } else {
-     // firebaseSend = false;
-    }
-  }
+    } 
+  }//end pill alarm tripped if statement
 
   //CALL THE ALARM FUNCTION
   // check if the trigger time for the pill alarm is the current time
@@ -353,14 +340,9 @@ void loop()
   speakerBoom(speakerTripped);
   ledIlluminate(ledTripped);
 
-  /*bool firebaseSend = true;
-
-  if ( firebaseSend ) {
-
-    mySerial.println("trigger");
-    Serial.println("trigger");
-
-  }*/
+  //DISPZLAY BATTERY AND WIFI STATUS
+  batteryLevel();
+  wifiConnectionStatus = wifiConnected(wifiConnectionStatus);
 
 
   // no need to be in too much of a hurry, shorten if too much latency

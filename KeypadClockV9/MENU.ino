@@ -43,15 +43,40 @@ void keypadMenu()
             // Battery Full
             //OLED_Text_Color = OLED_Color_White;
                        // X←,Y↑,↔,↨, Color
-            oled.drawRect(89, 1, 7, 9, OLED_Color_White);   //Outline
-            oled.drawPixel(89, 1, OLED_Backround_Color);
-            oled.drawPixel(95, 1, OLED_Backround_Color);
-                        // X←,Y↑,↔,↨, Color
-             oled.fillRect(90, 2, 5, 7, OLED_Color_Green); //Green Fill
+            oled.drawRect(89, 0, 7, 9, OLED_Color_White);   //Outline
+            oled.drawPixel(89, 0, OLED_Backround_Color);
+            oled.drawPixel(95, 0, OLED_Backround_Color);
+            
+             //battery leve fill
+             switch(displayLevel)
+             {
+                                   // X←,Y↑,↔,↨, Color
+                case 6: oled.fillRect(90, 1, 5, 7, OLED_Color_Green);  break;
+            
+                case 5: oled.fillRect(90, 1, 5, 1, OLED_Backround_Color);
+                        oled.fillRect(90, 2, 5, 6, OLED_Color_Green); break;
+               
+                case 4: oled.fillRect(90, 1, 5, 2, OLED_Backround_Color);
+                        oled.fillRect(90, 3, 5, 5, OLED_Color_Yellow); break;
+                        
+                case 3: oled.fillRect(90, 1, 5, 3, OLED_Backround_Color);
+                        oled.fillRect(90, 4, 5, 4, OLED_Color_Yellow); break;
+                        
+                case 2: oled.fillRect(90, 1, 5, 4, OLED_Backround_Color); 
+                        oled.fillRect(90, 5, 5, 3, OLED_Color_Yellow); break;
+                        
+                case 1: oled.fillRect(90, 1, 5, 5, OLED_Backround_Color); 
+                        oled.fillRect(90, 6, 5, 2, OLED_Color_Red);    break;
+            
+                case 0: oled.fillRect(90, 1, 5, 6, OLED_Backround_Color); 
+                        oled.fillRect(90, 7, 5, 1, OLED_Color_Red);    break;
+             }//end switch
+             //Outline
                        // X, Y, Color
-             oled.drawPixel(90, 2, OLED_Color_White);  //Outline
-             oled.drawPixel(94, 2, OLED_Color_White);
+             oled.drawPixel(90, 1, OLED_Color_White);  
+             oled.drawPixel(94, 1, OLED_Color_White);
 
+             if (displayLevel == 0){displayLevel = 6;} else {displayLevel -= 1;}
           }
           else if (customKey == '6')
           {
@@ -94,7 +119,10 @@ void keypadMenu()
       else if (customKey == '*')  //Menu
       {
         clkMenu.setClkON(false);
-        oled.fillScreen(OLED_Color_Black);   //SLOW
+        //oled.fillScreen(OLED_Color_Black);   //SLOW
+          //fast
+        oled.fillRect(4,11,87,21,OLED_Backround_Color);
+        oled.fillRect(14,33,23,17,OLED_Backround_Color);
 
         oled.setTextColor(OLED_Text_Color);
         oled.setCursor(menu1X, menu1Y);
@@ -263,7 +291,7 @@ void keypadMenu()
           customKey = 'z'; //This prevents the 1st input for the sub menu from being a 6
           break; //case '6'
 
-        //Pills Replaced
+        //Reset Pills
         case '7':
           //clear screen text
           oled.setTextColor(OLED_Backround_Color);
@@ -272,7 +300,7 @@ void keypadMenu()
 
           oled.setTextColor(OLED_Text_Color);
           oled.setCursor(menu1Xtab, menu1Y);
-          oled.print("Pills Replaced\nHave you reset\nyour pills?\n1:Yes\n2:No");
+          oled.print("Reset Pills\nHave you reset\nyour pills?\n1:Yes\n2:No");
           clkMenu.setLevel(70);
           customKey = 'z'; //This prevents the 1st input for the sub menu from being a 1
           break; //case '7'
@@ -1876,8 +1904,8 @@ void keypadMenu()
       }//end of switch(customKey)
       break; // end of wifi Menu level 60
 
-    //END WiFi /////////////////////////////START PILLS REPLACED
-    // Pills Replaced
+    //END WiFi /////////////////////////////START Reset Pills
+    // Reset Pills
     case 70:
       oled.setTextSize(1);
       // Reset the pill status
@@ -1890,7 +1918,7 @@ void keypadMenu()
         //clears screen
         oled.setTextColor(OLED_Backround_Color);
         oled.setCursor(menu1Xtab, menu1Y);
-        oled.print("Pills Replaced\nHave you reset\nyour pills?\n1:Yes\n2:No");
+        oled.print("Reset Pills\nHave you reset\nyour pills?\n1:Yes\n2:No");
 
         //Exit to Clock
         clkMenu.setLevel(0); rtcTime(1);
@@ -1902,7 +1930,7 @@ void keypadMenu()
         //clears screen
         oled.setTextColor(OLED_Backround_Color);
         oled.setCursor(menu1Xtab, menu1Y);
-        oled.print("Pills Replaced\nHave you reset\nyour pills?\n1:Yes\n2:No");
+        oled.print("Reset Pills\nHave you reset\nyour pills?\n1:Yes\n2:No");
         //clock menu
         clkMenu.setLevel(0); rtcTime(1); customKey = 'z';
         //Turns clock back on
@@ -1913,7 +1941,7 @@ void keypadMenu()
         //clears screen
         oled.setTextColor(OLED_Backround_Color);
         oled.setCursor(menu1Xtab, menu1Y);
-        oled.print("Pills Replaced\nHave you reset\nyour pills?\n1:Yes\n2:No");
+        oled.print("Reset Pills\nHave you reset\nyour pills?\n1:Yes\n2:No");
         //prev menu
         oled.setTextColor(OLED_Text_Color);
         oled.setCursor(menu1X, menu1Y);
@@ -1922,8 +1950,8 @@ void keypadMenu()
 
         clkMenu.setLevel(1); customKey = 'z';
       }
-      break;//case 70 pills replaced
-    /////// END PILLS REPLACED/////////////// START SETTINGS
+      break;//case 70 Reset Pills
+    /////// END Reset Pills/////////////// START SETTINGS
 
     case 80:
       //

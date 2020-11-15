@@ -555,3 +555,120 @@ bool cupDetected()
   }
   return isThere;
 }
+
+void batteryLevel()
+{
+uint8_t displayLevel = 0;
+uint16_t batteryColor = OLED_Color_Red;
+int level = analogRead(A1);
+//calibrate the level//max  1024               //APROXIMATE LEVEL
+if(level > 877)     {displayLevel = 6; }       //full     > 85.71428571%  green
+else if(level > 731){displayLevel = 5; }       //high     > 71.42857143%  green
+else if(level > 585){displayLevel = 4; }       //high     > 57.14285714%  yellow
+else if(level > 438){displayLevel = 3; }       //mid      > 42.85717286%  yellow
+else if(level > 292){displayLevel = 2; }       //low      > 28.57172857%  yellow
+else if(level > 146){displayLevel = 1; }       //low      > 14.28571429%  red
+else                {displayLevel = 0; }       //critical < 14.28571429%  red
+
+  // Battery Full
+  //OLED_Text_Color = OLED_Color_White;
+       //Outline
+              // x1 y1 x2 y2 color //line
+   oled.drawLine(90, 0, 94, 0,OLED_Color_White);
+   oled.drawLine(89, 1, 89, 8,OLED_Color_White);
+   oled.drawLine(95, 1, 95, 8,OLED_Color_White);
+   oled.drawLine(90, 8, 95, 8,OLED_Color_White);
+                // X, Y, Color
+   oled.drawPixel(90, 1, OLED_Color_White);  
+   oled.drawPixel(94, 1, OLED_Color_White);
+   
+   //battery leve fill
+   switch(displayLevel)
+   {
+                       // X←,Y↑,↔,↨, Color //fill rect
+    case 6: oled.drawLine(91,1,93,1,OLED_Color_Green);
+            oled.fillRect(90, 1, 5, 7, OLED_Color_Green);  break;
+
+    case 5: oled.drawLine(91,1,93,1,OLED_Backround_Color);
+            oled.fillRect(90, 2, 5, 6, OLED_Color_Green); break;
+   
+    case 4: oled.drawLine(91,1,93,1,OLED_Backround_Color);
+            oled.fillRect(90, 2, 5, 1, OLED_Backround_Color);
+            oled.fillRect(90, 3, 5, 5, OLED_Color_Yellow); break;
+            
+    case 3: oled.drawLine(91,1,93,1,OLED_Backround_Color);
+            oled.fillRect(90, 2, 5, 2, OLED_Backround_Color);
+            oled.fillRect(90, 4, 5, 4, OLED_Color_Yellow); break;
+            
+    case 2: oled.drawLine(91,1,93,1,OLED_Backround_Color);
+            oled.fillRect(90, 2, 5, 3, OLED_Backround_Color); 
+            oled.fillRect(90, 5, 5, 3, OLED_Color_Yellow); break;
+            
+    case 1: oled.drawLine(91,1,93,1,OLED_Backround_Color);
+            oled.fillRect(90, 2, 5, 4, OLED_Backround_Color); 
+            oled.fillRect(90, 6, 5, 2, OLED_Color_Red);    break;
+
+    case 0: oled.drawLine(91,1,93,1,OLED_Backround_Color);
+            oled.fillRect(90, 2, 5, 5, OLED_Backround_Color); 
+            oled.fillRect(90, 7, 5, 1, OLED_Color_Red);    break;
+   }//end switch
+}//end batteryLevel
+
+/*
+bool wifiConnected()
+{
+bool wifiStatus = false;
+
+if(mySerial.available())
+{
+  delay(100);
+  char cmd = mySerial.read();
+  Serial.println(cmd);
+  if(cmd == '#')  {Serial.println("connected to WiFi"); wifiStatus = true; printWifi(true);}
+}
+return wifiStatus;
+}
+*/
+
+bool wifiConnected( bool wifiStatus )
+{
+//determine status
+if(mySerial.available())
+{
+  delay(100);
+  char cmd = mySerial.read();
+  if(cmd == '#')  { wifiStatus = true; }
+  else { wifiStatus = false; }
+}
+
+//outline
+oled.drawLine(77,3,82,8,OLED_Color_White); // x1 y1 x2 y2 color
+oled.drawLine(83,7,87,3,OLED_Color_White); // x1 y1 x2 y2 color
+oled.drawPixel(86,2,OLED_Color_White);
+oled.drawPixel(86,2,OLED_Color_White);
+oled.drawPixel(85,1,OLED_Color_White);
+oled.drawPixel(84,1,OLED_Color_White);
+oled.drawLine(83,0,81,0,OLED_Color_White); // x1 y1 x2 y2 color
+oled.drawPixel(80,1,OLED_Color_White);
+oled.drawPixel(79,1,OLED_Color_White);
+oled.drawPixel(78,2,OLED_Color_White);
+
+switch(wifiStatus)
+  {
+  case true:
+    //Wifi Connected //fill connected
+    oled.fillTriangle(78,3,82,7,86,3, clkMenu.getColor()  ); //x0 y0 x1 y1 x2 y2 color
+    oled.drawLine(79,2,85,2, clkMenu.getColor() );
+    oled.drawLine(81,1,83,1, clkMenu.getColor() );
+    break;
+  
+  case false:
+    //Wifi Disconnected //fill connected
+    oled.fillTriangle(78,3,82,7,86,3, OLED_Backround_Color  ); //x0 y0 x1 y1 x2 y2 color
+    oled.drawLine(79,2,85,2, OLED_Backround_Color );
+    oled.drawLine(81,1,83,1, OLED_Backround_Color );
+    break;
+  }//end switch wifiStatus
+
+return wifiStatus;
+}//end wifiConnected
