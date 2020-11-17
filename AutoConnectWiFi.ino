@@ -8,8 +8,8 @@
 //FirebaseESP8266.h must be included before ESP8266WiFi.h
 #include "FirebaseESP8266.h"
 #include <SoftwareSerial.h>
-#define FIREBASE_HOST "**************" //Without http:// or https:// schemes
-#define FIREBASE_AUTH "*****************"
+#define FIREBASE_HOST "pill-alarm-be539.firebaseio.com" //Without http:// or https:// schemes
+#define FIREBASE_AUTH "UaIlUqx6ZnV0xkLNyIkSeOD6dHDD3Xm3KoKM2r0O"
 
 
 //Define FirebaseESP8266 data object
@@ -47,8 +47,9 @@ void setup() {
 
   //if you get here you have connected to the WiFi
   Serial.println("connected...yeey :)");
-  mySerial.println("Connected!");
-
+  mySerial.println('#');
+  Serial.println("Connected!");
+  
   Firebase.begin(FIREBASE_HOST, FIREBASE_AUTH);
   Firebase.reconnectWiFi(true);
 
