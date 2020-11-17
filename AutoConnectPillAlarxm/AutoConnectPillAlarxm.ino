@@ -97,9 +97,9 @@ void loop() {
   // put your main code here, to run repeatedly:
   if ( mySerial.available() ) {
     delay(100);
-    String cmd = mySerial.readString();
+    int cmd = mySerial.read();
 
-    if ( cmd.equals("trigger") ) {
+    if ( mySerial.available() > 0 ) {
       Serial.println("triggering");
       trig();
     }
