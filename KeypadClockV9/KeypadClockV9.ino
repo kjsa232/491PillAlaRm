@@ -22,7 +22,6 @@
 SoftwareSerial mySerial(10, 11);
 
 //CALL THE ANALOG PINS AS DIGITAL: call them [Pin 14 .. Pin 19]
-uint8_t displayLevel = 6;
 
 //KEYPAD
 char customKey;
@@ -46,20 +45,27 @@ Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS)
 #define SerialDebugging true
 
 ///////////////////DISPLAY///////////////////////////////
-// The SSD1331 is connected like this (plus VCC plus GND) new 44-48
-const uint8_t OLED_pin_scl_sck = 44;  //12 old
-const uint8_t OLED_pin_sda_mosi = 45; //11 old
-const uint8_t OLED_pin_cs_ss = 48;    //old 10
-const uint8_t OLED_pin_res_rst = 46;   //old 9
-const uint8_t OLED_pin_dc_rs = 47;     //old 8
 
-/*
-  const uint8_t OLED_pin_scl_sck = 48;  //12 old
-  const uint8_t OLED_pin_sda_mosi = 47; //11 old
-  const uint8_t OLED_pin_cs_ss = 44;
-  const uint8_t OLED_pin_res_rst = 46;
-  const uint8_t OLED_pin_dc_rs = 45;
-*/
+// NEW DISPLAY
+const uint8_t OLED_pin_scl_sck = 2;
+const uint8_t OLED_pin_sda_mosi = 3; //pin 4 bad
+const uint8_t OLED_pin_res_rst = 5;
+const uint8_t OLED_pin_dc_rs = 6;
+const uint8_t OLED_pin_cs_ss = 7;
+
+// The SSD1331 is connected like this (plus VCC plus GND) new 44-48
+//const uint8_t OLED_pin_scl_sck = 44;  //12 old
+//const uint8_t OLED_pin_sda_mosi = 45; //11 old
+//const uint8_t OLED_pin_res_rst = 46;   //old 9
+//const uint8_t OLED_pin_dc_rs = 47;     //old 8
+//const uint8_t OLED_pin_cs_ss = 48;    //old 10//
+
+//const uint8_t OLED_pin_scl_sck = 48;  //12 old
+//const uint8_t OLED_pin_sda_mosi = 47; //11 old
+//const uint8_t OLED_pin_cs_ss = 44;
+//const uint8_t OLED_pin_res_rst = 46;
+//const uint8_t OLED_pin_dc_rs = 45;
+
 
 // SSD1331 color definitions
 const uint16_t OLED_Color_Black = 0x0000;
@@ -133,9 +139,6 @@ volatile uint16_t minIn = 0;
 volatile uint16_t ampmIn = 0; //0:not set 1:AM 2:PM
 //volatile uint16_t clkMenu.setColor(OLED_Color_Green);
 
-//FIREBASE VARS//////////////////////////
-bool firebaseSend = true;
-
 ///////////////////////RTC VAR///////////////////
 //rtc clock times
 uint8_t hourOld;
@@ -184,10 +187,7 @@ volatile int16_t rotateAngle = 0;
 //PINS
 uint8_t speaker = 53;
 uint8_t led = 52;
-int motor = 37;
-
-//wifi connection chip talking
-bool wifiConnectionStatus = false;
+int motor = 41;
 
 //////////////DECLARATIONS OF CLASSES//////////////////////////
 // declare the display
@@ -222,6 +222,8 @@ bool rotatePills(bool trip);
 bool cupDetected();
 void batteryLevel();
 bool wifiConnected(bool wifiStatus);
+
+bool firebaseSend = false;
 
 //////////////////////////////////////////////////////////////
 void setup()
@@ -273,6 +275,10 @@ void setup()
   pinMode(12, OUTPUT);
   digitalWrite(12, HIGH);
 
+  //extra 5v source and gnd
+  pinMode(A1, OUTPUT); digitalWrite(A1, LOW);
+  pinMode(A2, OUTPUT); digitalWrite(A2, HIGH);
+  
   //load variables into clkMenu, Alarms, Pill counter, PIN, WiFi, Time Format, Menu Color, Child Safety
   clkMenu.load();
   uint8_t snoozeAlarmHH = clkMenu.getAlarmHH();
@@ -281,7 +287,6 @@ void setup()
   oled.fillScreen(OLED_Backround_Color);
   rtcTime(1);
 
-  wifiConnectionStatus = false;
   mySerial.begin(9600);
 }
 
@@ -299,29 +304,52 @@ void loop()
   char* SSIDin = ssid.c_str();
   char* PASSin = pass.c_str();
 
+  if (mySerial.available()) {
+    delay(100);
+    char cmd = mySerial.read();
+    Serial.println(cmd);
+    if (cmd == '#') {
+      Serial.println("Connected to WiFi");
+    }
+  } 
+
+ /* if (ssidOld != ssid) {
+    // send ssid and pass to esp
+    mySerial.print(ssid + '\n' + pass + '*');
+    Serial.println("sending");
+    Serial.println("ssid: ");
+    Serial.println(ssid);
+    Serial.println("pass: ");
+    Serial.println(pass);
+    ssidOld = ssid;
+    passOld = pass;
+  }*/
+
+
   //CALL THE PILL ALARM FUNCTION
   // check if the trigger time for the pill alarm is the current time
   if ( (clkMenu.getPillHH() == now.hour() && clkMenu.getPillMM() == now.minute() && now.second() == 0) || (pillAlarmTripped == 1) )
   {
     pillAlarmTripped = pillAlarm();
-    uint8_t sendMsgMM, sendMsgHH;
+    uint8_t sendMsgMM, sendMsgHH; 
     sendMsgHH = clkMenu.getPillHH();
     sendMsgMM = clkMenu.getPillMM() + 1;
-    if (sendMsgMM >= 60) {
+    if(sendMsgMM >= 60) {
       sendMsgMM -= 60;
       sendMsgHH += 1;
     }
-    if((clkMenu.getPillHH() == now.hour() && clkMenu.getPillMM() == now.minute() && now.second() == 0)){firebaseSend = true;}
-    if ((now.hour() == sendMsgHH) && (now.minute() == sendMsgMM) && (now.second() == 0)) 
-    {
-      if(firebaseSend)
-      {
-        mySerial.println('*');
-        Serial.println("trigger");
-        firebaseSend = false;
+    if ( (clkMenu.getPillHH() == now.hour() && clkMenu.getPillMM() == now.minute() && now.second() == 0)) { firebaseSend = true; }
+    if((now.hour() == sendMsgHH) && (now.minute() == sendMsgMM)) {
+      //firebaseSend = true;
+      if ( firebaseSend ) {
+         mySerial.println('*');
+         Serial.println("trigger");
+         firebaseSend = false;
       }
-    } 
-  }//end pill alarm tripped if statement
+    }else {
+      //firebaseSend = false;
+    }
+  }
 
   //CALL THE ALARM FUNCTION
   // check if the trigger time for the pill alarm is the current time
@@ -340,9 +368,14 @@ void loop()
   speakerBoom(speakerTripped);
   ledIlluminate(ledTripped);
 
-  //DISPZLAY BATTERY AND WIFI STATUS
-  batteryLevel();
-  wifiConnectionStatus = wifiConnected(wifiConnectionStatus);
+  /*bool firebaseSend = false;
+
+  if ( firebaseSend ) {
+
+    mySerial.println("trigger");
+    Serial.println("trigger");
+
+  } */
 
 
   // no need to be in too much of a hurry, shorten if too much latency
