@@ -323,7 +323,7 @@ switch (customKey)
     if(cupDetected()){pillAlarmState = 3;rotateTripped = true;rotateAngle = 0;rotateCounter = 0;}
 
     //TEST
-    if(customKey == '7'){pillAlarmState = 3;rotateTripped = true;rotateAngle = 0;rotateCounter = 0;customKey = 'z';} //jump over cup in place
+    //if(customKey == '7'){pillAlarmState = 3;rotateTripped = true;rotateAngle = 0;rotateCounter = 0;customKey = 'z';} //jump over cup in place
     break;
 
     case 3:
@@ -350,7 +350,7 @@ switch (customKey)
     }
     
     //TEST
-    if(customKey == '8'){pillAlarmState = 5;customKey = 'z';} //jump over pill removed check
+    //if(customKey == '8'){pillAlarmState = 5;customKey = 'z';} //jump over pill removed check
     break; //loop until cup removed
     
     case 5:
@@ -369,7 +369,7 @@ switch (customKey)
     }
 
     //TEST
-    if(customKey == '9'){pillAlarmState = 6;customKey = 'z';speakerTripped = false;ledTripped = false;} //jump over pill returned check
+    //if(customKey == '9'){pillAlarmState = 6;customKey = 'z';speakerTripped = false;ledTripped = false;} //jump over pill returned check
     
     break; //loop until cup is returned
     
@@ -614,29 +614,29 @@ else                {displayLevel = 0; }       //critical < 14.28571429%  red
    }//end switch
 }//end batteryLevel
 
-/*
-bool wifiConnected()
+
+void wifiConnected()
 {
 bool wifiStatus = false;
 
-if(mySerial.available())
+if(mySerial.available() > 0)
 {
   delay(100);
-  char cmd = mySerial.read();
-  Serial.println(cmd);
-  if(cmd == '#')  {Serial.println("connected to WiFi"); wifiStatus = true; printWifi(true);}
+  int cmd = mySerial.read();
+  if(cmd == '#')  { wifiStatus = true; }
+  else { wifiStatus = false; }
 }
-return wifiStatus;
-}
-*/
 
-bool wifiConnected( bool wifiStatus )
+}
+
+
+bool wifiConnectedLogo( bool wifiStatus )
 {
 //determine status
-if(mySerial.available())
+if(mySerial.available() > 0)
 {
   delay(100);
-  char cmd = mySerial.read();
+  int cmd = mySerial.read();
   if(cmd == '#')  { wifiStatus = true; }
   else { wifiStatus = false; }
 }

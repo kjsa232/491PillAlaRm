@@ -32,7 +32,8 @@ void keypadMenu()
   switch (clkMenu.getLevel())
   {
     case 0:
-          if (customKey == '1')
+    
+          /*if (customKey == '1')
           {
             while(rotateTripped){rotateTripped = rotatePills(rotateTripped);}
             if(!rotateTripped){pillAlarmState = 4;}
@@ -116,13 +117,14 @@ void keypadMenu()
             oled.drawLine(79,2,85,2, OLED_Backround_Color );
             oled.drawLine(81,1,83,1, OLED_Backround_Color );
           }
-      else if (customKey == '*')  //Menu
+          */
+      if (customKey == '*')  //Menu
       {
         clkMenu.setClkON(false);
-        //oled.fillScreen(OLED_Color_Black);   //SLOW
+        oled.fillScreen(OLED_Color_Black);   //SLOW but it clears everything so it is better if the screen bugs up you can enter and leave menu
           //fast
-        oled.fillRect(4,11,87,21,OLED_Backround_Color);
-        oled.fillRect(14,33,23,17,OLED_Backround_Color);
+        //oled.fillRect(4,11,87,21,OLED_Backround_Color);
+        //oled.fillRect(14,33,23,17,OLED_Backround_Color);
 
         oled.setTextColor(OLED_Text_Color);
         oled.setCursor(menu1X, menu1Y);
