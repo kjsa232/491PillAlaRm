@@ -19,7 +19,7 @@
 #define outputA 49
 #define outputB 50
 
-SoftwareSerial mySerial(10, 11);
+SoftwareSerial mySerial(10, 12);
 
 //CALL THE ANALOG PINS AS DIGITAL: call them [Pin 14 .. Pin 19]
 
@@ -272,8 +272,8 @@ void setup()
   delay(1000);
   Serial.println("starting");
 
-  pinMode(12, OUTPUT);
-  digitalWrite(12, HIGH);
+  pinMode(11, OUTPUT);
+  digitalWrite(11, HIGH);
 
   //extra 5v source and gnd
   pinMode(A1, OUTPUT); digitalWrite(A1, LOW);
@@ -333,7 +333,7 @@ void loop()
     pillAlarmTripped = pillAlarm();
     uint8_t sendMsgMM, sendMsgHH; 
     sendMsgHH = clkMenu.getPillHH();
-    sendMsgMM = clkMenu.getPillMM() + 1;
+    sendMsgMM = clkMenu.getPillMM() + 5;
     if(sendMsgMM >= 60) {
       sendMsgMM -= 60;
       sendMsgHH += 1;
